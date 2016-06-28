@@ -6,8 +6,8 @@ from flask import request
 from flask import make_response
 from flask import abort
 from flask import session
+from flask import flash
 
-import uuid
 
 from models import User
 from models import Tweet
@@ -60,6 +60,7 @@ def register():
     u = User(request.form)
     if u.valid():
         log("用户注册成功")
+
         u.hash_password()
         # 保存到数据库
         u.save()
@@ -67,6 +68,7 @@ def register():
         session['user_id'] = user.id
         return redirect(url_for('timeline_view', username=user.username))
     else:
+        flash('注册失败')
         log('注册失败', request.form)
         return redirect(url_for('login_view'))
 
