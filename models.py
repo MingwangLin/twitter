@@ -89,7 +89,7 @@ class User(db.Model):
         password_len = len(self.password) >= 1
         return username_len and password_len
 
-    def hashed_password(self):
+    def hash_password(self):
         s = self.password
         m = hashlib.md5()
         m.update(s.encode('utf-8'))
