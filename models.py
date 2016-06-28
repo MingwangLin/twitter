@@ -37,7 +37,6 @@ class User(db.Model):
     # 这是引用别的表的数据的属性，表明了它关联的东西
     tweets = db.relationship('Tweet', backref='user')
     comments = db.relationship('Comment', backref='user')
-    retweets = db.relationship('Retweet', backref='user')
 
     def __init__(self, form):
         super(User, self).__init__()
@@ -105,7 +104,6 @@ class Tweet(db.Model):
     created_time = db.Column(db.DateTime(timezone=True), default=sql.func.now())
     retweet_from = db.Column(db.String(), default='')
     retweet_seen = db.Column(db.Integer(), default=0)
-    retweets = db.relationship('Retweet', backref='tweet')
     comments = db.relationship('Comment', backref='tweet')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
@@ -139,34 +137,6 @@ class Comment(db.Model):
 
     def __init__(self, form):
         self.content = form.get('content', '')
-
-
-    def __repr__(self):
-        class_name = self.__class__.__name__
-        return u'<{}: {}>'.format(class_name, self.id)
-
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class Retweet(db.Model):
-    __tablename__ = 'retweets'
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String())
-    created_time = db.Column(db.DateTime(timezone=True), default=sql.func.now())
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
-
-
-    def __init__(self, form):
-        self.content = form.get('content', 'repost')
 
 
     def __repr__(self):

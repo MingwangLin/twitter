@@ -12,7 +12,6 @@ from functools import wraps
 from models import User
 from models import Tweet
 from models import Comment
-from models import Retweet
 from treelog import log
 
 
@@ -198,18 +197,6 @@ def user_update(user_id):
     return redirect(url_for('users_view'))
 
 
-# 处理 发送 微博的函数  POST
-@app.route('/tweet/add', methods=['POST'])
-def tweet_add():
-    user = current_user()
-    t = Tweet(request.form)
-    # 设置是谁发的
-    t.user = user
-    # 保存到数据库
-    t.save()
-    return redirect(url_for('timeline_view', username=user.username))
-
-
 # 显示单条微博的界面
 @app.route('/tweets/<tweet_id>')
 @requires_login
@@ -249,13 +236,31 @@ def comment_add(tweet_id):
     return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
 
+
 # 显示转发的界面
 @app.route('/tweet/retweet/<tweet_id>')
 @requires_login
 def retweet_add_view(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
-    return render_template('retweet_add.html', tweet=tweet)
+    # 用户转发微博时, 微博写入文本框供用户编辑,最原始微博默认保留,所以在文本框中隐藏以防被编辑。
+    if '//@' in tweet.content:
+        content_shown = '//@' + tweet.user.username + ':' + tweet.content.rpartition('//@')[0]
+    else:
+        content_shown = '//@' + tweet.user.username + ':' + tweet.content.rpartition('//@')[2]
+    return render_template('retweet_add.html', tweet=tweet, content_shown=content_shown)
+
+
+# 处理 发送 微博的函数  POST
+@app.route('/tweet/add', methods=['POST'])
+def tweet_add():
+    user = current_user()
+    t = Tweet(request.form)
+    # 设置是谁发的
+    t.user = user
+    # 保存到数据库
+    t.save()
+    return redirect(url_for('timeline_view', username=user.username))
 
 
 # 处理转发的函数
@@ -264,28 +269,21 @@ def retweet_add_view(tweet_id):
 def retweet_add(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
-    u = tweet.user
-    r = Retweet(request.form)
-    # 谁转发的
-    r.user = user
-    r.user_id = user.id
-    # 转发哪条微博
-    r.tweet = tweet
-    r.tweet_id = tweet.id
-    # 转发微博信息
     t = Tweet(request.form)
-    tweet_content_before = '//' + tweet.user.username + ':' + tweet.content
-    t.content += tweet_content_before
+    # 用户转发微博时, 原微博写入文本框供用户编辑,最右微博默认保留,所以在文本框中隐藏以防被编辑。
+    # 转发微博存入数据库之前添加添加最右微博
+    if '//@' in tweet.content:
+        content = t.content + tweet.content.rpartition('//@')[1] + tweet.content.rpartition('//@')[2]
+    else:
+        content = t.content + '//@' + tweet.user.username + ':' + tweet.content
     t.user = user
-    t.user_id = user.id
-    r.save()
-    t.save()
+    t.content = content
     # 到本微博为止原始微博转发路线
-    tweet_id_str = str(tweet.id) + ','
-    t.retweet_from += tweet_id_str
-    r.save()
+    tweet_id_str = str(tweet.user.username) + ','
+    t.retweet_from = tweet.retweet_from + tweet_id_str
     t.save()
-    return redirect(url_for('tweet_view', tweet_id=tweet.id))
+    log(t.user_id)
+    return redirect(url_for('tweet_view', tweet_id=t.id))
 
 
 # 显示发送回复的界面
