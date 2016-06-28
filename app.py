@@ -243,11 +243,11 @@ def comment_add(tweet_id):
 def retweet_add_view(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
-    # 用户转发微博时, 微博写入文本框供用户编辑,最原始微博默认保留,所以在文本框中隐藏以防被编辑。
+    # 用户转发微博时, 微博写入文本框供用户编辑,最右微博在文本框中隐藏以防被编辑。
     if '//@' in tweet.content:
         content_shown = '//@' + tweet.user.username + ':' + tweet.content.rpartition('//@')[0]
     else:
-        content_shown = '//@' + tweet.user.username + ':' + tweet.content.rpartition('//@')[2]
+        content_shown = ''
     return render_template('retweet_add.html', tweet=tweet, content_shown=content_shown)
 
 
@@ -270,7 +270,7 @@ def retweet_add(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
     t = Tweet(request.form)
-    # 用户转发微博时, 原微博写入文本框供用户编辑,最右微博默认保留,所以在文本框中隐藏以防被编辑。
+    # 用户转发微博时, 原微博写入文本框供用户编辑,最右微博在文本框中隐藏以防被编辑。
     # 转发微博存入数据库之前添加添加最右微博
     if '//@' in tweet.content:
         content = t.content + tweet.content.rpartition('//@')[1] + tweet.content.rpartition('//@')[2]
