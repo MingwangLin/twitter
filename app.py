@@ -1,3 +1,4 @@
+import hashlib
 from flask import Flask
 from flask import render_template
 from flask import redirect
@@ -7,8 +8,7 @@ from flask import make_response
 from flask import abort
 from flask import session
 from flask import flash
-
-
+from functools import wraps
 from models import User
 from models import Tweet
 from models import Comment
@@ -28,6 +28,40 @@ def current_user():
     return user
 
 
+def hash_password(pwd):
+    m = hashlib.md5()
+    m.update(pwd.encode('utf-8'))
+    result = m.hexdigest()
+    return result
+
+
+def requires_login(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        # f 是被装饰的函数
+        # 所以下面两行会先于被装饰的函数内容调用
+        user = current_user()
+        if current_user() is None:
+            return redirect(url_for('login_view'))
+        return f(*args, **kwargs)
+    return wrapped
+
+
+def requires_admin(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        # f 是被装饰的函数
+        # 所以下面两行会先于被装饰的函数内容调用
+        print('debug, requires_login')
+        user = current_user()
+        if user.role != 1:
+            # return abort(401)
+            return abort(404)
+        return f(*args, **kwargs)
+
+    return wrapped
+
+
 @app.route('/')
 def index():
     return redirect(url_for('login_view'))
@@ -43,6 +77,7 @@ def login_view():
 @app.route('/login', methods=['POST'])
 def login():
     u = User(request.form)
+    u.password = hash_password(u.password)
     user = User.query.filter_by(username=u.username).first()
     if user.validate(u):
         log("用户登录成功")
@@ -60,8 +95,7 @@ def register():
     u = User(request.form)
     if u.valid():
         log("用户注册成功")
-
-        u.hash_password()
+        u.password = hash_password(u.password)
         # 保存到数据库
         u.save()
         user = User.query.filter_by(username=u.username).first()
@@ -75,13 +109,14 @@ def register():
 
 # 显示某个用户的时间线  GET
 @app.route('/timeline/<username>')
+@requires_login
 def timeline_view(username):
     # 查找 username 对应的用户
+    user = current_user()
     u = User.query.filter_by(username=username).first()
     if u is None:
         abort(404)
     else:
-        user = current_user()
         # 我的微博
         tweets = u.tweets
         tweets.sort(key=lambda t: t.created_time, reverse=True)
@@ -106,11 +141,12 @@ def timeline_view(username):
 
 # 处理关注用户函数
 @app.route('/follow/<user_id>')
+@requires_login
 def user_follow(user_id):
-    user = User.query.filter_by(id=user_id).first()
     u = current_user()
-    if u is None:
+    if current_user() is None:
         return redirect(url_for('login_view'))
+    user = User.query.filter_by(id=user_id).first()
     # 关注人信息,被关注人信息写入表中相应字段
     usr_id = str(user.id) + ','
     u_id = str(u.id) + ','
@@ -131,71 +167,56 @@ def users_view():
 
 #删除用户
 @app.route('/admin/users/delete/<user_id>')
+@requires_admin
 def user_delete(user_id):
     user = current_user()
-    if user.role != 1:
-        abort(401)
     u = User.query.filter_by(id=user_id).first()
     u.delete()
     return redirect(url_for('users_view'))
 
+
 ##显示更新用户的界面
 @app.route('/admin/users/update/<user_id>')
+@requires_login
+@requires_admin
 def user_update_view(user_id):
     user = current_user()
-    if user is None:
-        return redirect(url_for('login_view'))
-    elif user.role != 1:
-        abort(401)
-    else:
-        u = User.query.filter_by(id=user_id).first()
-        return render_template('user_edit.html', user=u)
+    u = User.query.filter_by(id=user_id).first()
+    return render_template('user_edit.html', user=u)
+
 
 
 # 处理更新用户的请求
 @app.route('/admin/users/update/<user_id>', methods=['POST'])
+@requires_login
+@requires_admin
 def user_update(user_id):
     user = current_user()
-    if user is None:
-        return redirect(url_for('login_view'))
-    elif user.role != 1:
-        abort(401)
-    else:
-        u = User.query.filter_by(id=user_id).first()
-        u.password = request.form.get('password', '')
-        u.save()
-        return redirect(url_for('users_view'))
-
-
+    u = User.query.filter_by(id=user_id).first()
+    u.password = request.form.get('password', '')
+    u.save()
+    return redirect(url_for('users_view'))
 
 
 # 处理 发送 微博的函数  POST
 @app.route('/tweet/add', methods=['POST'])
 def tweet_add():
     user = current_user()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        t = Tweet(request.form)
-        # 设置是谁发的
-        t.user = user
-        # 保存到数据库
-        t.save()
-        log('t.user_id', t.user_id)
-        log('t.comments', t.comments)
-        return redirect(url_for('timeline_view', username=user.username))
+    t = Tweet(request.form)
+    # 设置是谁发的
+    t.user = user
+    # 保存到数据库
+    t.save()
+    return redirect(url_for('timeline_view', username=user.username))
 
 
 # 显示单条微博的界面
 @app.route('/tweets/<tweet_id>')
+@requires_login
 def tweet_view(tweet_id):
     t = Tweet.query.filter_by(id=tweet_id).first()
     u = current_user()
-    if u is None:
-        return redirect(url_for('login_view'))
-    else:
-        log(t.user.username, u.username)
-        return render_template('single_tweet_view.html', t=t, u=u)
+    return render_template('single_tweet_view.html', t=t, u=u)
 
 
 # 显示发送评论的界面
@@ -211,113 +232,96 @@ def comment_add_view(tweet_id):
 
 # 处理发送评论的函数
 @app.route('/tweet/comment/<tweet_id>', methods=['POST'])
+@requires_login
 def comment_add(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
     u = tweet.user
-    print(u)
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        c = Comment(request.form)
-        # 谁发的
-        c.user = user
-        c.user_id = user.id
-        # 发到哪条微博
-        c.tweet = tweet
-        c.tweet_id = tweet.id
-        # 保存到数据库
-        c.save()
-        log('c.tweet_id', c.tweet_id)
-        log('c.user_id', c.tweet_id)
-
-        return redirect(url_for('tweet_view', tweet_id=tweet.id))
+    c = Comment(request.form)
+    # 谁发的
+    c.user = user
+    c.user_id = user.id
+    # 发到哪条微博
+    c.tweet = tweet
+    c.tweet_id = tweet.id
+    # 保存到数据库
+    c.save()
+    return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
 
 # 显示转发的界面
 @app.route('/tweet/retweet/<tweet_id>')
+@requires_login
 def retweet_add_view(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return render_template('retweet_add.html', tweet=tweet)
+    return render_template('retweet_add.html', tweet=tweet)
 
 
 # 处理转发的函数
 @app.route('/tweet/retweet/<tweet_id>', methods=['POST'])
+@requires_login
 def retweet_add(tweet_id):
     user = current_user()
     tweet = Tweet.query.filter_by(id=tweet_id).first()
     u = tweet.user
-    print(u)
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        r = Retweet(request.form)
-        # 谁转发的
-        r.user = user
-        r.user_id = user.id
-        # 转发哪条微博
-        r.tweet = tweet
-        r.tweet_id = tweet.id
-        # 转发微博信息
-        t = Tweet(request.form)
-        tweet_content_before = '//' + tweet.user.username + ':' + tweet.content
-        t.content += tweet_content_before
-        t.user = user
-        t.user_id = user.id
-        r.save()
-        t.save()
-        # 到本微博为止原始微博转发路线
-        tweet_id_str = str(tweet.id) + ','
-        t.retweet_from += tweet_id_str
-        r.save()
-        t.save()
-
-        return redirect(url_for('tweet_view', tweet_id=tweet.id))
-
-
+    r = Retweet(request.form)
+    # 谁转发的
+    r.user = user
+    r.user_id = user.id
+    # 转发哪条微博
+    r.tweet = tweet
+    r.tweet_id = tweet.id
+    # 转发微博信息
+    t = Tweet(request.form)
+    tweet_content_before = '//' + tweet.user.username + ':' + tweet.content
+    t.content += tweet_content_before
+    t.user = user
+    t.user_id = user.id
+    r.save()
+    t.save()
+    # 到本微博为止原始微博转发路线
+    tweet_id_str = str(tweet.id) + ','
+    t.retweet_from += tweet_id_str
+    r.save()
+    t.save()
+    return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
 
 # 显示发送回复的界面
 @app.route('/tweet/reply/<comment_id>')
+@requires_login
 def reply_add_view(comment_id):
     user = current_user()
     comment = Comment.query.filter_by(id=comment_id).first()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return render_template('reply_add.html', comment=comment)
+    return render_template('reply_add.html', comment=comment)
 
 
 # 处理发送回复的函数
 @app.route('/tweet/reply/<comment_id>', methods=['POST'])
+@requires_login
 def reply_add(comment_id):
-        user = current_user()
-        comment = Comment.query.filter_by(id=comment_id).first()
-        tweet = comment.tweet
-        if user is None:
-            return redirect(url_for('login_view'))
-        else:
-            c = Comment(request.form)
-            # 谁发的
-            c.user = user
-            c.user_id = user.id
-            # 发到哪条微博
-            c.tweet = tweet
-            c.tweet_id = tweet.id
-            # 回复哪条评论
-            c.comment_replied = comment_id
-            # 回复哪位用户
-            c.user_replied = comment.user.username
-            c.save()
-            return redirect(url_for('tweet_view', tweet_id=tweet.id))
+    user = current_user()
+    comment = Comment.query.filter_by(id=comment_id).first()
+    tweet = comment.tweet
+    c = Comment(request.form)
+    # 谁发的
+    c.user = user
+    c.user_id = user.id
+    # 发到哪条微博
+    c.tweet = tweet
+    c.tweet_id = tweet.id
+    # 回复哪条评论
+    c.comment_replied = comment_id
+    # 回复哪位用户
+    c.user_replied = comment.user.username
+    c.save()
+    return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
 
 # 查看通知中的回复
 @app.route('/reply/view/<comment_id>')
+@requires_login
 def notification_view(comment_id):
     user = current_user()
     # 回复的评论
@@ -328,25 +332,19 @@ def notification_view(comment_id):
     # 回复被查看后, 字段值标记为1
     comment.reply_viewed = 1
     comment.save()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return render_template('notification_view.html', c=c, comment=comment)
+    return render_template('notification_view.html', c=c, comment=comment)
+
 
 # 忽略通知中的回复
 @app.route('/reply/discard/<comment_id>')
+@requires_login
 def notification_discard(comment_id):
     user = current_user()
     comment = Comment.query.filter_by(id=comment_id).first()
     # 回复被忽略, 字段值标记设为1
     comment.reply_viewed = 1
     comment.save()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return redirect(url_for('timeline_view', username=user.username))
-
-
+    return redirect(url_for('timeline_view', username=user.username))
 
 
 # 显示 更新 微博的界面

@@ -2,7 +2,6 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import sql
 
-import hashlib
 import time
 import shutil
 
@@ -88,14 +87,6 @@ class User(db.Model):
         username_len = len(self.username) >= 1
         password_len = len(self.password) >= 1
         return username_len and password_len
-
-    def hash_password(self):
-        s = self.password
-        m = hashlib.md5()
-        m.update(s.encode('utf-8'))
-        result = m.hexdigest()
-        self.password = result
-        return
 
 
     def validate(self, user):

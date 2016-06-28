@@ -30,7 +30,7 @@
         <br>
         {% for c in replies_to_me %}
             {% if c.reply_viewed != 1 %}
-                {% if c.user.id != c.user_replied %}
+                {% if c.user.username != c.user_replied %}
                 {{c.user.username}}回复了你的评论
                 <a href="/reply/view/{{c.id}}">查看</a>
                 <a href="/reply/discard/{{c.id}}">忽略</a>
