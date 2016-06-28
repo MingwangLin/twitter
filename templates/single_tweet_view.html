@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tweet</title>
+</head>
+<body>
+    <a href="/">返回登陆页面</a>
+    <br>
+    <br>
+    <a href="/timeline/{{t.user.username}}">返回上级</a>
+    <a href="/timeline/{{u.username}}">返回个人主页</a>
+    <br>
+    {{ t.username }}
+    <br>
+    {{ t.content }}  --{{ t.created_time }}
+    <br>
+    <a href="/tweet/comment/{{t.id}}">评论</a>
+    <a href="/tweet/retweet/{{t.id}}">转发</a>
+    <br>
+    评论
+    <br>
+    {% for c in t.comments %}
+                {% if c.user_replied is not none  %}
+                    回复<a href="/timeline/{{c.user_replied}}">{{c.user_replied}}</a>:{{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time }}
+                    <a href="/tweet/reply/{{c.id}}">回复</a>
+                    <br>
+                {% else %}
+                    {{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time }}
+                    <a href="/tweet/reply/{{c.id}}">回复</a>
+                <br>
+                {% endif %}
+            {% endfor %}
+    <hr />
+    转发
+    <br>
+    {% for r in t.retweets %}
+        {{ r.content }}  --{{r.user.username}}:{{ r.created_time }}
+        <br>
+    {% endfor %}
+
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timeline</title>
+</head>
+<body>
+    <!-- 这里的 none 是小写，因为这是 jinja2 模板的语法-->
+    <a href="/">返回登陆页面</a>
+    <br>
+
+    <br>
+    {% if user is not none  %}
+    <form class="pure-form" action="/tweet/add" method="POST">
+        <textarea name="content" class="form-control" placeholder="说点啥"></textarea>
+        <br>
+        <button class="pure-button pure-button-primary" type="submit">发新微博</button>
+    </form>
+    {% endif %}
+
+    <p>
+        {{u.username}} 关注{{follower_lst|length}} 粉丝{{followee_lst|length}}
+        <a href="/follow/{{u.id}}">点击关注</a>
+    </p>
+
+
+    {% if user.username == u.username %}
+    <p>
+        通知
+        <br>
+        {% for c in replies_to_me %}
+            {% if c.reply_viewed != 1 %}
+                {% if c.user.id != c.user_replied %}
+                {{c.user.username}}回复了你的评论
+                <a href="/reply/view/{{c.id}}">查看</a>
+                <a href="/reply/discard/{{c.id}}">忽略</a>
+                <br>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+    <hr />
+
+
+    <p>
+    我的微博
+    <br>
+    {% for t in tweets %}
+        <br>
+            {{ t.content }}  --{{ t.created_time }}
+            <br>
+
+            {% if u.username == user.username %}
+                <a href="/tweet/update/{{t.id}}">编辑</a>
+                <a href="/tweet/delete/{{t.id}}">删除</a>
+                {% if t.comments|length == 0 %}
+                    <a href="/tweet/comment/{{t.id}}">评论</a>
+                {% else %}
+                    <a href="/tweets/{{t.id}}">评论{{t.comments|length}}</a>
+                {% endif %}
+                {% if t.retweets|length == 0 %}
+                    <a href="/tweet/retweet/{{t.id}}">转发</a>
+                {% else %}
+                    <a href="/tweets/{{t.id}}">转发{{t.retweets|length}}</a>
+                {% endif %}
+            <br>
+            {% else %}
+            {% if t.comments|length == 0 %}
+                <a href="/tweet/comment/{{t.id}}">评论</a>
+            {% else %}
+                <a href="/tweets/{{t.id}}">评论{{t.comments|length}}</a>
+            {% endif %}
+            {% if t.retweets|length == 0 %}
+                <a href="/tweet/retweet/{{t.id}}">转发</a>
+            {% else %}
+                <a href="/tweets/{{t.id}}">转发{{t.retweets|length}}</a>
+            {% endif %}
+            {% endif %}
+    {% endfor %}
+    </p>
+    <hr />
+
+    {% if user.username == u.username %}
+        <p>
+        关注的人微博
+
+        {% for t in follower_tweets %}
+                <br>
+                <br>
+                {{t.user.username}}
+                <br>
+                {{ t.created_time }} : {{ t.content }}
+                <br>
+
+                {% if t.comments|length == 0 %}
+                    <a href="/tweet/comment/{{t.id}}">评论</a>
+                {% else %}
+                    <a href="/tweets/{{t.id}}">评论{{t.comments|length}}</a>
+                {% endif %}
+                {% if t.retweets|length == 0 %}
+                <a href="/tweet/retweet/{{t.id}}">转发</a>
+                {% else %}
+                <a href="/tweets/{{t.id}}">转发{{t.retweets|length}}</a>
+                {% endif %}
+
+        {% endfor %}
+        </p>
+    {% endif %}
+</body>
+</html>

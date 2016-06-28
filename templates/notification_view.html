@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通知</title>
+</head>
+<body>
+    微博:{{c.tweet.content}}
+    <br>
+    我的评论:{{c.content}}  --{{c.created_time}}
+    <br>
+    {{comment.user.username}}回复:{{comment.content}} --{{comment.created_time}}
+    <br>
+    <a href="/tweet/reply/{{comment.id}}">回复</a>
+</body>
+</html>

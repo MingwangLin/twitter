@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>users</title>
+</head>
+<body>
+    {% for u in users %}
+        <p>
+            {{ u.username }} {{ u.gender }} {{u.role}}
+            <a href="/admin/users/delete/{{u.id}}">删除用户</a>
+            <a href="/admin/users/update/{{u.id}}">编辑用户</a>
+
+        </p>
+    {% endfor %}
+
+</body>
+</html>
