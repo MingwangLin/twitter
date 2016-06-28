@@ -44,7 +44,6 @@ def login_view():
 def login():
     u = User(request.form)
     user = User.query.filter_by(username=u.username).first()
-    print(user)
     if user.validate(u):
         log("用户登录成功")
         # 用 make_response 生成响应 并且设置 cookie
@@ -61,9 +60,12 @@ def register():
     u = User(request.form)
     if u.valid():
         log("用户注册成功")
+        u.hash_password()
         # 保存到数据库
         u.save()
-        return redirect(url_for('timeline_view', username=u.username))
+        user = User.query.filter_by(username=u.username).first()
+        session['user_id'] = user.id
+        return redirect(url_for('timeline_view', username=user.username))
     else:
         log('注册失败', request.form)
         return redirect(url_for('login_view'))
