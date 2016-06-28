@@ -280,7 +280,7 @@ def retweet_add(tweet_id):
     t.content = content
     # 到本微博为止原始微博转发路线
     tweet_id_str = str(tweet.user.username) + ','
-    t.retweet_from = tweet.retweet_from + tweet_id_str
+    t.retweet_from = tweet.id
     t.save()
     log(t.user_id)
     return redirect(url_for('tweet_view', tweet_id=t.id))
