@@ -13,7 +13,7 @@
     <br>
     {{ t.username }}
     <br>
-    {{ t.content }}  --{{ t.created_time }}
+    {{ t.content }}  --{{ t.created_time|format_time }}
     <br>
     <a href="/tweet/comment/{{t.id}}">评论</a>
     <a href="/tweet/retweet/{{t.id}}">转发</a>
@@ -22,11 +22,11 @@
     <br>
     {% for c in t.comments %}
                 {% if c.user_replied is not none  %}
-                    回复<a href="/timeline/{{c.user_replied}}">{{c.user_replied}}</a>:{{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time }}
+                    回复<a href="/timeline/{{c.user_replied}}">{{c.user_replied}}</a>:{{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_|format_time }}
                     <a href="/tweet/reply/{{c.id}}">回复</a>
                     <br>
                 {% else %}
-                    {{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time }}
+                    {{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time|format_time }}
                     <a href="/tweet/reply/{{c.id}}">回复</a>
                 <br>
                 {% endif %}
@@ -35,7 +35,7 @@
     转发
     <br>
     {% for r in t.retweets %}
-        {{ r.content }}  --{{r.user.username}}:{{ r.created_time }}
+        {{ r.content }}  --{{r.user.username}}:{{ r.created_time|format_time}}
         <br>
     {% endfor %}
 

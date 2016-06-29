@@ -1,4 +1,5 @@
 import hashlib
+import time
 from flask import Flask
 from flask import render_template
 from flask import redirect
@@ -12,12 +13,21 @@ from functools import wraps
 from models import User
 from models import Tweet
 from models import Comment
+from models import At
 from treelog import log
 
 
 app = Flask(__name__)
 app.secret_key = 'tree'
 
+
+@app.template_filter('format_time')
+def format_time(timestamp):
+    t = timestamp
+    format = '%Y/%m/%d %H:%M'
+    t = time.localtime(timestamp)
+    ft = time.strftime(format, t)
+    return ft
 
 
 # 通过 session 来获取当前登录的用户
@@ -124,6 +134,8 @@ def timeline_view(username):
         follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
         # 回复我的所有评论
         replies_to_me = Comment.query.filter_by(user_replied=user.username)
+        # @我的所有微博
+        ats_to_me = At.query.filter_by(reciever_id=user.id)
         follower_lst = u.follower_lst
         followee_lst = u.followee_lst
         args = {
@@ -133,7 +145,8 @@ def timeline_view(username):
             'follower_lst': follower_lst,
             'followee_lst': followee_lst,
             'follower_tweets': follower_tweets,
-            'replies_to_me': replies_to_me
+            'replies_to_me': replies_to_me,
+            'ats_to_me': ats_to_me,
         }
         return render_template('timeline.html', **args)
 
@@ -233,8 +246,54 @@ def comment_add(tweet_id):
     c.tweet_id = tweet.id
     # 保存到数据库
     c.save()
+    if '@' in c.content:
+        name_lst = get_name(c.content)
+        comment_At_lst(lst=name_lst, comment=c)
     return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
+
+# 解析微博/评论内容,得到所有@的用户名
+def get_name(s):
+    # 用'//@'切片, 得到转发微博中用户原创内容
+    if '//@' in s:
+        s = s.partition('//@')[0]
+    #内容后面加上' ', 方便解析
+    # 得到所有@的用户名
+    name_lst = []
+    s += ' '
+    while s.find('@') != -1:
+        i = s.find('@')
+        j = s.find(' ', i)
+        log(i, j)
+        name_lst.append(s[i+1:j])
+        s = s[j+1:]
+    return name_lst
+
+# 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
+def At_lst(lst, tweet):
+    for i in lst:
+        u = User.query.filter_by(username=i).first()
+        if u is not None:
+            a = At()
+            a.tweet = tweet
+            a.tweet_id = tweet.id
+            a.user = u
+            a.reciever_id = u.id
+            a.save()
+    return
+
+# 根据解析评论得到的@的用户名数组, 生成相应的At实例, 存入数据库
+def comment_At_lst(lst, comment):
+    for i in lst:
+        u = User.query.filter_by(username=i).first()
+        if u is not None:
+            a = At()
+            a.comment = comment
+            a.comment_id = comment.id
+            a.user = u
+            a.reciever_id = u.id
+            a.save()
+    return
 
 
 # 显示转发的界面
@@ -260,6 +319,10 @@ def tweet_add():
     t.user = user
     # 保存到数据库
     t.save()
+    # 获取微博中@的用户名
+    if '@' in t.content:
+        name_lst = get_name(t.content)
+        At_lst(lst=name_lst, tweet=t)
     return redirect(url_for('timeline_view', username=user.username))
 
 
@@ -278,11 +341,10 @@ def retweet_add(tweet_id):
         content = t.content + '//@' + tweet.user.username + ':' + tweet.content
     t.user = user
     t.content = content
-    # 到本微博为止原始微博转发路线
-    tweet_id_str = str(tweet.user.username) + ','
     t.retweet_from = tweet.id
     t.save()
-    log(t.user_id)
+    name_lst = get_name(t.content)
+    At_lst(lst=name_lst, tweet=t)
     return redirect(url_for('tweet_view', tweet_id=t.id))
 
 
@@ -344,6 +406,52 @@ def notification_discard(comment_id):
     comment.save()
     return redirect(url_for('timeline_view', username=user.username))
 
+# 查看微博中的@
+@app.route('/tweet/at/view/<a_id>')
+@requires_login
+def tweet_at_view(a_id):
+    user = current_user()
+    a = At.query.filter_by(id=a_id).first()
+    # @被查看后, 字段值标记为1
+    a.at_viewed = 1
+    a.save()
+    return render_template('at_view.html', a=a, c=None)
+
+
+# 忽略微博中的@
+@app.route('/tweet/at/discard/<a_id>')
+@requires_login
+def tweet_at_discard(a_id):
+    user = current_user()
+    a = At.query.filter_by(id=a_id).first()
+    # 回复被忽略, 字段值标记设为1
+    a.at_viewed = 1
+    a.save()
+    return redirect(url_for('timeline_view', username=user.username))
+
+
+# 查看评论中的@
+@app.route('/comment/at/view/<a_id>')
+@requires_login
+def comment_at_view(a_id):
+    a = At.query.filter_by(id=a_id).first()
+    c = Comment.query.filter_by(id=a.comment_id).first()
+    # @被查看后, 字段值标记为1
+    a.at_viewed = 1
+    a.save()
+    return render_template('at_view.html', a=a, c=c)
+
+
+# 忽略评论中的@
+@app.route('/comment/at/discard/<a_id>')
+@requires_login
+def comment_at_discard(a_id):
+    user = current_user()
+    a = At.query.filter_by(id=a_id).first()
+    # 回复被忽略, 字段值标记设为1
+    a.at_viewed = 1
+    a.save()
+    return redirect(url_for('timeline_view', username=user.username))
 
 # 显示 更新 微博的界面
 @app.route('/tweet/update/<tweet_id>')

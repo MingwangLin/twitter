@@ -38,6 +38,22 @@
                 {% endif %}
             {% endif %}
         {% endfor %}
+        <br>
+        {% for a in ats_to_me %}
+            {% if a.at_viewed != 1  %}
+                {% if a.tweet_id is not none and a.user.username != a.tweet.user.username %}
+                    {{a.tweet.user.username}}在微博里@了你
+                    <a href="/tweet/at/view/{{a.id}}">查看</a>
+                    <a href="/tweet/at/discard/{{a.id}}">忽略</a>
+                    <br>
+                {% elif a.user.username != a.comment.user.username  %}
+                    {{a.comment.user.username}}在评论里@了你
+                    <a href="/comment/at/view/{{a.id}}">查看</a>
+                    <a href="/comment/at/discard/{{a.id}}">忽略</a>
+                    <br>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
     </p>
     {% endif %}
     <hr />
@@ -48,7 +64,7 @@
     <br>
     {% for t in tweets %}
         <br>
-            {{ t.content }}  --{{ t.created_time }}
+            {{ t.content }}  --{{ t.created_time|format_time }}
             <br>
 
             {% if u.username == user.username %}
@@ -90,7 +106,7 @@
                 <br>
                 {{t.user.username}}
                 <br>
-                {{ t.created_time }} : {{ t.content }}
+                {{ t.created_time|format_time }} : {{ t.content }}
                 <br>
 
                 {% if t.comments|length == 0 %}

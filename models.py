@@ -32,11 +32,12 @@ class User(db.Model):
     role = db.Column(db.Integer(), default=2)
     follower = db.Column(db.String(), default='' )
     followee = db.Column(db.String(), default='')
-    created_time = db.Column(db.DateTime(timezone=True),
-                             default=sql.func.now())
+    created_time = db.Column(db.Integer(), default=0)
     # 这是引用别的表的数据的属性，表明了它关联的东西
     tweets = db.relationship('Tweet', backref='user')
     comments = db.relationship('Comment', backref='user')
+    ats = db.relationship('At', backref='user')
+
 
     def __init__(self, form):
         super(User, self).__init__()
@@ -47,6 +48,8 @@ class User(db.Model):
         self.role = form.get('role', 2)
         self.follow = ''
         self.followed = ''
+        self.created_time = int(time.time())
+
 
 
     def __repr__(self):
@@ -101,15 +104,19 @@ class Tweet(db.Model):
     __tablename__ = 'tweets'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
-    created_time = db.Column(db.DateTime(timezone=True), default=sql.func.now())
-    retweet_from = db.Column(db.String(), default='')
+    created_time = db.Column(db.Integer(), default=0)
+    retweet_from = db.Column(db.Integer(), default='')
     retweet_seen = db.Column(db.Integer(), default=0)
     comments = db.relationship('Comment', backref='tweet')
+    ats = db.relationship('At', backref='tweet')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
     def __init__(self, form):
+        super(Tweet, self).__init__()
         self.content = form.get('content', '')
+        self.created_time = int(time.time())
+
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -128,15 +135,49 @@ class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
-    created_time = db.Column(db.DateTime(timezone=True), default=sql.func.now())
+    created_time = db.Column(db.Integer(), default=0)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
     comment_replied = db.Column(db.Integer())
     user_replied = db.Column(db.String())
     reply_viewed = db.Column(db.Integer(), default=0)
+    ats = db.relationship('At', backref='comment')
+
 
     def __init__(self, form):
+        super(Comment, self).__init__()
         self.content = form.get('content', '')
+        self.created_time = int(time.time())
+
+
+
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return u'<{}: {}>'.format(class_name, self.id)
+
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class At(db.Model):
+    __tablename__ = 'ats'
+    id = db.Column(db.Integer, primary_key=True)
+    created_time = db.Column(db.Integer(), default=0)
+    reciever_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+    at_viewed = db.Column(db.Integer(), default=0)
+
+    def __init__(self):
+        super(At, self).__init__()
+        self.created_time = int(time.time())
 
 
     def __repr__(self):

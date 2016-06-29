@@ -7,9 +7,9 @@
 <body>
     微博:{{c.tweet.content}}
     <br>
-    我的评论:{{c.content}}  --{{c.created_time}}
+    我的评论:{{c.content}}  --{{c.created_time|format_time}}
     <br>
-    {{comment.user.username}}回复:{{comment.content}} --{{comment.created_time}}
+    {{comment.user.username}}回复:{{comment.content}} --{{comment.created_time|format_time}}
     <br>
     <a href="/tweet/reply/{{comment.id}}">回复</a>
 </body>
