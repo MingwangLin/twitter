@@ -84,7 +84,7 @@ class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
     created_time = db.Column(db.Integer(), default=0)
-    retweet_from = db.Column(db.Integer(), default='')
+    retweet_from = db.Column(db.Integer())
     retweet_seen = db.Column(db.Integer(), default=0)
     comments = db.relationship('Comment', backref='tweet')
     ats = db.relationship('At', backref='tweet')

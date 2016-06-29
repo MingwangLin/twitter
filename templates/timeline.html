@@ -20,7 +20,7 @@
 
     <p>
         {{u.username}} 关注{{follower_lst|length}} 粉丝{{followee_lst|length}}
-        {% if user.username != u.username %}
+        {% if user.username != u.username and user.id not in u.followee %}
         <a href="/follow/{{u.id}}">点击关注</a>
         {% endif %}
     </p>
