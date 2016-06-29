@@ -139,6 +139,7 @@ def timeline_view(username):
         ats_to_me = At.query.filter_by(reciever_id=user.id)
         follower_lst = u.follower_lst
         followee_lst = u.followee_lst
+        retweet_from = Tweet.query.filter_by(retweet_from=user.username)
         args = {
             'tweets': tweets,
             'user': user,

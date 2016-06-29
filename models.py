@@ -70,7 +70,6 @@ class User(db.Model):
         password_len = len(self.password) >= 1
         return username_len and password_len
 
-
     def validate(self, user):
         if isinstance(user, User):
             username_equals = self.username == user.username
@@ -91,12 +90,10 @@ class Tweet(db.Model):
     ats = db.relationship('At', backref='tweet')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-
     def __init__(self, form):
         super(Tweet, self).__init__()
         self.content = form.get('content', '')
         self.created_time = int(time.time())
-
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -123,23 +120,18 @@ class Comment(db.Model):
     reply_viewed = db.Column(db.Integer(), default=0)
     ats = db.relationship('At', backref='comment')
 
-
     def __init__(self, form):
         super(Comment, self).__init__()
         self.content = form.get('content', '')
         self.created_time = int(time.time())
 
-
-
     def __repr__(self):
         class_name = self.__class__.__name__
         return u'<{}: {}>'.format(class_name, self.id)
 
-
     def save(self):
         db.session.add(self)
         db.session.commit()
-
 
     def delete(self):
         db.session.delete(self)
@@ -159,16 +151,13 @@ class At(db.Model):
         super(At, self).__init__()
         self.created_time = int(time.time())
 
-
     def __repr__(self):
         class_name = self.__class__.__name__
         return u'<{}: {}>'.format(class_name, self.id)
 
-
     def save(self):
         db.session.add(self)
         db.session.commit()
-
 
     def delete(self):
         db.session.delete(self)
@@ -180,11 +169,6 @@ def backup_db():
     shutil.copyfile(db_path, backup_path)
 
 
-# 定义了数据库，如何创建数据库呢？
-# 调用 db.create_all()
-# 如果数据库文件已经存在了，则啥也不做
-# 所以说我们先 drop_all 删除所有表
-# 再重新 create_all 创建所有表
 def rebuild_db():
     backup_db()
     db.drop_all()
@@ -192,7 +176,5 @@ def rebuild_db():
     print('rebuild database')
 
 
-# 第一次运行工程的时候没有数据库
-# 所以我们运行 models.py 创建一个新的数据库文件
 if __name__ == '__main__':
     rebuild_db()
