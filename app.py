@@ -104,7 +104,7 @@ def login():
 def register():
     u = User(request.form)
     usr = User.query.filter_by(username=u.username).first()
-    if u.valid() and u is None:
+    if u.valid() and usr is None:
         log("用户注册成功")
         u.password = hash_password(u.password)
         # 保存到数据库
@@ -114,7 +114,6 @@ def register():
         return redirect(url_for('timeline_view', username=user.username))
     else:
         flash('注册失败')
-        log('注册失败', request.form)
         return redirect(url_for('login_view'))
 
 
