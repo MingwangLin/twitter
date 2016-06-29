@@ -22,7 +22,7 @@
     <br>
     {% for c in t.comments %}
                 {% if c.user_replied is not none  %}
-                    回复<a href="/timeline/{{c.user_replied}}">{{c.user_replied}}</a>:{{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_|format_time }}
+                    回复<a href="/timeline/{{c.user_replied}}">{{c.user_replied}}</a>:{{ c.content }}  --<a href="/timeline/{{c.user.username}}">{{c.user.username}}</a>:{{ c.created_time|format_time }}
                     <a href="/tweet/reply/{{c.id}}">回复</a>
                     <br>
                 {% else %}

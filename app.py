@@ -94,6 +94,7 @@ def login():
         session['user_id'] = user.id
         return redirect(url_for('timeline_view', username=user.username))
     else:
+        flash('登陆失败')
         log("用户登录失败", user)
         return redirect(url_for('login_view'))
 
@@ -160,8 +161,8 @@ def user_follow(user_id):
         return redirect(url_for('login_view'))
     user = User.query.filter_by(id=user_id).first()
     # 关注人信息,被关注人信息写入表中相应字段
-    usr_id = str(user.id) + ','
-    u_id = str(u.id) + ','
+    usr_id = str(user.id) + ' '
+    u_id = str(u.id) + ' '
     u.follower += usr_id
     user.followee += u_id
     u.save()
@@ -219,39 +220,7 @@ def tweet_view(tweet_id):
     return render_template('single_tweet_view.html', t=t, u=u)
 
 
-# 显示发送评论的界面
-@app.route('/tweet/comment/<tweet_id>')
-def comment_add_view(tweet_id):
-    user = current_user()
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return render_template('comment_add.html', tweet=tweet)
-
-
-# 处理发送评论的函数
-@app.route('/tweet/comment/<tweet_id>', methods=['POST'])
-@requires_login
-def comment_add(tweet_id):
-    user = current_user()
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    u = tweet.user
-    c = Comment(request.form)
-    # 谁发的
-    c.user = user
-    c.user_id = user.id
-    # 发到哪条微博
-    c.tweet = tweet
-    c.tweet_id = tweet.id
-    # 保存到数据库
-    c.save()
-    if '@' in c.content:
-        name_lst = get_name(c.content)
-        comment_At_lst(lst=name_lst, comment=c)
-    return redirect(url_for('tweet_view', tweet_id=tweet.id))
-
-
+#
 # 解析微博/评论内容,得到所有@的用户名
 def get_name(s):
     # 用'//@'切片, 得到转发微博中用户原创内容
@@ -347,6 +316,38 @@ def retweet_add(tweet_id):
     At_lst(lst=name_lst, tweet=t)
     return redirect(url_for('tweet_view', tweet_id=t.id))
 
+# 显示发送评论的界面
+@app.route('/tweet/comment/<tweet_id>')
+def comment_add_view(tweet_id):
+    user = current_user()
+    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    if user is None:
+        return redirect(url_for('login_view'))
+    else:
+        return render_template('comment_add.html', tweet=tweet)
+
+
+# 处理发送评论的函数
+@app.route('/tweet/comment/<tweet_id>', methods=['POST'])
+@requires_login
+def comment_add(tweet_id):
+    user = current_user()
+    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    u = tweet.user
+    c = Comment(request.form)
+    # 谁发的
+    c.user = user
+    c.user_id = user.id
+    # 发到哪条微博
+    c.tweet = tweet
+    c.tweet_id = tweet.id
+    # 保存到数据库
+    c.save()
+    if '@' in c.content:
+        name_lst = get_name(c.content)
+        comment_At_lst(lst=name_lst, comment=c)
+    return redirect(url_for('tweet_view', tweet_id=tweet.id))
+
 
 # 显示发送回复的界面
 @app.route('/tweet/reply/<comment_id>')
@@ -376,6 +377,9 @@ def reply_add(comment_id):
     # 回复哪位用户
     c.user_replied = comment.user.username
     c.save()
+    if '@' in c.content:
+        name_lst = get_name(c.content)
+        comment_At_lst(lst=name_lst, comment=c)
     return redirect(url_for('tweet_view', tweet_id=tweet.id))
 
 

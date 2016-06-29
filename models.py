@@ -5,32 +5,21 @@ from sqlalchemy import sql
 import time
 import shutil
 
-# 数据库的路径
-db_path = 'db.sqlite'
-# 获取 app 的实例
-app = Flask(__name__)
-# 这个先不管，其实是 flask 用来加密 session 的东西
-app.secret_key = 'random string'
-# 配置数据库的打开方式
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'sqlite:///{}'.format(db_path)
 
+db_path = 'db.sqlite'
+app = Flask(__name__)
+app.secret_key = 'random string'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(db_path)
 db = SQLAlchemy(app)
 
 
-# 数据库里面的一张表，是一个类
-# 它继承自 db.Model
 class User(db.Model):
-    # 类的属性就是数据库表的字段
-    # 这些都是内置的 __tablename__ 是表名
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String())
     password = db.Column(db.String())
-    gender = db.Column(db.String())
-    signature = db.Column(db.String())
     role = db.Column(db.Integer(), default=2)
-    follower = db.Column(db.String(), default='' )
+    follower = db.Column(db.String(), default='')
     followee = db.Column(db.String(), default='')
     created_time = db.Column(db.Integer(), default=0)
     # 这是引用别的表的数据的属性，表明了它关联的东西
@@ -38,19 +27,11 @@ class User(db.Model):
     comments = db.relationship('Comment', backref='user')
     ats = db.relationship('At', backref='user')
 
-
     def __init__(self, form):
         super(User, self).__init__()
         self.username = form.get('username', '')
         self.password = form.get('password', '')
-        self.gender = form.get('gender', '')
-        self.signature = form.get('signature', '')
-        self.role = form.get('role', 2)
-        self.follow = ''
-        self.followed = ''
         self.created_time = int(time.time())
-
-
 
     def __repr__(self):
         class_name = self.__class__.__name__
@@ -58,22 +39,21 @@ class User(db.Model):
 
     @property
     def follower_lst(self):
-        # 去掉字符串末尾逗号,如果有的话
-        follower = self.follower[:-1]
-        return follower.split(',') if follower is not '' else []
+        # 去掉字符串首尾空格
+        follower = self.follower.strip()
+        return follower.split() if follower is not '' else []
 
     @property
     def followee_lst(self):
-        # 去掉字符串末尾逗号,如果有的话
-        followee = self.followee[:-1]
-        return followee.split(' ') if followee is not '' else []
+        followee = self.followee.strip()
+        return followee.split() if followee is not '' else []
 
     @property
     def follower_tweets(self):
         follower_tweets = []
         for i in self.follower_lst:
-            i_user = User.query.filter_by(id=int(i)).first()
-            follower_tweets += i_user.tweets
+            user = User.query.filter_by(id=int(i)).first()
+            follower_tweets += user.tweets
         return follower_tweets
 
     def delete(self):
