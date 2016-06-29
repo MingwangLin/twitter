@@ -103,7 +103,8 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     u = User(request.form)
-    if u.valid():
+    usr = User.query.filter_by(username=u.username).first()
+    if u.valid() and u is None:
         log("用户注册成功")
         u.password = hash_password(u.password)
         # 保存到数据库
