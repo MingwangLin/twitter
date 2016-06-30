@@ -171,6 +171,21 @@ def user_follow(user_id):
     return redirect(url_for('timeline_view', username=user.username ))
 
 
+# 处理取消关注用户函数
+@app.route('/unfollow/<user_id>')
+@requires_login
+def user_unfollow(user_id):
+    u = current_user()
+    user = User.query.filter_by(id=user_id).first()
+    # 关注人信息,被关注人信息从表中相应字段删除
+    usr_id = str(user.id) + ' '
+    u_id = str(u.id) + ' '
+    u.follower = u.follower.strip(usr_id)
+    user.followee = user.followee.strip(u_id)
+    u.save()
+    user.save()
+    return redirect(url_for('timeline_view', username=user.username ))
+
 
 #显示所有用户信息
 @app.route('/admin/users')
@@ -221,7 +236,6 @@ def tweet_view(tweet_id):
     return render_template('single_tweet_view.html', t=t, u=u)
 
 
-#
 # 解析微博/评论内容,得到所有@的用户名
 def get_name(s):
     # 用'//@'切片, 得到转发微博中用户原创内容
@@ -239,6 +253,7 @@ def get_name(s):
         s = s[j+1:]
     return name_lst
 
+
 # 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
 def At_lst(lst, tweet):
     for i in lst:
@@ -251,6 +266,7 @@ def At_lst(lst, tweet):
             a.reciever_id = u.id
             a.save()
     return
+
 
 # 根据解析评论得到的@的用户名数组, 生成相应的At实例, 存入数据库
 def comment_At_lst(lst, comment):
@@ -316,6 +332,7 @@ def retweet_add(tweet_id):
     name_lst = get_name(t.content)
     At_lst(lst=name_lst, tweet=t)
     return redirect(url_for('tweet_view', tweet_id=t.id))
+
 
 # 显示发送评论的界面
 @app.route('/tweet/comment/<tweet_id>')
