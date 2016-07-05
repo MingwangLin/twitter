@@ -90,7 +90,7 @@ def login_view():
 @app.route('/login', methods=['POST'])
 def login():
     account = request.get_json()
-    log(account)
+    log('account',account)
     u = User(account)
     u.password = hash_password(u.password)
     user = User.query.filter_by(username=u.username).first()
@@ -106,11 +106,11 @@ def login():
         log("用户登录成功")
         # 用 make_response 生成响应 并且设置 cookie
         session['user_id'] = user.id
-        return redirect(url_for('timeline_view', username=user.username))
+        r['data'] = '/timeline/{}'.format(user.username)
     else:
         r['success'] = False
         r['message'] = '登录失败'
-        return jsonify(r)
+    return jsonify(r)
 
 
 

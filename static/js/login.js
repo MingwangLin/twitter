@@ -1,10 +1,10 @@
          $(document).ready(function(){
             console.log('ready');
-            var button = $('#id-button-newusr-submit');
+            var button = $('#id-button-submit');
             button.on('click', function(){
               console.log('click button');
-              var username = $('#id-text-newusr-username').val();
-              var password = $('#id-text-newusr-password').val();
+              var username = $('#id-text-username').val();
+              var password = $('#id-text-password').val();
               console.log('user', username, password);
               var account = {
                 'username': username,
@@ -15,7 +15,7 @@
               console.log('JSON格式的数据是', postData)
               // get or post
               var request = {
-                url: '/register',
+                url: '/login',
                 type: 'post',
                 contentType: 'application/json',
                 data: postData,
