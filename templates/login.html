@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>登录页面</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <script src="http://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+
+    <script src="/static/js/register.js"></script>
 </head>
 <body>
-    {% for m in get_flashed_messages() %}
-    <h4>{{ m }}</h4>
-    {% endfor %}
-
     <h1>登录</h1>
-    <form class="pure-form" action="/login" method="POST">
-        <input name="username" id="id-text-username" class="form-control" placeholder="输入用户名" />
+        <input name="username" id="id-text-username" type="text" placeholder="输入用户名" />
         <br>
-        <input name="password" id="id-text-password" class="form-control" placeholder="输入密码" />
+        <input name="password" id="id-text-password" type="text" placeholder="输入密码" />
         <br>
-        <button id="id-button-submit" class="pure-button pure-button-primary" type="submit">登录</button>
-    </form>
+        <button id="id-button-submit" type="submit">登录</button>
     <hr>
     <h1>注册</h1>
-    <form class="pure-form"  action="/register" method="POST">
-        <input name="username" class="form-control" placeholder="输入用户名" />
+        <input name="username" id="id-text-newusr-username" type="text" placeholder="输入用户名" />
         <br>
-        <input name="password" class="form-control" placeholder="输入密码" />
+        <input name="password" id="id-text-newusr-password" type="text" placeholder="输入密码" />
         <br>
-        <button class="pure-button pure-button-primary" type="submit">注册</button>
-    </form>
+        <button id="id-button-newusr-submit" type="submit">注册</button>
+
+        <p id='id-p-info'>
+        </p>
 </body>
 </html>
