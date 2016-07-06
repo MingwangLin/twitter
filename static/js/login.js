@@ -24,8 +24,8 @@
                   // alert(r);
                   if(r.success) {
                     console.log('成功');
-                    url = r.data
-                    window.location.href = url
+                    var url = r.data;
+                    window.location.href = url;
                   } else {
                     console.log('失败');
                   }

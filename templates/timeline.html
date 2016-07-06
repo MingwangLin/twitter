@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Timeline</title>
+    <script src="/static/js/jquery.js"></script>
+
+    <script src="/static/js/timeline.js"></script>
 </head>
 <body>
     <!-- 这里的 none 是小写，因为这是 jinja2 模板的语法-->
@@ -11,10 +14,9 @@
 
     <br>
     {% if user is not none  %}
-    <form class="pure-form" action="/tweet/add" method="POST">
-        <textarea name="content" class="form-control" placeholder="说点啥"></textarea>
+        <textarea name="content" id="id-text-content" class="form-control" placeholder="说点啥"></textarea>
         <br>
-        <button class="pure-button pure-button-primary" type="submit">发新微博</button>
+        <button id='id-text-submit' class="pure-button pure-button-primary" type="submit">发新微博</button>
     </form>
     {% endif %}
 
@@ -66,11 +68,13 @@
     <p>
     我的微博
     <br>
+    <div id="id-div-tweet">
+    </div>
+
     {% for t in tweets %}
         <br>
             {{ t.content }}  --{{ t.created_time|format_time }}
             <br>
-
             {% if u.username == user.username %}
                 <a href="/tweet/update/{{t.id}}">编辑</a>
                 <a href="/tweet/delete/{{t.id}}">删除</a>

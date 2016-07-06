@@ -334,16 +334,24 @@ def retweet_add_view(tweet_id):
 @app.route('/tweet/add', methods=['POST'])
 def tweet_add():
     user = current_user()
-    t = Tweet(request.form)
+    form = request.get_json()
+    t = Tweet(form)
     # 设置是谁发的
     t.user = user
     # 保存到数据库
     t.save()
-    # 获取微博中@的用户名
+    tweet = Tweet.query.filter_by(id=t.id).first()
+    r = {
+        'content': tweet.content,
+        'time': format_time(tweet.created_time),
+        'id': tweet.id,
+
+        }
+    # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in t.content:
         name_lst = get_name(t.content)
         At_lst(lst=name_lst, tweet=t)
-    return redirect(url_for('timeline_view', username=user.username))
+    return jsonify(r)
 
 
 # 处理转发的函数
