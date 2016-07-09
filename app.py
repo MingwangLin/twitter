@@ -18,6 +18,7 @@ from models import User
 from models import Tweet
 from models import Comment
 from models import At
+from models import Retweet
 from treelog import log
 
 
@@ -173,7 +174,6 @@ def timeline_view(username):
         ats_to_me = At.query.filter_by(reciever_id=user.id)
         follower_lst = u.follower_lst
         followee_lst = u.followee_lst
-        retweet_from = Tweet.query.filter_by(retweet_from=user.username)
         args = {
             'tweets': tweets,
             'user': user,
@@ -270,9 +270,33 @@ def tweet_view(tweet_id):
     return render_template('single_tweet_view.html', t=t, u=u)
 
 
-# 解析微博/评论内容,得到所有@的用户名
+# 处理 发送 微博的函数  POST
+@app.route('/tweet/add', methods=['POST'])
+def tweet_add():
+    user = current_user()
+    form = request.get_json()
+    t = Tweet(form)
+    # 设置是谁发的
+    t.user = user
+    # 保存到数据库
+    t.save()
+    tweet = Tweet.query.filter_by(id=t.id).first()
+    r = {
+        'content': tweet.content,
+        'time': format_time(tweet.created_time),
+        'id': tweet.id,
+
+        }
+    # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
+    if '@' in t.content:
+        name_lst = get_name(t.content)
+        At_lst(lst=name_lst, tweet=t)
+    return jsonify(r)
+
+
+# 解析微博/评论内容,得到所有@的用户名/
 def get_name(s):
-    # 用'//@'切片, 得到转发微博中用户原创内容
+    # 用'//@'切片, 得到微博中用户原创内容
     if '//@' in s:
         s = s.partition('//@')[0]
     #内容后面加上' ', 方便解析
@@ -315,6 +339,20 @@ def comment_At_lst(lst, comment):
             a.save()
     return
 
+# 解析转发微博内容,得到所有被转发微博的id
+def get_id(s):
+    #内容后面加上' ', 方便解析
+    # 得到所有@的用户名
+    name_lst = []
+    s += ' '
+    while s.find('//@') != -1:
+        i = s.find('//@')
+        j = s.find(' ', i)
+        log(i, j)
+        name_lst.append(s[i+1:j])
+        s = s[j+1:]
+    return name_lst
+
 
 # 显示转发的界面
 @app.route('/tweet/retweet/<tweet_id>')
@@ -330,49 +368,49 @@ def retweet_add_view(tweet_id):
     return render_template('retweet_add.html', tweet=tweet, content_shown=content_shown)
 
 
-# 处理 发送 微博的函数  POST
-@app.route('/tweet/add', methods=['POST'])
-def tweet_add():
-    user = current_user()
-    form = request.get_json()
-    t = Tweet(form)
-    # 设置是谁发的
-    t.user = user
-    # 保存到数据库
-    t.save()
-    tweet = Tweet.query.filter_by(id=t.id).first()
-    r = {
-        'content': tweet.content,
-        'time': format_time(tweet.created_time),
-        'id': tweet.id,
-
-        }
-    # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
-    if '@' in t.content:
-        name_lst = get_name(t.content)
-        At_lst(lst=name_lst, tweet=t)
-    return jsonify(r)
-
-
 # 处理转发的函数
+# 用户转发微博时, 原微博写入文本框供用户编辑,最右微博在文本框中隐藏以防被编辑。
+# 转发微博存入数据库之前添加最右微博
 @app.route('/tweet/retweet/<tweet_id>', methods=['POST'])
 @requires_login
 def retweet_add(tweet_id):
     user = current_user()
+    # 被转发微博
     tweet = Tweet.query.filter_by(id=tweet_id).first()
+    # 转发微博实例
     t = Tweet(request.form)
-    # 用户转发微博时, 原微博写入文本框供用户编辑,最右微博在文本框中隐藏以防被编辑。
-    # 转发微博存入数据库之前添加添加最右微博
-    if '//@' in tweet.content:
-        content = t.content + tweet.content.rpartition('//@')[1] + tweet.content.rpartition('//@')[2]
+    c = tweet.content
+    # 存入数据库之前添加添加最右微博
+    if '//@' in c:
+        # 最右微博内容
+        tweet_first_content = c.rpartition(':')[2]
+        log('tweet_first_content', tweet_first_content)
+        content = t.content + '//@' + tweet_first_content
+        # 转发最右微博 实例
+        r = Retweet(request.form)
+        r.content = content
+        r.user = user
+        r.user_id = user.id
+        tweet_first = Tweet.query.filter_by(content=tweet_first_content).first()
+        log('tweet_first', tweet_first)
+        r.tweet = tweet_first
+        r.tweet_id = tweet_first.id
+        r.save()
+        log('tweet_first', tweet_first.retweets)
+
     else:
-        content = t.content + '//@' + tweet.user.username + ':' + tweet.content
+        content = t.content + '//@' + tweet.user.username + ':' + c
     t.user = user
     t.content = content
-    t.retweet_from = tweet.id
     t.save()
     name_lst = get_name(t.content)
     At_lst(lst=name_lst, tweet=t)
+    r = Retweet(request.form)
+    r.user = user
+    r.user_id = user.id
+    r.tweet = tweet
+    r.tweet_id = tweet.id
+    r.save()
     return redirect(url_for('tweet_view', tweet_id=t.id))
 
 

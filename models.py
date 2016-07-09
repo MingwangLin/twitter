@@ -10,6 +10,8 @@ db_path = 'db.sqlite'
 app = Flask(__name__)
 app.secret_key = 'random string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(db_path)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
 db = SQLAlchemy(app)
 
 
@@ -84,9 +86,9 @@ class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
     created_time = db.Column(db.Integer(), default=0)
-    retweet_from = db.Column(db.Integer())
-    retweet_seen = db.Column(db.Integer(), default=0)
     comments = db.relationship('Comment', backref='tweet')
+    retweets = db.relationship('Retweet', backref='tweet')
+
     ats = db.relationship('At', backref='tweet')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
@@ -149,6 +151,31 @@ class At(db.Model):
 
     def __init__(self):
         super(At, self).__init__()
+        self.created_time = int(time.time())
+
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return u'<{}: {}>'.format(class_name, self.id)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+class Retweet(db.Model):
+    __tablename__ = 'retweets'
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String())
+    created_time = db.Column(db.Integer(), default=0)
+    tweet_id = db.Column(db.Integer(), db.ForeignKey('tweets.id'))
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+
+    def __init__(self, form):
+        super(Retweet, self).__init__()
+        self.content = form.get('content', '')
         self.created_time = int(time.time())
 
     def __repr__(self):
