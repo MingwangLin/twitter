@@ -4,8 +4,8 @@ from treelog import log
 from flask import url_for
 from models import User
 from flask import session
-from .decorator import requires_login, requires_admin, current_user
-from api import api
+from .decorator import requires_login, current_user
+from . import api
 
 
 # 处理关注用户函数

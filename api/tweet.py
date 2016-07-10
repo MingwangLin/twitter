@@ -6,9 +6,9 @@ from flask import url_for
 from flask import request
 from flask import jsonify
 from flask import session
-from .decorator import requires_login, requires_admin, current_user, format_time
+from .decorator import requires_login, current_user, format_time
 from .notification import At_lst, get_name
-from api import api
+from . import api
 
 
 # 显示单条微博的界面

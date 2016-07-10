@@ -10,7 +10,7 @@ from flask import request
 from flask import jsonify
 from flask import session
 from .decorator import requires_login, requires_admin, current_user
-from api import api
+from . import api
 
 
 # 显示某个用户的时间线  GET

@@ -5,8 +5,8 @@ from flask import url_for
 from models import User
 from models import Comment
 from flask import session
-from .decorator import requires_login, requires_admin, current_user
-from api import api
+from .decorator import requires_login, current_user
+from . import api
 from models import At
 from flask import jsonify
 

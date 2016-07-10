@@ -5,8 +5,8 @@ from flask import request
 from models import Tweet
 from models import Comment
 from flask import session
-from api import api
-from .decorator import requires_login, requires_admin, current_user
+from . import api
+from .decorator import requires_login, current_user
 from .notification import comment_At_lst, get_name
 
 

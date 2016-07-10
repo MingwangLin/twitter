@@ -1,12 +1,9 @@
-from flask import render_template
-from flask import redirect
 from treelog import log
-from flask import url_for
 from models import User
 from flask import request
 from flask import session
 from flask import jsonify
-from api import api
+from . import api
 
 import hashlib
 
@@ -18,15 +15,6 @@ def hash_password(pwd):
     return result
 
 
-@api.route('/')
-def index():
-    return redirect(url_for('login_view'))
-
-
-# 显示登录界面的函数  GET
-@api.route('/login')
-def login_view():
-    return render_template('login.html')
 
 
 # 处理登录请求  POST

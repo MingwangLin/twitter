@@ -1,9 +1,10 @@
+import time
+from flask import redirect
+from flask import url_for
 from flask import Flask
 from api import api
-from flask import url_for
-from flask import redirect
+from flask import render_template
 
-import time
 
 app = Flask(__name__)
 app.secret_key = 'tree'
@@ -18,6 +19,17 @@ def format_time(timestamp):
     t = time.localtime(timestamp)
     ft = time.strftime(format, t)
     return ft
+
+
+@app.route('/')
+def index():
+    return redirect(url_for('login_view'))
+
+
+# 显示登录界面的函数  GET
+@app.route('/login')
+def login_view():
+    return render_template('login.html')
 
 
 if __name__ == '__main__':
