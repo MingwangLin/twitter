@@ -1,7 +1,14 @@
          $(document).ready(function(){
             console.log('ready');
             var button = $('#id-button-submit');
-            button.on('click', function(){
+            button.on('click', submit)
+            $('#id-text-password').on('keypress', function(e) {
+                if(e.which == 13) {
+                    submit()           }
+         });
+         });
+
+         var submit = function(){
               console.log('click button');
               var username = $('#id-text-username').val();
               var password = $('#id-text-password').val();
@@ -33,5 +40,4 @@
                 }
               };
               $.ajax(request);
-            });
-         });
+            };

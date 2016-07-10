@@ -2,8 +2,15 @@
          $(document).ready(function(){
             console.log('ready');
             var button = $('#id-button-newusr-submit');
-            button.on('click', function(){
-              console.log('click button');
+            button.on('click', submit)
+            $('#id-text-newusr-password').on('keypress', function(e) {
+                if(e.which == 13) {
+                    submit()               }
+            });
+         });
+
+
+         var submit = function(){
               var username = $('#id-text-newusr-username').val();
               var password = $('#id-text-newusr-password').val();
               console.log('user', username, password);
@@ -34,5 +41,4 @@
                 }
               };
               $.ajax(request);
-            });
-         });
+            }
