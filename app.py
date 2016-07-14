@@ -21,15 +21,7 @@ def format_time(timestamp):
     return ft
 
 
-@app.route('/')
-def index():
-    return redirect(url_for('login_view'))
 
-
-# 显示登录界面的函数  GET
-@app.route('/login')
-def login_view():
-    return render_template('login.html')
 
 
 if __name__ == '__main__':

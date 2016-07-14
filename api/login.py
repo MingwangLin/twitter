@@ -3,6 +3,10 @@ from models import User
 from flask import request
 from flask import session
 from flask import jsonify
+from flask import redirect
+from flask import url_for
+from flask import render_template
+
 from . import api
 
 import hashlib
@@ -14,7 +18,15 @@ def hash_password(pwd):
     result = m.hexdigest()
     return result
 
+@api.route('/')
+def index():
+    return redirect(url_for('ap.login_view'))
 
+
+# 显示登录界面的函数  GET
+@api.route('/login')
+def login_view():
+    return render_template('login.html')
 
 
 # 处理登录请求  POST

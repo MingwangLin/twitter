@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import sql
+from . import ReprMixin
+
 
 import time
 import shutil
@@ -15,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
+class User(db.Model, ReprMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String())
@@ -81,7 +83,7 @@ class User(db.Model):
             return False
 
 
-class Tweet(db.Model):
+class Tweet(db.Model, ReprMixin):
     __tablename__ = 'tweets'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
@@ -101,6 +103,20 @@ class Tweet(db.Model):
         class_name = self.__class__.__name__
         return u'<{}: {}>'.format(class_name, self.id)
 
+    def json(self):
+        extra = dict(
+            user_id=self.user_id,
+        )
+        d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
+        d.update(extra)
+        return d
+
+    def blacklist(self):
+        b = [
+            '_sa_instance_state',
+        ]
+        return b
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -110,7 +126,7 @@ class Tweet(db.Model):
         db.session.commit()
 
 
-class Comment(db.Model):
+class Comment(db.Model, ReprMixin):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
@@ -140,7 +156,7 @@ class Comment(db.Model):
         db.session.commit()
 
 
-class At(db.Model):
+class At(db.Model, ReprMixin):
     __tablename__ = 'ats'
     id = db.Column(db.Integer, primary_key=True)
     created_time = db.Column(db.Integer(), default=0)
@@ -165,7 +181,7 @@ class At(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-class Retweet(db.Model):
+class Retweet(db.Model, ReprMixin):
     __tablename__ = 'retweets'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String())
