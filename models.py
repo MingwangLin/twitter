@@ -1,12 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import sql
-from . import ReprMixin
-
 
 import time
 import shutil
-
 
 db_path = 'db.sqlite'
 app = Flask(__name__)
@@ -15,6 +12,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(db_path)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
+
+
+class ReprMixin(object):
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return u'<{}: {}>'.format(class_name, self.id)
 
 
 class User(db.Model, ReprMixin):
@@ -180,6 +183,7 @@ class At(db.Model, ReprMixin):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
 
 class Retweet(db.Model, ReprMixin):
     __tablename__ = 'retweets'
