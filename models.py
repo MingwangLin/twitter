@@ -34,6 +34,10 @@ class User(db.Model, ReprMixin):
     comments = db.relationship('Comment', backref='user')
     ats = db.relationship('At', backref='user')
 
+    @staticmethod
+    def user_by_name(username):
+        return User.query.filter_by(username=username).first()
+
     def __init__(self, form):
         super(User, self).__init__()
         self.username = form.get('username', '')
@@ -62,6 +66,20 @@ class User(db.Model, ReprMixin):
             user = User.query.filter_by(id=int(i)).first()
             follower_tweets += user.tweets
         return follower_tweets
+
+    def json(self):
+        # Model 是延迟载入的, 如果没有引用过数据, 就不会从数据库中加载
+        # 引用一下 id 这样数据就从数据库中载入了
+        self.id
+        d = {k:v for k,v in self.__dict__.items() if k not in self.blacklist()}
+        return d
+
+    def blacklist(self):
+        b = [
+            '_sa_instance_state',
+            'password',
+        ]
+        return b
 
     def delete(self):
         db.session.delete(self)

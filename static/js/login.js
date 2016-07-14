@@ -1,14 +1,14 @@
          $(document).ready(function(){
             console.log('ready');
             var button = $('#id-button-submit');
-            button.on('click', submit)
+            button.on('click', login_submit)
             $('#id-text-password').on('keypress', function(e) {
                 if(e.which == 13) {
-                    submit()           }
+                    login_submit()           }
          });
          });
 
-         var submit = function(){
+         var login_submit = function(){
               console.log('click button');
               var username = $('#id-text-username').val();
               var password = $('#id-text-password').val();

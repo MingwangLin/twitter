@@ -6,6 +6,7 @@ from flask import url_for
 from flask import request
 from flask import jsonify
 from flask import session
+from treelog import log
 from .decorator import requires_login, current_user, format_time
 from .notification import At_lst, get_name
 from . import api
@@ -31,17 +32,15 @@ def tweet_add():
     # 保存到数据库
     t.save()
     tweet = Tweet.query.filter_by(id=t.id).first()
-    r = {
-        'content': tweet.content,
-        'time': format_time(tweet.created_time),
-        'id': tweet.id,
-
-        }
+    r = t.json()
+    log('r', r)
     # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in t.content:
         name_lst = get_name(t.content)
         At_lst(lst=name_lst, tweet=t)
     return jsonify(r)
+
+
 # 显示 更新 微博的界面
 @api.route('/tweet/update/<tweet_id>')
 def tweet_update_view(tweet_id):
@@ -84,4 +83,4 @@ def tweet_delete(tweet_id):
         abort(401)
     else:
         t.delete()
-        return redirect(url_for('timeline_view', username=user.username))
+        return redirect(url_for('api.timeline_view', username=user.username))

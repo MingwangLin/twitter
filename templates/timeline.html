@@ -5,7 +5,7 @@
     <title>Timeline</title>
     <script src="/static/js/jquery.js"></script>
 
-    <script src="/static/js/timeline.js"></script>
+    <script src="/static/js/addtweet.js"></script>
 </head>
 <body>
     <!-- 这里的 none 是小写，因为这是 jinja2 模板的语法-->
@@ -67,12 +67,11 @@
 
     <p>
     我的微博
-    <br>
-    <div id="id-div-tweet">
-    </div>
+
+    <div id="id-div-tweet"></div>
 
     {% for t in tweets %}
-        <br>
+        <p>
             {{ t.content }}  --{{ t.created_time|format_time }}
             <br>
             {% if u.username == user.username %}
@@ -88,7 +87,7 @@
                 {% else %}
                     <a href="/tweets/{{t.id}}">转发{{t.retweets|length}}</a>
                 {% endif %}
-            <br>
+
             {% else %}
             {% if t.comments|length == 0 %}
                 <a href="/tweet/comment/{{t.id}}">评论</a>
@@ -104,6 +103,8 @@
     {% endfor %}
     </p>
     <hr />
+
+
 
     {% if user.username == u.username %}
         <p>

@@ -21,11 +21,17 @@
                 success: function(data){
                   console.log('success', data);
                   var t = data;
-                  console.log('success', t.content);
-
-                  // for(var i = 0; i < r.length; i++){
-                    var tag =t.content + ' --' + t.time + '<br>' + '<br>';
-                    $('#id-div-tweet').prepend(tag);
+                  var template = `
+                      <p>
+                      ${t.content} --${t.created_time}
+                      <br>
+                      <a href="/tweet/update/${t.id}">编辑</a>
+                      <a href="/tweet/delete/${t.id}">删除</a>
+                      <a href="/tweets/${t.id}">评论</a>
+                      <a href="/tweets/${t.id}">转发</a>
+                      </p>
+                  `;
+                    $('#id-div-tweet').prepend(template);
 
                   }
               };

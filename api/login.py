@@ -20,7 +20,7 @@ def hash_password(pwd):
 
 @api.route('/')
 def index():
-    return redirect(url_for('ap.login_view'))
+    return redirect(url_for('api.login_view'))
 
 
 # 显示登录界面的函数  GET
