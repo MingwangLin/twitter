@@ -21,6 +21,7 @@
                 success: function(data){
                   console.log('success', data);
                   var t = data;
+
                   var template = `
                       <p>
                       ${t.content} --${t.created_time}

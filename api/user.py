@@ -23,11 +23,12 @@ def timeline_view(username):
     if u is None:
         abort(404)
     else:
-        # 我的微博
+        # 我的微博, 取前20条微博显示
         tweets = u.tweets
         tweets.sort(key=lambda t: t.created_time, reverse=True)
-        # 我关注的人微博
-        follower_tweets = u.follower_tweets
+        tweets = tweets[:20]
+        # 我关注的人微博, 取前20条微博显示
+        follower_tweets = u.follower_tweets[:20]
         follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
         # 回复我的所有评论
         replies_to_me = Comment.query.filter_by(user_replied=user.username)
@@ -46,6 +47,39 @@ def timeline_view(username):
             'ats_to_me': ats_to_me,
         }
         return render_template('timeline.html', **args)
+
+
+# 用ajax显示某个用户的时间线  GET
+@api.route('/tweets/json/<username>')
+@requires_login
+def timeline_ajax(username):
+    # 查找 username 对应的用户
+    user = current_user()
+    u = User.query.filter_by(username=username).first()
+    if u is None:
+        abort(404)
+    else:
+        args = request.args
+        offset = args.get('offset', 0)
+        offset = int(offset)
+        limit = args.get('limit', 20)
+        limit = int(limit)
+        tweets = u.tweets[offset:offset + limit]
+        tweets.sort(key=lambda t: t.created_time, reverse=True)
+        tweets = [t.json() for t in tweets]
+        # 我关注的人微博
+        follower_tweets = u.follower_tweets[offset:offset + limit]
+        follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
+        follower_tweets = [t.json() for t in follower_tweets]
+        filtered_tweets = {
+            'owner': u.json(),
+            'user': user.json(),
+            'tweets': tweets,
+            'follower_tweets': follower_tweets
+
+        }
+        log('filtered_tweets', filtered_tweets)
+        return jsonify(filtered_tweets)
 
 
 # 删除用户

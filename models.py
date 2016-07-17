@@ -78,6 +78,7 @@ class User(db.Model, ReprMixin):
         b = [
             '_sa_instance_state',
             'password',
+            'tweets'
         ]
         return b
 
