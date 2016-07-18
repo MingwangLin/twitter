@@ -13,7 +13,7 @@ from .decorator import requires_login, requires_admin, current_user
 from . import api
 
 
-# 显示某个用户的时间线  GET
+# 显示某个用户的主页  GET
 @api.route('/timeline/<username>')
 @requires_login
 def timeline_view(username):
@@ -23,10 +23,7 @@ def timeline_view(username):
     if u is None:
         abort(404)
     else:
-        # 我的微博, 取前20条微博显示
-        tweets = u.tweets
-        tweets.sort(key=lambda t: t.created_time, reverse=True)
-        tweets = tweets[:20]
+
         # 我关注的人微博, 取前20条微博显示
         follower_tweets = u.follower_tweets[:20]
         follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
@@ -37,7 +34,6 @@ def timeline_view(username):
         follower_lst = u.follower_lst
         followee_lst = u.followee_lst
         args = {
-            'tweets': tweets,
             'user': user,
             'u': u,
             'follower_lst': follower_lst,
@@ -46,7 +42,7 @@ def timeline_view(username):
             'replies_to_me': replies_to_me,
             'ats_to_me': ats_to_me,
         }
-        return render_template('timeline.html', **args)
+        return render_template('timeline_bs.html', **args)
 
 
 # 用ajax显示某个用户的时间线  GET
@@ -54,9 +50,9 @@ def timeline_view(username):
 @requires_login
 def timeline_ajax(username):
     # 查找 username 对应的用户
-    user = current_user()
-    u = User.query.filter_by(username=username).first()
-    if u is None:
+    visitor = current_user()
+    host = User.query.filter_by(username=username).first()
+    if host is None:
         abort(404)
     else:
         args = request.args
@@ -64,16 +60,17 @@ def timeline_ajax(username):
         offset = int(offset)
         limit = args.get('limit', 20)
         limit = int(limit)
-        tweets = u.tweets[offset:offset + limit]
+        tweets = host.tweets
         tweets.sort(key=lambda t: t.created_time, reverse=True)
+        tweets = tweets[offset:offset + limit]
         tweets = [t.json() for t in tweets]
         # 我关注的人微博
-        follower_tweets = u.follower_tweets[offset:offset + limit]
+        follower_tweets = host.follower_tweets[offset:offset + limit]
         follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
         follower_tweets = [t.json() for t in follower_tweets]
         filtered_tweets = {
-            'owner': u.json(),
-            'user': user.json(),
+            'host': host.json(),
+            'visitor': visitor.json(),
             'tweets': tweets,
             'follower_tweets': follower_tweets
 

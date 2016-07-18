@@ -4,7 +4,6 @@ from flask import url_for
 from flask import abort
 from flask import session
 from models import User
-import time
 
 
 # 通过 session 来获取当前登录的用户
@@ -12,14 +11,6 @@ def current_user():
     user_id = session['user_id']
     user = User.query.filter_by(id=user_id).first()
     return user
-
-
-def format_time(timestamp):
-    t = timestamp
-    format = '%Y/%m/%d %H:%M'
-    t = time.localtime(timestamp)
-    ft = time.strftime(format, t)
-    return ft
 
 
 def requires_login(f):

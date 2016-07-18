@@ -7,7 +7,8 @@ from flask import request
 from flask import jsonify
 from flask import session
 from treelog import log
-from .decorator import requires_login, current_user, format_time
+from .decorator import requires_login, current_user
+from .template_filter import formatted_time
 from .notification import At_lst, get_name
 from . import api
 

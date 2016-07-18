@@ -60,14 +60,17 @@ def login():
 @api.route('/register', methods=['POST'])
 def register():
     account = request.get_json()
-    '''
+
     data = request.get_data()
+    '''
     json_string = data.decode('utf-8')
     d = json.loads(json_string)
     log('json_string', json_string)
     log('d', d)
     '''
     log('account', account)
+    log('data', data)
+
     u = User(account)
     usr = User.query.filter_by(username=u.username).first()
     r = {
