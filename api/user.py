@@ -42,7 +42,7 @@ def timeline_view(username):
             'replies_to_me': replies_to_me,
             'ats_to_me': ats_to_me,
         }
-        return render_template('timeline_bs.html', **args)
+        return render_template('timeline.html', **args)
 
 
 # 用ajax显示某个用户的时间线  GET

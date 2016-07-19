@@ -1,37 +1,33 @@
 var offset = 0;
 var limit = 20;
+
 $(document).ready(function(){
         var button = $('#id-text-submit');
-        button.on('click', addtweets)
+        button.on('click', add_newtweet)
         username = $('#id-button-loadtweets').attr('data-name');
-        ajax();
-        $("#id-button-loadtweets").on('click', ajax)
+        
+        var url = `/tweets/json/${username}?offset=${offset}&limit=${limit}` 
+        log('url', url)       
+        show_tweets(url, tweets_response);
+        $("#id-button-loadtweets").on('click', function(){
+          show_tweets(url, tweets_response)
+        })
 });
 
-var ajax = function(){
-  var url = `/tweets/json/${username}?offset=${offset}&limit=${limit}`
-  console.log('url', url);
-  var request = {
-      url: url,
-      type: 'get',
-      contentType: 'application/json',
-      success: success
-    }
-  $.ajax(request);
-};
+var show_tweets = function(url,response){
+  get(url, response);
+}
 
-
-var success = function(data){
+var tweets_response = function(data){
     offset += limit;
-    console.log('success', data);
+    log('success', data);
     t = data.tweets;
     visitor = data.visitor
     host = data.host
-    append_template();
+    tweets_template();
 };
 
-
-var append_template = function(){
+var tweets_template = function(){
     if (visitor.id === host.id) {
         for(var i = 0; i < t.length; i++){
             var template = `
@@ -65,15 +61,6 @@ var append_template = function(){
 }
 
 
-var formatted_time = function(timestamp){
-  // multiplied by 1000 so that the argument is in milliseconds, not seconds
-  var a = new Date(timestamp*1000);
-  var year = a.getFullYear();
-  var month = a.getMonth();
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var time = year + '/' + month + '/' + date + ' ' + hour + ':' + min;
-  return time;
-  }
+
+
 

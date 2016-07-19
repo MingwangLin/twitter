@@ -1,18 +1,15 @@
-var addtweets = function(){
+var add_newtweet = function(){
   var content = $('#id-text-content').val();
-  var tweet = {
+  var form = {
     'content': content,
   };
   // JSON.stringify 可以把一个 object 转换为字符串
-  var postData = JSON.stringify(tweet);
-  var request = {
-    url: '/tweet/add',
-    type: 'post',
-    contentType: 'application/json',
-    data: postData,
-    success: function(data){
+  var url = '/tweet/add';
+  post(url, form, prepend_template);
+}
+    
+var prepend_template = function(data){
       var t = data;
-      console.log('t', t)
       var template = `
           <p>
           ${t.content} --${formatted_time(t.created_time)}
@@ -25,8 +22,4 @@ var addtweets = function(){
           </p>
           `;
         $('#id-div-tweets').prepend(template);
-
-      }
-  };
-  $.ajax(request);
 }

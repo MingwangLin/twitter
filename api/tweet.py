@@ -11,6 +11,7 @@ from .decorator import requires_login, current_user
 from .template_filter import formatted_time
 from .notification import At_lst, get_name
 from . import api
+import json
 
 
 # 显示单条微博的界面
@@ -28,6 +29,7 @@ def tweet_add():
     user = current_user()
     form = request.get_json()
     t = Tweet(form)
+    log('t', t)
     # 设置是谁发的
     t.user = user
     # 保存到数据库
