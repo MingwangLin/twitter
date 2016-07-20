@@ -23,7 +23,7 @@ def user_follow(user_id):
     user.followee += u_id
     u.save()
     user.save()
-    return redirect(url_for('timeline_view', username=user.username))
+    return redirect(url_for('api.timeline_view', username=user.username))
 
 
 # 处理取消关注用户函数
@@ -39,7 +39,7 @@ def user_unfollow(user_id):
     user.followee = user.followee.strip(u_id)
     u.save()
     user.save()
-    return redirect(url_for('timeline_view', username=user.username))
+    return redirect(url_for('api.timeline_view', username=user.username))
 
 
 # 显示所有用户信息

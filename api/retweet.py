@@ -74,4 +74,4 @@ def retweet_add(tweet_id):
     r.tweet = tweet
     r.tweet_id = tweet.id
     r.save()
-    return redirect(url_for('tweet_view', tweet_id=t.id))
+    return redirect(url_for('api.tweet_view', tweet_id=t.id))

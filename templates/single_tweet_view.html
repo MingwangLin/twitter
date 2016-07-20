@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>tweet</title>
-</head>
-<body>
-    <a href="/">返回登陆页面</a>
-    <br>
-    <br>
-    <a href="/timeline/{{t.user.username}}">返回上级</a>
-    <a href="/timeline/{{u.username}}">返回个人主页</a>
+{% extends "timeline_bs.html" %}
+{% block title %}tweet{% endblock %}
+
+
+{% block container %}
+    <a href="/timeline/{{t.user.username}}">返回</a>
     <br>
     {{ t.username }}
     <br>
-    {{ t.content }}  --{{ t.created_time|format_time }}
+    {{ t.content }}  -- {{ t.created_time|format_time }}
     <br>
     <a href="/tweet/comment/{{t.id}}">评论</a>
     <a href="/tweet/retweet/{{t.id}}">转发</a>
     <br>
-    <div class="col-md-6">
+    <div>
     评论
     <br>
     {% for c in t.comments %}
@@ -33,7 +27,7 @@
                 {% endif %}
             {% endfor %}
     </div>
-    <div class="col-md-6">
+    <div>
     转发
     <br>
     {% for r in t.retweets %}
@@ -41,7 +35,4 @@
         <br>
     {% endfor %}
     </div>
-
-
-</body>
-</html>
+{% endblock %}

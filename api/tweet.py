@@ -35,7 +35,10 @@ def tweet_add():
     # 保存到数据库
     t.save()
     tweet = Tweet.query.filter_by(id=t.id).first()
-    r = t.json()
+    r = {
+        'tweet':tweet.json(),
+        'user':user.json(),
+    }
     log('r', r)
     # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in t.content:
