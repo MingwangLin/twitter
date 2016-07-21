@@ -45,10 +45,6 @@
     <div class="container">
       {% block container %}
 
-      <div class="blog-header">
-        <h1 class="blog-title"></h1>
-      </div>
-
 
       <div class="row">
         <div class="col-sm-8 blog-main">
@@ -56,7 +52,6 @@
           <div class="clearfix">
           {% if user is not none and user.username == u.username  %}
               <textarea name="content" id="id-text-content" class="form-control" placeholder="说点什么"></textarea>
-              <!-- <button class="glyphicon glyphicon-send aria-hidden="true"" id='id-text-submit'></button> -->
               <button type="button" class="btn btn-default pull-right" id='id-text-submit'>
                 <span class="glyphicon glyphicon-send" aria-hidden="true">
                 </span>

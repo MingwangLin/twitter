@@ -11,19 +11,6 @@ app.secret_key = 'tree'
 
 app.register_blueprint(api)
 
-
-@app.template_filter('format_time')
-def format_time(timestamp):
-    t = timestamp
-    format = '%Y/%m/%d %H:%M'
-    t = time.localtime(timestamp)
-    ft = time.strftime(format, t)
-    return ft
-
-
-
-
-
 if __name__ == '__main__':
     host, port = '127.0.0.1', 5000
     args = {
