@@ -1,17 +1,15 @@
 from flask import abort
-from models import Tweet
-from flask import render_template
-from flask import redirect
-from flask import url_for
-from flask import request
 from flask import jsonify
-from flask import session
-from treelog import log
-from .decorator import requires_login, current_user
-from .template_filter import formatted_time
-from .notification import At_lst, get_name
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
+
+from .treelog import log
+from app.models import Tweet
 from . import api
-import json
+from .decorator import requires_login, current_user
+from .notification import At_lst, get_name
 
 
 # 显示单条微博的界面

@@ -1,16 +1,14 @@
 from flask import abort
-from models import Comment
-from models import At
-from flask import render_template
-from flask import redirect
-from treelog import log
-from flask import url_for
-from models import User
-from flask import request
 from flask import jsonify
-from flask import session
-from .decorator import requires_login, requires_admin, current_user
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
+
+from .treelog import log
+from app.models import At, Comment, User
 from . import api
+from .decorator import requires_login, requires_admin, current_user
 
 
 # 显示某个用户的主页  GET

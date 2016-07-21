@@ -1,50 +1,12 @@
 
-.idea/misc.xml
+*.sqlite
 
-.idea/modules.xml
+*.pyc
 
-.idea/twitter.iml
+.idea/*
 
-.idea/vcs.xml
+tmp/*
 
-.idea/workspace.xml
+*DS_Store
 
-1467086707.505485.db.sqlite
-
-1467087145.439506.db.sqlite
-
-1467087155.875609.db.sqlite
-
-__pycache__/treelog.cpython-35.pyc
-
-__pycache__/models.cpython-35.pyc
-
-1467180812.904044.db.sqlite
-
-1467179600.471321.db.sqlite
-
-1467182890.534491.db.sqlite
-
-1467182757.106517.db.sqlite
-
-1467186113.262602.db.sqlite
-
-1467973469.439172.db.sqlite
-
-1468036320.665961.db.sqlite
-
-1468036322.776849.db.sqlite
-
-1468043628.197375.db.sqlite
-
-1468043756.936351.db.sqlite
-
-1468046250.939528.db.sqlite
-
-1468474543.560694.db.sqlite
-
-1468677664.285835.db.sqlite
-
-templates/timeline_ajax.html
-
-templates/timeline_ajax.html
+*~

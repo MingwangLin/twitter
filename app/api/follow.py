@@ -1,11 +1,12 @@
-from flask import render_template
 from flask import redirect
-from treelog import log
+from flask import render_template
 from flask import url_for
-from models import User
-from flask import session
-from .decorator import requires_login, current_user
+
+from app.models import User
 from . import api
+from .decorator import requires_login, current_user
+from .treelog import log
+
 
 
 # 处理关注用户函数

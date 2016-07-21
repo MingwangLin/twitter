@@ -1,19 +1,13 @@
-from models import Retweet
-
-from models import Tweet
-from flask import render_template
 from flask import redirect
-from treelog import log
-from flask import url_for
-from models import User
-from flask import Blueprint
+from flask import render_template
 from flask import request
-from flask import session
-from flask import jsonify
-from .user import current_user
-from flask import session
-from .decorator import requires_login, requires_admin, current_user
-from api import api
+from flask import url_for
+
+from app.api import api
+from .treelog import log
+from app.models import Retweet
+from app.models import Tweet
+from .decorator import requires_login, current_user
 from .notification import At_lst, get_name
 
 
