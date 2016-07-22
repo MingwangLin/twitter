@@ -21,6 +21,7 @@ var ajax = function(url, method, form, response) {
                 message: '网络错误',
                 data: err
             }
+            log('err', err)
             log('vip post err', url, err);
             response(r);
         }
