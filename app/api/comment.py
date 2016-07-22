@@ -74,4 +74,4 @@ def reply_add(comment_id):
     if '@' in c.content:
         name_lst = get_name(c.content)
         comment_At_lst(lst=name_lst, comment=c)
-    return redirect(url_for('tweet_view', tweet_id=tweet.id))
+    return redirect(url_for('api.tweet_view', tweet_id=tweet.id))
