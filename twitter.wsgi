@@ -9,7 +9,6 @@ from os.path import dirname
 sys.path.insert(0, abspath(dirname(__file__)))
 
 from app import init_app
-from app import template_filter
 application = init_app()
 
 
