@@ -1,17 +1,6 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import sql
+from . import db
 
 import time
-import shutil
-
-db_path = 'db.sqlite'
-app = Flask(__name__)
-app.secret_key = 'random string'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(db_path)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-db = SQLAlchemy(app)
 
 
 class ReprMixin(object):
@@ -71,7 +60,7 @@ class User(db.Model, ReprMixin):
         # Model 是延迟载入的, 如果没有引用过数据, 就不会从数据库中加载
         # 引用一下 id 这样数据就从数据库中载入了
         self.id
-        d = {k:v for k,v in self.__dict__.items() if k not in self.blacklist()}
+        d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
         return d
 
     def blacklist(self):
@@ -228,4 +217,3 @@ class Retweet(db.Model, ReprMixin):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
