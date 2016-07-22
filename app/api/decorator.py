@@ -24,7 +24,7 @@ def requires_login(f):
         # 所以下面两行会先于被装饰的函数内容调用
         user = current_user()
         if user is None:
-            return redirect(url_for('login_view'))
+            return redirect(url_for('api.login_view'))
         return f(*args, **kwargs)
 
     return wrapped

@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import time
 
 # 暴露 db 是因为 models 要使用它
 # 但是这时候还没有 app 所以要在 app 初始化之后再初始化这个 db
@@ -22,10 +23,17 @@ def init_app():
     # 初始化 db
     db.init_app(app)
     db.app = app
-
+    @app.template_filter('formatted_time')
+    def formatted_time(timestamp):
+        t = timestamp
+        format = '%Y/%m/%d %H:%M'
+        t = time.localtime(timestamp)
+        ft = time.strftime(format, t)
+        return ft
     # 必须在函数中 import 蓝图
     # 否则循环引用(因为蓝图中 import 了 model, model 引用了这个文件里面目的 db)
     from .api import api as api
+    from .api import template_filter
 
     # 注册蓝图
     app.register_blueprint(api)

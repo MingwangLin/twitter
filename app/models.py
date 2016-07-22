@@ -229,8 +229,3 @@ class Retweet(db.Model, ReprMixin):
         db.session.delete(self)
         db.session.commit()
 
-
-def backup_db():
-    backup_path = '{}.{}'.format(time.time(), db_path)
-    shutil.copyfile(db_path, backup_path)
-
