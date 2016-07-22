@@ -72,7 +72,7 @@ def tweet_update(tweet_id):
     else:
         t.content = request.form.get('content', '')
         t.save()
-        return redirect(url_for('timeline_view', username=user.username))
+        return redirect(url_for('api.timeline_view', username=user.username))
 
 
 # 处理 删除 微博的请求

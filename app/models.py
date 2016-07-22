@@ -234,13 +234,3 @@ def backup_db():
     backup_path = '{}.{}'.format(time.time(), db_path)
     shutil.copyfile(db_path, backup_path)
 
-
-def rebuild_db():
-    backup_db()
-    db.drop_all()
-    db.create_all()
-    print('rebuild database')
-
-
-if __name__ == '__main__':
-    rebuild_db()
