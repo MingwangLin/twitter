@@ -18,7 +18,7 @@ var ajax = function(url, method, form, response) {
         error: function (err) {
             r = {
                 success: false,
-                message: '我们自行生成的网络错误',
+                message: '网络错误',
                 data: err
             }
             log('vip post err', url, err);
