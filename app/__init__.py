@@ -33,7 +33,6 @@ def init_app():
     # 必须在函数中 import 蓝图
     # 否则循环引用(因为蓝图中 import 了 model, model 引用了这个文件里面目的 db)
     from .api import api as api
-    from .api import template_filter
 
     # 注册蓝图
     app.register_blueprint(api)

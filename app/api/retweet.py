@@ -2,11 +2,9 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
-from app.api import api
+from . import api
 from .treelog import log
-from app.models import Retweet
-from app.models import Tweet
+from ..models import Retweet, Tweet
 from .decorator import requires_login, current_user
 from .notification import At_lst, get_name
 

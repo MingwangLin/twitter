@@ -5,7 +5,7 @@ from flask import redirect
 from flask import session
 from flask import url_for
 
-from app.models import User
+from ..models import User
 from .treelog import log
 
 

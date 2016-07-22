@@ -6,7 +6,7 @@ from flask import request
 from flask import url_for
 
 from .treelog import log
-from app.models import Tweet
+from ..models import Tweet
 from . import api
 from .decorator import requires_login, current_user
 from .notification import At_lst, get_name

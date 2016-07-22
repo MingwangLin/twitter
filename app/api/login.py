@@ -8,7 +8,7 @@ from flask import session
 from flask import url_for
 
 from .treelog import log
-from app.models import User
+from ..models import User
 from . import api
 
 
@@ -17,6 +17,7 @@ def hash_password(pwd):
     m.update(pwd.encode('utf-8'))
     result = m.hexdigest()
     return result
+
 
 @api.route('/')
 def index():

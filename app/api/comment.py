@@ -3,12 +3,11 @@ from flask import render_template
 from flask import request
 from flask import url_for
 
-from app.models import Comment, Tweet
+from ..models import Comment, Tweet
 from . import api
 from .decorator import requires_login, current_user
 from .notification import comment_At_lst, get_name
 from .treelog import log
-from .template_filter import formatted_time
 
 # 显示发送评论的界面
 @api.route('/tweet/comment/<tweet_id>')

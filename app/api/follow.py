@@ -2,7 +2,7 @@ from flask import redirect
 from flask import render_template
 from flask import url_for
 
-from app.models import User
+from ..models import User
 from . import api
 from .decorator import requires_login, current_user
 from .treelog import log

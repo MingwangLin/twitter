@@ -6,7 +6,7 @@ from flask import request
 from flask import url_for
 
 from .treelog import log
-from app.models import At, Comment, User
+from ..models import At, Comment, User
 from . import api
 from .decorator import requires_login, requires_admin, current_user
 

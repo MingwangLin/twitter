@@ -3,9 +3,7 @@ from flask import render_template
 from flask import url_for
 
 from .treelog import log
-from app.models import At
-from app.models import Comment
-from app.models import User
+from ..models import At, Comment, User
 from . import api
 from .decorator import requires_login, current_user
 
