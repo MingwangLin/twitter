@@ -1,5 +1,7 @@
 from flask import abort
 from flask import jsonify
+from flask import session
+
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -44,7 +46,7 @@ def timeline_view(username):
 
 
 # 用ajax显示某个用户的时间线  GET
-@api.route('/tweets/json/<username>')
+@api.route('/tweets/<username>')
 @requires_login
 def timeline_ajax(username):
     # 查找 username 对应的用户
@@ -63,6 +65,7 @@ def timeline_ajax(username):
         tweets = tweets[offset:offset + limit]
         tweets = [t.json() for t in tweets]
         filtered_tweets = {
+            'success':True,
             'host': host.json(),
             'visitor': visitor.json(),
             'tweets': tweets,
@@ -72,7 +75,7 @@ def timeline_ajax(username):
         return jsonify(filtered_tweets)
 
 # 用ajax显示关注人微博时间线  GET
-@api.route('/followee_tweets/json/<username>')
+@api.route('/followee_tweets/<username>')
 @requires_login
 def timeline_followee(username):
     # 查找 username 对应的用户
@@ -91,7 +94,10 @@ def timeline_followee(username):
         followee_tweets.sort(key=lambda t: t.created_time, reverse=True)
         followee_tweets = [t.json() for t in followee_tweets]
         filtered_tweets = {
-            'follower_tweets': followee_tweets
+            'success':True,
+            'host': host.json(),
+            'visitor': visitor.json(),
+            'followee_tweets': followee_tweets
 
         }
         log('filtered_tweets', filtered_tweets)
@@ -129,3 +135,9 @@ def user_update(user_id):
     u.password = request.form.get('password', '')
     u.save()
     return redirect(url_for('users_view'))
+
+# 处理退出请求
+# @api.route('/logout')
+# def logout():
+#     session.pop('username', None)
+#     return redirect(url_for('api.login_view'))

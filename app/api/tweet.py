@@ -13,7 +13,7 @@ from .notification import At_lst, get_name
 
 
 # 显示单条微博的界面
-@api.route('/tweets/<tweet_id>')
+@api.route('/tweet/<tweet_id>')
 @requires_login
 def tweet_view(tweet_id):
     t = Tweet.query.filter_by(id=tweet_id).first()

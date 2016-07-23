@@ -12,7 +12,7 @@ var ajax = function(url, method, form, response) {
         type: method,
         contentType: 'application/json',
         success: function (r) {
-            log('vip post success', url, r);
+            log('success', url, r);
             response(r);
         },
         error: function (err) {
@@ -22,7 +22,7 @@ var ajax = function(url, method, form, response) {
                 data: err
             }
             log('err', err)
-            log('vip post err', url, err);
+            log('err', url, err);
             response(r);
         }
     };
