@@ -51,7 +51,7 @@ var bindActions = function() {
         register()
       }
       });
-    $('#id-a-testuser').on('click', function(){
+    $('#id-button-testuser').on('click', function(){
       var url = '/testuser'
       log('testurl', url)
       get(url, testuser_response)
