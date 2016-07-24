@@ -9,11 +9,12 @@ from ..models import User
 from .treelog import log
 
 
-
 # 通过 session 来获取当前登录的用户
 def current_user():
     user_id = session['user_id']
+    log('user__id', user_id)
     user = User.query.filter_by(id=user_id).first()
+    log('user', user)
     return user
 
 

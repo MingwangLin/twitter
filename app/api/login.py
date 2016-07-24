@@ -94,3 +94,9 @@ def register():
         r['success'] = False
         r['message'] = '注册失败'
     return jsonify(r)
+
+@api.route('/signout')
+def signout():
+    session['user_id'] = None
+    log('session', session)
+    return redirect(url_for('api.login_view'))

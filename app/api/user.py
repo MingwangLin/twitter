@@ -136,8 +136,3 @@ def user_update(user_id):
     u.save()
     return redirect(url_for('users_view'))
 
-# 处理退出请求
-# @api.route('/logout')
-# def logout():
-#     session.pop('username', None)
-#     return redirect(url_for('api.login_view'))
