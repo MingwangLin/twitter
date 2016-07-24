@@ -52,7 +52,6 @@ def login():
         session['user_id'] = user.id
         r['data'] = '/timeline/{}'.format(user.username)
     else:
-        r['success'] = False
         r['message'] = '登录失败'
     return jsonify(r)
 
@@ -91,7 +90,6 @@ def register():
         session['user_id'] = user.id
         r['data'] = '/timeline/{}'.format(u.username)
     else:
-        r['success'] = False
         r['message'] = '注册失败'
     return jsonify(r)
 

@@ -106,11 +106,11 @@
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
           <div class="well">
-            <h3>
+            <h4>
               <span class="glyphicon glyphicon glyphicon-user" aria-hidden="true">
               </span>
             {{u.username}}
-            </h3>
+            </h4>
             关注{{follower_lst|length}} 粉丝{{followee_lst|length}}
             {% if user.username != u.username and user.id|string not in u.followee %}
             <a href="/follow/{{u.id}}">点击关注</a>

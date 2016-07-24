@@ -18,7 +18,7 @@ var ajax = function(url, method, form, response) {
         error: function (err) {
             r = {
                 success: false,
-                message: '网络错误',
+                message: '服务器提了一个问题',
                 data: err
             }
             log('err', err)

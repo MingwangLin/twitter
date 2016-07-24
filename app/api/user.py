@@ -8,9 +8,13 @@ from flask import request
 from flask import url_for
 
 from .treelog import log
+from .login import hash_password
+
 from ..models import At, Comment, User
 from . import api
 from .decorator import requires_login, requires_admin, current_user
+import random
+import string
 
 
 # 显示某个用户的主页  GET
@@ -135,4 +139,34 @@ def user_update(user_id):
     u.password = request.form.get('password', '')
     u.save()
     return redirect(url_for('users_view'))
+
+def string_generator():
+    size = 6
+    chars = string.ascii_uppercase + string.digits
+    return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
+
+
+# 自动创建用户
+@api.route('/testuser', methods=['GET'])
+def user_create():
+    form = {
+        'username':'测试用户' + string_generator(),
+        'password': string_generator(),
+    }
+    user = User(form)
+    default_list = '1 2 3 4'
+    # 写入关注人信息
+    user.follower = default_list
+    user.password = hash_password(user.password)
+    # 保存到数据库
+    user.save()
+    user = User.query.filter_by(username=user.username).first()
+    session['user_id'] = user.id
+    created_user = {
+        'success': True,
+        'user': user.json(),
+        'message':'登录成功',
+
+    }
+    return jsonify(created_user)
 
