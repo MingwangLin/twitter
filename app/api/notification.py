@@ -1,7 +1,9 @@
 from flask import redirect
 from flask import render_template
 from flask import url_for
-
+from flask import abort
+from flask import jsonify
+from flask import request
 from .treelog import log
 from ..models import At, Comment, User
 from . import api
@@ -80,6 +82,37 @@ def notification_discard(comment_id):
     comment.reply_viewed = 1
     comment.save()
     return redirect(url_for('timeline_view', username=user.username))
+
+# 用ajax查看微博@  GET
+@api.route('/ats/<username>')
+@requires_login
+def at_view(username):
+    # 查找 username 对应的用户
+    visitor = current_user()
+    host = User.query.filter_by(username=username).first()
+    if host is None:
+        abort(404)
+    else:
+        args = request.args
+        offset = args.get('offset', 0)
+        offset = int(offset)
+        limit = args.get('limit', 20)
+        limit = int(limit)
+        # 我关注的人微博
+        ats = At.query.filter_by(reciever_id=visitor.id).all()
+        ats = [i for i in ats if i.at_viewed != 1]
+        filtered_ats = ats[offset:offset + limit]
+        filtered_ats.sort(key=lambda t: t.created_time, reverse=True)
+        filtered_ats = [t.json() for t in filtered_ats]
+        filtered_ats = {
+            'success':True,
+            'host': host.json(),
+            'visitor': visitor.json(),
+            'ats': filtered_ats
+        }
+        log('filtered_ats', filtered_ats)
+        return jsonify(filtered_ats)
+
 
 
 # 查看微博中的@

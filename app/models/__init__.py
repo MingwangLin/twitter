@@ -8,4 +8,4 @@ class ReprMixin(object):
 
 from .user import User
 from .tweet import Tweet, Comment, Retweet
-from .message import At
+from .notification import At

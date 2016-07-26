@@ -1,5 +1,6 @@
 from . import db
 from . import ReprMixin
+from .user import User
 
 import time
 

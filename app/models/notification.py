@@ -1,5 +1,8 @@
 from . import db
 from . import ReprMixin
+from .user import User
+from .tweet import Tweet
+
 
 import time
 
@@ -20,6 +23,25 @@ class At(db.Model, ReprMixin):
         class_name = self.__class__.__name__
         return u'<{}: {}>'.format(class_name, self.id)
 
+    def json(self):
+        sender_id = Tweet.query.filter_by(id=self.tweet_id).first().user_id
+        sender_name = User.query.filter_by(id=sender_id).first().username
+        tweet_content = Tweet.query.filter_by(id=self.tweet_id).first().content
+        extra = dict(
+            reciever_id = self.reciever_id,
+            tweet_id = self.tweet_id,
+            sender_name = sender_name,
+            tweet_content = tweet_content,
+        )
+        d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
+        d.update(extra)
+        return d
+
+    def blacklist(self):
+        b = [
+            '_sa_instance_state',
+        ]
+        return b
     def save(self):
         db.session.add(self)
         db.session.commit()

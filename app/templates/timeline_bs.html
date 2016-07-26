@@ -27,8 +27,6 @@
     {% endblock %}
   </head>
 
-
-  <body>
   <body>
 
     <div class="blog-masthead navbar-fixed-top">
@@ -36,7 +34,7 @@
         <nav class="blog-nav">
           <a class="blog-nav-item" id="id-a-mytweets" href="#">我的微博</a>
           <a class="blog-nav-item" id="id-a-followeetweets" href="#">关注人微博</a>
-          <a class="blog-nav-item" href="#">通知</a>
+          <a class="blog-nav-item" id="id-a-notification" href="#">通知</a>
           <a class="blog-nav-item" href="#">私信</a>
           <a class="blog-nav-item" href="/signout">退出</a>
         </nav>
@@ -46,42 +44,65 @@
       {% block container %}
       <div class="row">
         <div class="col-sm-8 blog-main">
+          <div id="id-div-tweetspage">
+            <div id="id-div-mypage">
+              <div class="clearfix">
+                {% if user is not none and user.username == u.username  %}
+                  <textarea name="content" id="id-text-content" class="form-control" placeholder="说点什么"></textarea>
+                  <button class="btn btn-default pull-right" id="id-button-addtweet">
+                    <span class="glyphicon glyphicon-send" aria-hidden="true">
+                    </span>
+                    发送
+                  </button>
+                  {% endif %}
+              </div>
+              <div class="list-group" id="id-div-mytweets">
+                <p>
+                </p>
+              </div>
+              <nav>
+                <ul class="pager">
+                  <!-- <li><a href="#">Previous</a></li> -->
+                  <!-- <li><button type="button" class="btn btn-default"
+                              id="id-button-previous-mytweets"
+                              data-name="{{u.username}}">上一页
+                      </button> -->
+                  <li><button type="button" class="btn btn-default"
+                              id="id-button-load-mytweets"
+                              data-name="{{u.username}}">下一页
+                      </button>
+                  </li>
 
-          <div id="id-div-mypage">
-            <div class="clearfix">
-              {% if user is not none and user.username == u.username  %}
-                <textarea name="content" id="id-text-content" class="form-control" placeholder="说点什么"></textarea>
-                <button class="btn btn-default pull-right" id="id-button-addtweet">
-                  <span class="glyphicon glyphicon-send" aria-hidden="true">
-                  </span>
-                  发送
-                </button>
-                {% endif %}
+                  </li>
+                </ul>
+              </nav>
             </div>
-            <div class="list-group" id="id-div-mytweets">
-              <p>
-              </p>
+
+            <div id="id-div-followeepage">
+              <div class="list-group" id="id-div-followeetweets">
+                <p>
+                </p>
+              </div>
+              <nav>
+                <ul class="pager">
+                  <!-- <li><a href="#">Previous</a></li> -->
+                  <!-- <li><button type="button" class="btn btn-default"
+                              id="id-button-previous-followeetweets"
+                              data-name="{{u.username}}">上一页
+                      </button> -->
+                  <li><button type="button" class="btn btn-default"
+                              id="id-button-load-followeetweets"
+                              data-name="{{u.username}}">下一页
+                      </button>
+                  </li>
+
+                  </li>
+                </ul>
+              </nav>
             </div>
-            <nav>
-              <ul class="pager">
-                <!-- <li><a href="#">Previous</a></li> -->
-                <!-- <li><button type="button" class="btn btn-default"
-                            id="id-button-previous-mytweets"
-                            data-name="{{u.username}}">上一页
-                    </button> -->
-                <li><button type="button" class="btn btn-default"
-                            id="id-button-load-mytweets"
-                            data-name="{{u.username}}">下一页
-                    </button>
-                </li>
-
-                </li>
-              </ul>
-            </nav>
-          </div>
-
-          <div id="id-div-followeepage">
-            <div class="list-group" id="id-div-followeetweets">
+          </div><!-- tweet-page  -->
+          <div id="id-div-notificationpage">
+            <div class="list-group" id="id-div-notification">
               <p>
               </p>
             </div>
@@ -93,7 +114,7 @@
                             data-name="{{u.username}}">上一页
                     </button> -->
                 <li><button type="button" class="btn btn-default"
-                            id="id-button-load-followeetweets"
+                            id="id-button-load-notifications"
                             data-name="{{u.username}}">下一页
                     </button>
                 </li>
@@ -102,6 +123,7 @@
               </ul>
             </nav>
           </div>
+
         </div><!-- /.blog-main -->
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">

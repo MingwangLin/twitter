@@ -10,11 +10,13 @@ from flask import url_for
 from .treelog import log
 from .login import hash_password
 
-from ..models import At, Comment, User
+from ..models import At, Comment, User, Tweet
 from . import api
 from .decorator import requires_login, requires_admin, current_user
 import random
 import string
+from .notification import At_lst, get_name
+
 
 
 # 显示某个用户的主页  GET
@@ -34,7 +36,7 @@ def timeline_view(username):
         # 回复我的所有评论
         replies_to_me = Comment.query.filter_by(user_replied=user.username)
         # @我的所有微博
-        ats_to_me = At.query.filter_by(reciever_id=user.id)
+        ats_to_me = At.query.filter_by(reciever_id=user.id).all
         follower_lst = u.follower_lst
         followee_lst = u.followee_lst
         args = {
@@ -60,9 +62,9 @@ def timeline_ajax(username):
         abort(404)
     else:
         args = request.args
-        offset = args.get('offset', 0)
+        offset = args.get('mytweets_offset', 0)
         offset = int(offset)
-        limit = args.get('limit', 20)
+        limit = args.get('mytweets_limit', 20)
         limit = int(limit)
         tweets = host.tweets
         tweets.sort(key=lambda t: t.created_time, reverse=True)
@@ -89,9 +91,9 @@ def timeline_followee(username):
         abort(404)
     else:
         args = request.args
-        offset = args.get('offset', 0)
+        offset = args.get('followee_offset', 0)
         offset = int(offset)
-        limit = args.get('limit', 20)
+        limit = args.get('followee_limit', 20)
         limit = int(limit)
         # 我关注的人微博
         followee_tweets = visitor.follower_tweets[offset:offset + limit]
@@ -142,8 +144,10 @@ def user_update(user_id):
     return redirect(url_for('users_view'))
 
 def string_generator():
-    size = 6
-    chars = string.ascii_uppercase + string.digits
+    size = 4
+    #chars = string.ascii_uppercase + string.digits
+    chars = string.digits
+
     return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
 
 
@@ -151,7 +155,7 @@ def string_generator():
 @api.route('/testuser', methods=['GET'])
 def user_create():
     form = {
-        'username':'测试用户' + string_generator(),
+        'username':'游客' + string_generator(),
         'password': string_generator(),
     }
     user = User(form)
@@ -163,6 +167,22 @@ def user_create():
     user.save()
     user = User.query.filter_by(username=user.username).first()
     session['user_id'] = user.id
+    # 向该用户发送@通知供测试
+    words = '欢迎来访'
+    content = '@' + user.username + ' ' + words
+    form = {
+        'content': content
+    }
+    t = Tweet(form)
+    sender_id = '1'
+    sender_user = User.query.filter_by(id=sender_id).first()
+    t.user = sender_user
+    t.save()
+    # 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
+    if '@' in t.content:
+        name_lst = get_name(t.content)
+        At_lst(lst=name_lst, tweet=t)
+    log('t.ats', t.ats)
     created_user = {
         'success': True,
         'user': user.json(),

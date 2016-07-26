@@ -12,7 +12,6 @@ class User(db.Model, ReprMixin):
     follower = db.Column(db.String(), default='')
     followee = db.Column(db.String(), default='')
     created_time = db.Column(db.Integer(), default=0)
-    # 这是引用别的表的数据的属性，表明了它关联的东西
     tweets = db.relationship('Tweet', backref='user')
     comments = db.relationship('Comment', backref='user')
     ats = db.relationship('At', backref='user')
