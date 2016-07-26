@@ -1,17 +1,19 @@
+# -*- coding: utf-8 -*-
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import time
+from flask_sqlalchemy import SQLAlchemy
+import os
+
 
 # 暴露 db 是因为 models 要使用它
 # 但是这时候还没有 app 所以要在 app 初始化之后再初始化这个 db
 db = SQLAlchemy()
-
-
 # 把 flask 的初始化放到函数中
 # 由外部启动函数来调用
 #
+
 def init_app():
-    db_path = 'db.sqlite'
+    db_path = '/Users/linmingwang/twitter/db.sqlite'
 
     # 初始化并配置 flask
     app = Flask(__name__)

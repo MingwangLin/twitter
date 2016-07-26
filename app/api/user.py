@@ -103,6 +103,7 @@ def timeline_followee(username):
             'visitor': visitor.json(),
             'followee_tweets': followee_tweets
 
+
         }
         log('filtered_tweets', filtered_tweets)
         return jsonify(filtered_tweets)
@@ -154,7 +155,7 @@ def user_create():
         'password': string_generator(),
     }
     user = User(form)
-    default_list = '1 2 3 4'
+    default_list = '1 2'
     # 写入关注人信息
     user.follower = default_list
     user.password = hash_password(user.password)

@@ -134,7 +134,7 @@ var followee_tweets_template = function(followee_tweets, host, visitor){
             for(var i = 0; i < t.length; i++){
                 var template = `
                       <a href="/tweet/${t[i].id}" class="list-group-item">
-                        ${host.username} · ${formatted_time(t[i].created_time)}
+                        ${t[i].user_name} · ${formatted_time(t[i].created_time)}
                         <br>
                         ${t[i].content}
                         <a href="/tweet/${t[i].id}">评论</a>
