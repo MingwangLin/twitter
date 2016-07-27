@@ -31,23 +31,24 @@ class User(db.Model, ReprMixin):
         return u'<{}: {}>'.format(class_name, self.id)
 
     @property
-    def follower_lst(self):
-        # 去掉字符串首尾空格
-        follower = self.follower.strip()
-        return follower.split() if follower is not '' else []
-
-    @property
     def followee_lst(self):
+        # 去掉字符串首尾空格
         followee = self.followee.strip()
         return followee.split() if followee is not '' else []
 
     @property
-    def follower_tweets(self):
-        follower_tweets = []
-        for i in self.follower_lst:
+    def follower_lst(self):
+        follower = self.follower.strip()
+        return follower.split() if follower is not '' else []
+
+    @property
+    def followee_tweets(self):
+        followee_tweets = []
+        for i in self.followee_lst:
             user = User.query.filter_by(id=int(i)).first()
-            follower_tweets += user.tweets
-        return follower_tweets
+            followee_tweets += user.tweets
+        followee_tweets.sort(key=lambda t: t.created_time, reverse=True)
+        return followee_tweets
 
     def json(self):
         # Model 是延迟载入的, 如果没有引用过数据, 就不会从数据库中加载

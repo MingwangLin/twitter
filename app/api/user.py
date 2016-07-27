@@ -31,8 +31,7 @@ def timeline_view(username):
     else:
 
         # 我关注的人微博, 取前20条微博显示
-        follower_tweets = u.follower_tweets[:20]
-        follower_tweets.sort(key=lambda t: t.created_time, reverse=True)
+        followee_tweets = u.followee_tweets[:20]
         # 回复我的所有评论
         replies_to_me = Comment.query.filter_by(user_replied=user.username)
         # @我的所有微博
@@ -44,7 +43,7 @@ def timeline_view(username):
             'u': u,
             'follower_lst': follower_lst,
             'followee_lst': followee_lst,
-            'follower_tweets': follower_tweets,
+            'followee_tweets': followee_tweets,
             'replies_to_me': replies_to_me,
             'ats_to_me': ats_to_me,
         }
@@ -91,13 +90,15 @@ def timeline_followee(username):
         abort(404)
     else:
         args = request.args
-        offset = args.get('followee_offset', 0)
+        offset = args.get('offset', 0)
+        log('offset', offset)
         offset = int(offset)
-        limit = args.get('followee_limit', 20)
+        limit = args.get('limit', 20)
         limit = int(limit)
         # 我关注的人微博
-        followee_tweets = visitor.follower_tweets[offset:offset + limit]
-        followee_tweets.sort(key=lambda t: t.created_time, reverse=True)
+        followee_tweets = visitor.followee_tweets
+        followee_tweets = followee_tweets[offset:offset + limit]
+        log('followee_tweets', followee_tweets)
         followee_tweets = [t.json() for t in followee_tweets]
         filtered_tweets = {
             'success':True,
@@ -161,7 +162,7 @@ def user_create():
     user = User(form)
     default_list = '1 2'
     # 写入关注人信息
-    user.follower = default_list
+    user.followee = default_list
     user.password = hash_password(user.password)
     # 保存到数据库
     user.save()

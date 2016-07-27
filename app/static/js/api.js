@@ -47,12 +47,30 @@ var post = function(url, form, response) {
 var formatted_time = function(timestamp){
   // multiplied by 1000 so that the argument is in milliseconds, not seconds
   var a = new Date(timestamp*1000);
-  var year = a.getFullYear();
-  var month = a.getMonth();
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var time = year + '/' + month + '/' + date + ' ' + hour + ':' + min;
+  var now = new Date().getTime()
+  var now = Math.floor(now/1000);
+  var interval = now - timestamp;
+  if (interval == 0) {
+    var time = `现在`
+  }else if (interval < 60) {
+    var time = `${interval}秒前`
+  }else if (interval >= 60 && interval < 3600) {
+    var time = `${Math.floor(interval/60)}分钟前`
+  }else if (interval >= 3600 && interval < 3600*24) {
+    var time = `${Math.floor(interval/3600)}小时前`
+  }else if (interval >= 3600*24 && interval < 3600*24*7) {
+    var time = `${Math.floor(interval/(3600*24))}天前`
+  }else{
+    var year = a.getFullYear();
+    var month = a.getMonth();
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    if (min < 10) {
+      min = '0' + min
+    }
+    var time = year + '/' + month + '/' + date + ' ' + hour + ':' + min;
+  }
   return time;
   }
 
