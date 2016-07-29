@@ -13,16 +13,13 @@ var prepend_template = function(data){
       var t = data.tweet;
       var u = data.user
       var template = `
-          <a href="/tweet/${t.id}" class="list-group-item">
+            <div class="well">
             ${u.username} · ${formatted_time(t.created_time)}
             <br>
             ${t.content}
-            <a href="/tweet/update/${t.id}">编辑</a>
-            <a href="/tweet/delete/${t.id}">删除</a>
-            <a href="/tweet/${t.id}">评论</a>
-            <a href="/tweet/${t.id}">转发</a>
+            ${basic_template}
+          </div>
           <hr />
-          </a>
           `;
         log('template', template)
         $('#id-div-mytweets').prepend(template);

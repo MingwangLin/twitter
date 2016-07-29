@@ -132,16 +132,14 @@ var my_tweets_template = function(tweets, host, visitor){
     if (visitor.id === host.id) {
         for(var i = 0; i < t.length; i++){
             var template = `
-                <a href="/tweet/${t[i].id}" class="list-group-item">
+                  <div class="well">
                   ${host.username} · ${formatted_time(t[i].created_time)}
                   <br>
                   ${t[i].content}
-                  <a href="/tweet/update/${t[i].id}">编辑</a>
-                  <a href="/tweet/delete/${t[i].id}">删除</a>
-                  <a href="/tweet/${t[i].id}">评论</a>
-                  <a href="/tweet/${t[i].id}">转发</a>
+                  ${basic_template}
+                </div>
                 <hr />
-                </a>
+
                 `;
                 $('#id-div-mytweets').append(template)
 
@@ -149,14 +147,13 @@ var my_tweets_template = function(tweets, host, visitor){
         } else {
             for(var i = 0; i < t.length; i++){
                 var template = `
-                      <a href="/tweet/${t[i].id}" class="list-group-item">
+                      <div class="well">
                         ${host.username} · ${formatted_time(t[i].created_time)}
                         <br>
                         ${t[i].content}
-                        <a href="/tweet/${t[i].id}">评论</a>
-                        <a href="/tweet/${t[i].id}">转发</a>
+                        ${basic_template}
+                      </div>
                       <hr />
-                      </a>
                     `;
                 $('#id-div-mytweets').append(template)
                 }
@@ -168,13 +165,13 @@ var followee_tweets_template = function(followee_tweets, host, visitor){
     var t = followee_tweets
             for(var i = 0; i < t.length; i++){
                 var template = `
-                      <a href="/tweet/${t[i].id}" class="list-group-item">
+                      <div class="well">
                         ${t[i].user_name} · ${formatted_time(t[i].created_time)}
                         <br>
                         ${t[i].content}
-                        <a href="/tweet/${t[i].id}">评论</a>
-                        <a href="/tweet/${t[i].id}">转发</a>
-                      </a>
+                        ${basic_template}
+                      </div>
+                      <hr/>
                     `;
                 $('#id-div-followeetweets').append(template)
                 }
@@ -191,11 +188,21 @@ var ats_template = function(ats, host, visitor){
                 ${t[i].sender_name} · ${formatted_time(t[i].created_time)}
                 <br>
                 ${t[i].tweet_content}
-                <a href="/tweet/${t[i].tweet_id}">评论</a>
-                <a href="/tweet/${t[i].tweet_id}">转发</a>
-              </a>
+                ${basic_template}
+    </a>
               </div>
             `;
         $('#id-div-notification').append(template)
         }
       }
+
+var basic_template = `<button class="btn btn-default pull-right" id="id-button-addtweet">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">
+                        </span>
+                        评论
+                        </button>
+                        <button class="btn btn-default pull-right" id="id-button-addtweet">
+                        <span class="glyphicon glyphicon-share" aria-hidden="true">
+                        </span>
+                        转发
+                      </button>`

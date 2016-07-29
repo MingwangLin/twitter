@@ -37,7 +37,7 @@ def At_lst(lst, tweet):
             a.tweet = tweet
             a.tweet_id = tweet.id
             a.user = u
-            a.reciever_id = u.id
+            #a.reciever_id = u.id
             a.save()
     return
 

@@ -61,9 +61,9 @@ def timeline_ajax(username):
         abort(404)
     else:
         args = request.args
-        offset = args.get('mytweets_offset', 0)
+        offset = args.get('offset', 0)
         offset = int(offset)
-        limit = args.get('mytweets_limit', 20)
+        limit = args.get('limit', 20)
         limit = int(limit)
         tweets = host.tweets
         tweets.sort(key=lambda t: t.created_time, reverse=True)
@@ -177,7 +177,8 @@ def user_create():
     t = Tweet(form)
     sender_id = '1'
     sender_user = User.query.filter_by(id=sender_id).first()
-    t.user = sender_user
+    #t.user = sender_user
+    t.user_id = sender_id
     t.save()
     # 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
     if '@' in t.content:
@@ -191,4 +192,3 @@ def user_create():
 
     }
     return jsonify(created_user)
-
