@@ -1,20 +1,17 @@
-var mytweets_offset = 0;
-var mytweets_limit = 20;
-var followeetweets_offset = 0;
-var followeetweets_limit = 20;
-// @通知偏移量
-var ats_offset = 0;
-var ats_limit = 20;
+// 请求数据库一页的数据
+var mytweets_page = 1;
+var followedtweets_page = 1;
+var notifications_page = 1;
 
 $(document).ready(function(){
-        username = $('#id-button-load-mytweets').attr('data-name');
+        username = $('#id-button-next-mytweets').attr('data-name');
         log('username', username)
-        var mytweets_url = '/tweets/' + username + '?offset=' + mytweets_offset + '&limit=' + mytweets_limit
-        var followeetweets_url = '/followee_tweets/' + username + '?offset=' + followeetweets_offset + '&limit=' + followeetweets_limit
-        var ats_url = '/ats/' + username + '?offset=' + ats_offset + '&limit=' + ats_limit
+        mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
+        followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
+        notifications_url = '/notifications/' + username + '?page=' + notifications_page
         show_tweets(mytweets_url, mytweets_response);
-        show_tweets(followeetweets_url, followeetweets_response)
-        show_notification(ats_url, notification_response)
+        show_tweets(followedtweets_url, followedtweets_response)
+        show_notification(notifications_url, notifications_response)
         __main()
 
 
@@ -33,46 +30,50 @@ var setup = function() {
               $('.active').removeClass('active');
               self.addClass('active');
           });
-    var tabAction = function (show_mytweets, show_followeetweets, show_ats) {
+    var tabAction = function (show_mytweets, show_followedtweets, show_notifications) {
         $('#id-div-mypage').toggle(show_mytweets);
-        $('#id-div-followeepage').toggle(show_followeetweets);
-        $('#id-div-notificationpage').toggle(show_ats);
+        $('#id-div-followedpage').toggle(show_followedtweets);
+        $('#id-div-notificationpage').toggle(show_notifications);
     };
 
     $('#id-a-mytweets').on('click', function() {
-        var show_ats = false;
-        var show_followeetweets = false;
+        var show_notifications = false;
+        var show_followedtweets = false;
         var show_mytweets = true;
-        tabAction(show_mytweets, show_followeetweets, show_ats);
+        tabAction(show_mytweets, show_followedtweets, show_notifications);
     });
-    $('#id-a-followeetweets').on('click', function() {
-        var show_ats = false;
-        var show_followeetweets = true;
+    $('#id-a-followedtweets').on('click', function() {
+        var show_notifications = false;
+        var show_followedtweets = true;
         var show_mytweets= false;
-        tabAction(show_mytweets, show_followeetweets, show_ats);
+        tabAction(show_mytweets, show_followedtweets, show_notifications);
 
     });
-    $('#id-a-notification').on('click', function() {
-        var show_ats = true;
-        var show_followeetweets = false;
+    $('#id-a-notifications').on('click', function() {
+        var show_notifications = true;
+        var show_followedtweets = false;
         var show_mytweets= false;
-        tabAction(show_mytweets, show_followeetweets, show_ats);
+        tabAction(show_mytweets, show_followedtweets, show_notifications);
     });
 };
 
 var bindActions = function() {
-    $('#id-button-load-mytweets').on('click', function(){
-      var mytweets_url = '/tweets/' + username + '?offset=' + mytweets_offset + '&limit=' + mytweets_limit
+    $('#id-button-next-mytweets').on('click', function(){
+      var increment = 1
+      mytweets_page += increment
+      mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
+      log('m_url',mytweets_url )
       show_tweets(mytweets_url, mytweets_response)
     });
-
-    $('#id-button-load-followeetweets').on('click', function(){
-        var followeetweets_url = '/followee_tweets/' + username + '?offset=' + followeetweets_offset + '&limit=' + followeetweets_limit
-        show_tweets(followeetweets_url, followeetweets_response);
+    $('#id-button-next-followedtweets').on('click', function(){
+        followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
+        show_tweets(followedtweets_url, followedtweets_response);
     });
-    $('#id-button-load-notifications').on('click', function(){
-        var ats_url = '/ats/' + username + '?offset=' + ats_offset + '&limit=' + ats_limit
-        show_tweets(ats_url, ats_response);
+    $('#id-button-next-notifications').on('click', function(){
+        var increment = 1
+        followedtweets_page += increment
+        notifications_url = '/notifications/' + username + '?page=' + notifications_page
+        show_tweets(notifications_url, notifications_response);
     });
 
     $('#id-button-addtweet').on('click', add_newtweet);
@@ -89,50 +90,59 @@ var show_notification = function(url,response){
 
 var mytweets_response = function(data){
   if(data.success) {
-    mytweets_offset += mytweets_limit;
+    var increment = 1
+    mytweets_page += increment
     log('success', data);
     var tweets = data.tweets;
-    var host = data.host
-    var visitor = data.visitor
-    my_tweets_template(tweets, host, visitor);
+    if (tweets.length == 0) {
+      $('#id-div-mypage').append(none_template)
+      setTimeout(function(){$('p.nomore').remove()}, 1000)
+    }else {
+      var host = data.host
+      var visitor = data.visitor
+      mytweets_template(tweets, host, visitor);
+    }
+
 }else {
   log('请求失败');
 }
 };
 
-var followeetweets_response = function(data){
+var followedtweets_response = function(data){
   if(data.success) {
-    followeetweets_offset += followeetweets_limit;
+    var increment = 1
+    followedtweets_page += increment
     log('success', data);
-    var followee_tweets = data.followee_tweets;
-    log('followee_tweets', followee_tweets)
+    var followed_tweets = data.tweets;
+    log('followed_tweets', followed_tweets)
     var host = data.host
     var visitor = data.visitor
-    followee_tweets_template(followee_tweets, host, visitor);
+    followedtweets_template(followed_tweets, host, visitor);
   }else {
     log('请求失败');
   }
 };
 
-var notification_response = function(data){
+var notifications_response = function(data){
   if(data.success) {
-    ats_offset += mytweets_limit;
-    log('success', data);
-    var ats = data.ats;
+    var increment = 1
+    notifications_page += increment
+    log('at success', data);
+    var notifications = data.notifications;
     var host = data.host
     var visitor = data.visitor
-    ats_template(ats, host, visitor);
+    notifications_template(notifications, host, visitor);
 }else {
   log('请求失败');
 }
 };
 
-var my_tweets_template = function(tweets, host, visitor){
+var mytweets_template = function(tweets, host, visitor){
     var t = tweets
     if (visitor.id === host.id) {
         for(var i = 0; i < t.length; i++){
             var template = `
-                  <div class="well">
+                  <div class="well" id = "${i}">
                   ${host.username} · ${formatted_time(t[i].created_time)}
                   <br>
                   ${t[i].content}
@@ -161,8 +171,8 @@ var my_tweets_template = function(tweets, host, visitor){
 }
 
 
-var followee_tweets_template = function(followee_tweets, host, visitor){
-    var t = followee_tweets
+var followedtweets_template = function(followed_tweets, host, visitor){
+    var t = followed_tweets
             for(var i = 0; i < t.length; i++){
                 var template = `
                       <div class="well">
@@ -173,25 +183,25 @@ var followee_tweets_template = function(followee_tweets, host, visitor){
                       </div>
                       <hr/>
                     `;
-                $('#id-div-followeetweets').append(template)
+                $('#id-div-followedtweets').append(template)
                 }
               }
 
-var ats_template = function(ats, host, visitor){
-  var t = ats
+var notifications_template = function(notifications, host, visitor){
+  var t = notifications
   var words = '在微博@了你'
     for(var i = 0; i < t.length; i++){
         var template = `
             <div class="well">
               ${t[i].sender_name} ${words}
-              <a href="#" class="list-group-item">
                 ${t[i].sender_name} · ${formatted_time(t[i].created_time)}
                 <br>
                 ${t[i].tweet_content}
                 ${basic_template}
-    </a>
               </div>
-            `;
+              <hr/>
+              `;
+              log('at tem', template)
         $('#id-div-notification').append(template)
         }
       }
@@ -206,3 +216,10 @@ var basic_template = `<button class="btn btn-default pull-right" id="id-button-a
                         </span>
                         转发
                       </button>`
+
+var none_template = `<p class="nomore text-center">
+                      <span class="glyphicon glyphicon-info-sign">
+                      </span>
+                      没有更多了
+                    </p>
+                    `

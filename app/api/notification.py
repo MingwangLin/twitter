@@ -83,32 +83,28 @@ def notification_discard(comment_id):
     comment.save()
     return redirect(url_for('timeline_view', username=user.username))
 
-# 用ajax查看微博@  GET
-@api.route('/ats/<username>')
+# 用ajax查看别人微博发来的@  GET
+@api.route('/notifications/<username>')
 @requires_login
 def at_view(username):
     # 查找 username 对应的用户
     visitor = current_user()
     host = User.query.filter_by(username=username).first()
+    args = request.args
+    page = args.get('page', 1, type=int)
     if host is None:
         abort(404)
     else:
-        args = request.args
-        offset = args.get('offset', 0)
-        offset = int(offset)
-        limit = args.get('limit', 20)
-        limit = int(limit)
-        # 我关注的人微博
-        ats = At.query.filter_by(reciever_id=visitor.id).all()
-        ats = [i for i in ats if i.at_viewed != 1]
-        filtered_ats = ats[offset:offset + limit]
-        filtered_ats.sort(key=lambda t: t.created_time, reverse=True)
-        filtered_ats = [t.json() for t in filtered_ats]
+        pagination = At.query.filter_by(reciever_id=visitor.id).order_by(
+            At.created_time.desc()).paginate(
+            page, error_out=False)
+        filtered_ats = pagination.items
+        ats = [t.json() for t in filtered_ats]
         filtered_ats = {
             'success':True,
             'host': host.json(),
             'visitor': visitor.json(),
-            'ats': filtered_ats
+            'notifications': ats
         }
         log('filtered_ats', filtered_ats)
         return jsonify(filtered_ats)

@@ -2,7 +2,7 @@ from flask import redirect
 from flask import render_template
 from flask import url_for
 
-from ..models import User
+from ..models import User, Follow
 from . import api
 from .decorator import requires_login, current_user
 from .treelog import log
@@ -17,13 +17,8 @@ def user_follow(user_id):
     if current_user() is None:
         return redirect(url_for('login_view'))
     user = User.query.filter_by(id=user_id).first()
-    # 关注人信息,被关注人信息写入表中相应字段
-    usr_id = str(user.id) + ' '
-    u_id = str(u.id) + ' '
-    u.follower += usr_id
-    user.followee += u_id
-    u.save()
-    user.save()
+    f = Follow(follower=u, followed=user)
+    f.save()
     return redirect(url_for('api.timeline_view', username=user.username))
 
 
@@ -33,13 +28,8 @@ def user_follow(user_id):
 def user_unfollow(user_id):
     u = current_user()
     user = User.query.filter_by(id=user_id).first()
-    # 关注人信息,被关注人信息从表中相应字段删除
-    usr_id = str(user.id) + ' '
-    u_id = str(u.id) + ' '
-    u.follower = u.follower.strip(usr_id)
-    user.followee = user.followee.strip(u_id)
-    u.save()
-    user.save()
+    f = Follow.query.filter_by(follower_id=u.id).first()
+    f.delete()
     return redirect(url_for('api.timeline_view', username=user.username))
 
 

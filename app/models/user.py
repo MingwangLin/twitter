@@ -1,5 +1,6 @@
 from . import db
 from . import ReprMixin
+from .follow import Follow
 
 import time
 
@@ -8,10 +9,18 @@ class User(db.Model, ReprMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String())
     password = db.Column(db.String())
-    role = db.Column(db.Integer(), default=2)
-    follower = db.Column(db.String(), default='')
-    followee = db.Column(db.String(), default='')
-    created_time = db.Column(db.Integer(), default=0)
+    role = db.Column(db.Integer, default=2)
+    followed = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    followers = db.relationship('Follow',
+                                foreign_keys=[Follow.followed_id],
+                                backref=db.backref('followed', lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
+    created_time = db.Column(db.Integer, default=0)
     tweets = db.relationship('Tweet', backref='user')
     comments = db.relationship('Comment', backref='user')
     ats = db.relationship('At', backref='user')
@@ -30,26 +39,6 @@ class User(db.Model, ReprMixin):
         class_name = self.__class__.__name__
         return u'<{}: {}>'.format(class_name, self.id)
 
-    @property
-    def followee_lst(self):
-        # 去掉字符串首尾空格
-        followee = self.followee.strip()
-        return followee.split() if followee is not '' else []
-
-    @property
-    def follower_lst(self):
-        follower = self.follower.strip()
-        return follower.split() if follower is not '' else []
-
-    @property
-    def followee_tweets(self):
-        followee_tweets = []
-        for i in self.followee_lst:
-            user = User.query.filter_by(id=int(i)).first()
-            followee_tweets += user.tweets
-        followee_tweets.sort(key=lambda t: t.created_time, reverse=True)
-        return followee_tweets
-
     def json(self):
         # Model 是延迟载入的, 如果没有引用过数据, 就不会从数据库中加载
         # 引用一下 id 这样数据就从数据库中载入了
@@ -64,6 +53,14 @@ class User(db.Model, ReprMixin):
             'tweets'
         ]
         return b
+
+    def is_following(self, user):
+        return self.followed.filter_by(
+            followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
 
     def delete(self):
         db.session.delete(self)
@@ -86,5 +83,3 @@ class User(db.Model, ReprMixin):
             return username_equals and password_equals
         else:
             return False
-
-
