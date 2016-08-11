@@ -2,44 +2,79 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
+from flask import jsonify
 from ..models import Comment, Tweet
 from . import api
 from .decorator import requires_login, current_user
 from .notification import comment_At_lst, get_name
 from .treelog import log
 
-# 显示发送评论的界面
-@api.route('/tweet/comment/<tweet_id>')
-def comment_add_view(tweet_id):
-    user = current_user()
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    if user is None:
-        return redirect(url_for('login_view'))
-    else:
-        return render_template('comment_add.html', tweet=tweet)
+
+
+# # 显示发送评论的界面
+# @api.route('/tweet/comment/<tweet_id>')
+# def comment_add_view(tweet_id):
+#     user = current_user()
+#     tweet = Tweet.query.filter_by(id=tweet_id).first()
+#     if user is None:
+#         return redirect(url_for('login_view'))
+#     else:
+#         return render_template('comment_add.html', tweet=tweet)
 
 
 # 处理发送评论的函数
-@api.route('/tweet/comment/<tweet_id>', methods=['POST'])
+@api.route('/comment/add/<tweet_id>', methods=['POST'])
 @requires_login
 def comment_add(tweet_id):
     user = current_user()
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    u = tweet.user
-    c = Comment(request.form)
-    # 谁发的
+    form = request.get_json()
+    c = Comment(form)
+    log('c', c)
+    # 设置是谁发的
     c.user = user
-    c.user_id = user.id
-    # 发到哪条微博
-    c.tweet = tweet
-    c.tweet_id = tweet.id
     # 保存到数据库
+    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    c.tweet = tweet
     c.save()
+
+    r = {
+        'success': True,
+        'comment': c.json(),
+        'user': user.json(),
+    }
+    log('r', r)
+    # 获取评论中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in c.content:
         name_lst = get_name(c.content)
         comment_At_lst(lst=name_lst, comment=c)
-    return redirect(url_for('api.tweet_view', tweet_id=tweet.id))
+    return jsonify(r)
+
+
+# 用 ajax 返回某条微博的评论
+@api.route('/tweet/comments/<tweet_id>', methods=['GET'])
+@requires_login
+def comments(tweet_id):
+    visitor = current_user()
+    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    args = request.args
+    page = args.get('page', 1, type=int)
+    log('p', type(page))
+    pagination = Comment.query.filter_by(tweet_id=tweet.id).order_by(
+        Comment.created_time.desc()).paginate(
+        page, error_out=False)
+
+    comments = pagination.items
+
+    log('items', comments)
+    comments = [i.json() for i in comments]
+    comments = {
+        'success': True,
+        'visitor': visitor.json(),
+        'comments': comments,
+
+    }
+    # log('filtered_tweets', filtered_tweets)
+    return jsonify(comments)
 
 
 # 显示发送回复的界面

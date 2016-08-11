@@ -4,7 +4,7 @@ from flask import request
 from flask import url_for
 from . import api
 from .treelog import log
-from ..models import Retweet, Tweet
+from ..models import Repost, Tweet
 from .decorator import requires_login, current_user
 from .notification import At_lst, get_name
 

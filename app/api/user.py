@@ -89,7 +89,8 @@ def timeline_followed(username):
         log('p', request.args)
         pagination = Tweet.query. \
             join(Follow, Follow.followed_id == Tweet.user_id) \
-            .filter(Follow.follower_id == visitor.id).paginate(
+            .filter(Follow.follower_id == visitor.id).order_by(
+            Tweet.created_time.desc()).paginate(
             page, error_out=False)
         followed_tweets = pagination.items
         log('f', followed_tweets)
@@ -101,8 +102,26 @@ def timeline_followed(username):
             'tweets': tweets
 
         }
-        # log('filtered_tweets', filtered_tweets)
+        log('filtered_tweets', filtered_tweets)
         return jsonify(filtered_tweets)
+
+# 用ajax上传用户头像
+@api.route('/upload/avatars', methods=['POST'])
+@requires_login
+def upload_avatars():
+    user = current_user()
+    # uploaded 是上传时候的文件名
+    file = request.files.get('uploaded')
+    log('upload, ', request.files)
+    if file:
+        filename = file.filename
+        log('filename, ', filename)
+        path = '/static/avatars/' + filename
+        file.save(path)
+        user.avatar = path
+        user.save()
+    return redirect(url_for('api.timeline_view', username=user.username))
+
 
 
 # 删除用户

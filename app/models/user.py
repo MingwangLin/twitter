@@ -10,6 +10,7 @@ class User(db.Model, ReprMixin):
     username = db.Column(db.String())
     password = db.Column(db.String())
     role = db.Column(db.Integer, default=2)
+    avatar = db.Column(db.String(), default='/static/avatars/default.jpg')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),

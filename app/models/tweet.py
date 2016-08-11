@@ -1,8 +1,10 @@
 from . import db
 from . import ReprMixin
 from .user import User
+from .repost import Repost
 
 import time
+
 
 class Tweet(db.Model, ReprMixin):
     __tablename__ = 'tweets'
@@ -10,10 +12,18 @@ class Tweet(db.Model, ReprMixin):
     content = db.Column(db.String())
     created_time = db.Column(db.Integer(), default=0)
     comments = db.relationship('Comment', backref='tweet')
-    retweets = db.relationship('Retweet', backref='tweet')
+    reposted = db.relationship('Repost',
+                               foreign_keys=[Repost.repost_id],
+                               backref=db.backref('repost', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    reposts = db.relationship('Repost',
+                              foreign_keys=[Repost.reposted_id],
+                              backref=db.backref('reposted', lazy='joined'),
+                              lazy='dynamic',
+                              cascade='all, delete-orphan')
     ats = db.relationship('At', backref='tweet')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
 
     def __init__(self, form):
         super(Tweet, self).__init__()
@@ -25,10 +35,11 @@ class Tweet(db.Model, ReprMixin):
         return u'<{}: {}>'.format(class_name, self.id)
 
     def json(self):
-        extra = dict(
-            user_id=self.user_id,
-            user_name=User.query.filter_by(id=self.user_id).first().username
-        )
+        extra = {
+            'user_id': self.user_id,
+            'user_name': User.query.filter_by(id=self.user_id).first().username,
+            'comments': [i.json() for i in self.comments],
+        }
         d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
         d.update(extra)
         return d
@@ -38,65 +49,6 @@ class Tweet(db.Model, ReprMixin):
             '_sa_instance_state',
         ]
         return b
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class Comment(db.Model, ReprMixin):
-    __tablename__ = 'comments'
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String())
-    created_time = db.Column(db.Integer(), default=0)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
-    comment_replied = db.Column(db.Integer())
-    user_replied = db.Column(db.String())
-    reply_viewed = db.Column(db.Integer(), default=0)
-    ats = db.relationship('At', backref='comment')
-
-    def __init__(self, form):
-        super(Comment, self).__init__()
-        self.content = form.get('content', '')
-        self.created_time = int(time.time())
-
-    def __repr__(self):
-        class_name = self.__class__.__name__
-        return u'<{}: {}>'.format(class_name, self.id)
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-
-
-
-class Retweet(db.Model, ReprMixin):
-    __tablename__ = 'retweets'
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String())
-    created_time = db.Column(db.Integer(), default=0)
-    tweet_id = db.Column(db.Integer(), db.ForeignKey('tweets.id'))
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
-
-    def __init__(self, form):
-        super(Retweet, self).__init__()
-        self.content = form.get('content', '')
-        self.created_time = int(time.time())
-
-    def __repr__(self):
-        class_name = self.__class__.__name__
-        return u'<{}: {}>'.format(class_name, self.id)
 
     def save(self):
         db.session.add(self)

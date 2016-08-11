@@ -1,4 +1,4 @@
-{% macro turn_page(pgdown_id, username) %}
+{% macro turn_page(pgdown_id) %}
 <ul class="pager">
   <!-- <li><button type="button" class="btn btn-default pull-left"
               id="{{pgup_id}}"
@@ -10,7 +10,7 @@
   </li> -->
   <li><button type="button" class="btn btn-default pull-right"
               id="{{pgdown_id}}"
-              data-name="{{username}}">
+              >
           <span class="glyphicon glyphicon-chevron-right" aria-hidden="true">
           </span>
           下一页

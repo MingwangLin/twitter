@@ -2,24 +2,24 @@ from . import db
 from . import ReprMixin
 import time
 
-class Follow(db.Model, ReprMixin):
-    __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+class Repost(db.Model, ReprMixin):
+    __tablename__ = 'reposts'
+    repost_id = db.Column(db.Integer, db.ForeignKey('tweets.id'),
                             primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+    reposted_id = db.Column(db.Integer, db.ForeignKey('tweets.id'),
                             primary_key=True)
     created_time = db.Column(db.Integer(), default=0)
 
-    def __init__(self, follower, followed):
-        super(Follow, self).__init__()
-        self.follower_id = follower.id
-        self.followed_id = followed.id
+    def __init__(self, repost_tweet, reposted_tweet):
+        super(Repost, self).__init__()
+        self.repost_id = reposted_tweet.id
+        self.reposted_id = reposted_tweet.id
         self.created_time = int(time.time())
 
     def json(self):
         d = {
-        'follower_id': self.follower_id,
-        'followed_id': self.followed_id,
+        'reposter_id': self.reposter_id,
+        'reposted_id': self.reposted_id,
         'created_time': self.created_time,
         }
         return d

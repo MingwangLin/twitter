@@ -7,6 +7,8 @@ class ReprMixin(object):
         return u'<{}: {}>'.format(class_name, self.id)
 
 from .user import User
-from .tweet import Tweet, Comment, Retweet
+from .tweet import Tweet
+from .comment import Comment
 from .notification import At
 from .follow import Follow
+from .repost import Repost

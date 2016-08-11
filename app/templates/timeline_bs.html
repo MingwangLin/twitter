@@ -22,6 +22,10 @@
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
     <script src="/static/js/api.js"></script>
+    <script src="/static/js/template.js"></script>
+    <script src="/static/js/comments.js"></script>
+    <script src="/static/js/addcomment.js"></script>
+    <script src="/static/js/upload.js"></script>
     <script src="/static/js/timeline.js"></script>
     <script src="/static/js/addtweet.js"></script>
     {% endblock %}
@@ -32,7 +36,8 @@
     <div class="blog-masthead navbar-fixed-top">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" id="id-a-mytweets" href="#">我的微博</a>
+          <a class="blog-nav-item glyphicon glyphicon-home" id="id-a-mypage" href="/timeline/{{visitor.username}}"></a>
+          <a class="blog-nav-item" id="id-a-mytweets" href="#">个人主页</a>
           <a class="blog-nav-item" id="id-a-followedtweets" href="#">关注人微博</a>
           <a class="blog-nav-item" id="id-a-notifications" href="#">通知</a>
           <a class="blog-nav-item" href="#">私信</a>
@@ -43,8 +48,8 @@
     <div class="container">
       {% block container %}
       <div class="row">
-        <div class="col-sm-8 blog-main">
-          <div id="id-div-tweetspage">
+        <div id="id-div-twitter" class="col-sm-8 blog-main">
+          <div id="id-div-tweetspage" data-name="{{visitor.username}}">
             <div id="id-div-mypage">
               <div class="clearfix">
                 {% if host is not none and host.username == visitor.username  %}
@@ -60,25 +65,24 @@
               </p>
               <div class="list-group" id="id-div-mytweets">
               </div>
-              <nav>
-                {{ macros.turn_page('id-button-next-mytweets', visitor.username) }}
-              </nav>
+                <nav>
+                {{ macros.turn_page('id-button-next-mytweets') }}
+                </nav>
             </div>
 
             <div id="id-div-followedpage">
               <div class="list-group" id="id-div-followedtweets">
               </div>
               <nav>
-                {{ macros.turn_page('id-button-next-followedtweets', visitor.username) }}
+                {{ macros.turn_page('id-button-next-followedtweets') }}
               </nav>
-
             </div>
           </div><!-- tweet-page  -->
           <div id="id-div-notificationpage">
             <div class="list-group" id="id-div-notification">
             </div>
             <nav>
-              {{ macros.turn_page('id-button-next-notificationsts', visitor.username) }}
+              {{ macros.turn_page('id-button-next-notificationsts') }}
             </nav>
           </div>
 
@@ -92,6 +96,13 @@
             {{host.username}}
             </h4>
             关注{{host.followed.count()}} 粉丝{{host.followers.count()}}
+            {% if host.username == visitor.username %}
+                <div class="file-wrapper">
+                  <input class="btn btn-default btn-xs" id="id-input-file" type="file">
+                  <button id="id-button-upload">更改头像</button>
+                </div>
+            {% endif %}
+
             {% if host.username != visitor.username and not visitor.is_following(host) %}
             <a href="/follow/{{host.id}}">点击关注</a>
             {% elif host.username != visitor.username and visitor.is_following(host) %}

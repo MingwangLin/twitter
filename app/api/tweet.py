@@ -34,6 +34,7 @@ def tweet_add():
     t.save()
     tweet = Tweet.query.filter_by(id=t.id).first()
     r = {
+        'success': True,
         'tweet':tweet.json(),
         'user':user.json(),
     }

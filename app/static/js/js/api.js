@@ -74,12 +74,6 @@ var formatted_time = function(timestamp){
   return time;
   }
 
-var href_for_personalpage = function(name){
-    // multiplied by 1000 so that the argument is in milliseconds, not seconds
-    template = `<a href="/timeline/${name}">${name}</a>`;
-    return template;
-    }
-
 // API products
 var products = function(response) {
     var api = this;
