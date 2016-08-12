@@ -11,6 +11,7 @@ var add_newtweet = function(){
 
 var new_tweet = function(data){
   if(data.success) {
+      $('#id-text-content').val('')
       var t = data.tweet;
       var u = data.user
       var avatar_path = u.avatar
@@ -27,7 +28,7 @@ var new_tweet = function(data){
                   ${href_for_personalpage(t.user_name)} · ${formatted_time(t.created_time)}
                   <br>
                   ${t.content}
-                </div>
+                  <hr/>
                 <button class="btn btn-default btn-xs pull-right button-comments">
                   <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                   </span>

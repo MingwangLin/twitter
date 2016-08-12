@@ -113,14 +113,25 @@ def upload_avatars():
     # uploaded 是上传时候的文件名
     file = request.files.get('uploaded')
     log('upload, ', request.files)
+    r = {
+        'success': True,
+        'code': '成功',
+        'data': {
+
+        }
+    }
     if file:
         filename = file.filename
         log('filename, ', filename)
         path = '/static/avatars/' + filename
-        file.save(path)
+        abs_path = '/Users/linmingwang/twitter/app' + path
+        file.save(abs_path)
         user.avatar = path
         user.save()
-    return redirect(url_for('api.timeline_view', username=user.username))
+        r['data'] = '/timeline/{}'.format(user.username)
+    else:
+        r['success'] = False
+    return jsonify(r)
 
 
 

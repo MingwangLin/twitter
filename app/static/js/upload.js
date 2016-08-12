@@ -8,7 +8,12 @@ var upload = function(file) {
         processData: false,
         data: fd,
         success: function(r) {
-            console.log('上传成功', file.name);
+          if (r.success) {
+            var url = r.data;
+            window.location.href = url;
+          } else {
+            log('服务器提了一个问题');
+          }
         },
         error: function() {
             console.log('上传失败', file.name);

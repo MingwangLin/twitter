@@ -15,6 +15,7 @@ var add_newcomment = function(){
 
 var new_comment = function(data){
   if(data.success) {
+    $('#id-text-addcomment').val('')
     var t = data.comment;
     var u = data.user
     var template = `

@@ -4,22 +4,24 @@ var followedtweets_page = 1;
 var notifications_page = 1;
 var comments_page = 1;
 
-
 $(document).ready(function(){
         path = window.location.pathname
-        log('path', path)
         username_index = 2
         username = path.split('/')[username_index]
-        log('username', username)
         mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
         followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
         notifications_url = '/notifications/' + username + '?page=' + notifications_page
         get(mytweets_url, mytweets_response);
-        get(followedtweets_url, followedtweets_response)
-        get(notifications_url, notifications_response)
-        __main()
-
-
+        get(followedtweets_url, followedtweets_response);
+        get(notifications_url, notifications_response);
+        __main();
+        // 页面加载完毕后js会向服务器发送一个ajax请求一页的微博数，服务器会从数据库拿一页的微博数返回，默认是20条。
+        // 如果返回的微博没超过20的话，就不需要显示翻页按钮。
+        // 下面的函数会做一个判断 ，决定隐藏还是显示翻页按钮。
+        // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 1000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 1000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 1000)
 });
 
 var __main = function() {
@@ -27,8 +29,15 @@ var __main = function() {
     bindActions();
     $('#id-a-mytweets').click();
 
+  }
 
-
+var pageturning_button_show_hide = function (jquery_page_object, jquery_button_object){
+    var entries_perpage = 20;
+    if (jquery_page_object.children().length < 20 ) {
+      jquery_button_object.hide()
+    }else if (jquery_page_object.children().length == 20) {
+      jquery_button_object.show()
+    }
 };
 
 var setup = function() {
@@ -95,29 +104,35 @@ var bindActions = function() {
         comments_url = '/tweet/comments/' + tweet_id + '?page=' + comments_page
         if (single_tweet.find(".div-commentarea").children().length == 0){
           get(comments_url, comments_response);
+          single_tweet.find(".comments-toggle").toggle();
         }else {
-          single_tweet.find(".div-commentarea").toggle();
+          single_tweet.find(".div-commentarea").toggle("fast");
+          single_tweet.find(".comments-toggle").toggle();
         }
       });
 
       $('#id-div-twitter').on('click', '.button-addcomment', add_newcomment);
 
-          $('#id-button-upload').on('click', function() {
-              var fileTag =$('#id-input-file')[0];
-              log('fileTag', fileTag);
-              var files = fileTag.files;
-              log('files', files);
-              var numberOfFiles = files.length;
-              if(numberOfFiles == 0) {
-                  alert('还没有选中文件');
-              } else {
-                  for (var i = 0; i < numberOfFiles; i++) {
-                      var file = files[i];
-                      console.log('上传的文件: ', file.name);
-                      upload(file);
-                  }
-              }
-          });
+      $('#id-button-avatars').on('click', function() {
+        $('.file-wrapper').toggle("slow");
+      });
+
+      $('#id-button-upload').on('click', function() {
+        var fileTag =$('#id-input-file')[0];
+        log('fileTag', fileTag);
+        var files = fileTag.files;
+        log('files', files);
+        var numberOfFiles = files.length;
+        if(numberOfFiles == 0) {
+            alert('还没有选中文件');
+        } else {
+            for (var i = 0; i < numberOfFiles; i++) {
+                var file = files[i];
+                console.log('上传的文件: ', file.name);
+                upload(file);
+            }
+        }
+    });
 };
 
 var mytweets_response = function(data){
@@ -128,7 +143,7 @@ var mytweets_response = function(data){
     var tweets = data.tweets;
     if (tweets.length == 0 && $('#id-div-mytweets').children().length == 0){
       $('#id-div-mytweets').append(none_template)
-      var timeout = 3000
+      var timeout = 2000
       setTimeout(function(){$('p.none').remove()}, timeout)
     }else if (tweets.length == 0 && $('#id-div-mytweets').children().length > 0) {
       $('#id-div-mypage').append(nomore_template)
@@ -194,10 +209,12 @@ var mytweets_template = function(tweets, host, visitor){
                         ${href_for_personalpage(t[i].user_name)} · ${formatted_time(t[i].created_time)}
                         <br>
                         ${t[i].content}
+                        <hr />
                       <button class="btn btn-default btn-xs pull-right button-comments">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                         </span>
-                        评论${comments_length}
+                        <span class="comments-toggle">评论${comments_length}</span>
+                        <span class="comments-toggle" style="display: none">收起</span>
                       </button>
                       <button class="btn btn-default btn-xs pull-right id-button-retweets">
                         <span class="glyphicon glyphicon-share" aria-hidden="true">
@@ -226,17 +243,20 @@ var followedtweets_template = function(followed_tweets, host, visitor){
                 <div class="media">
                 <div class="media-left">
                 <a href="#">
-                <img class="media-object" src="/static/avatars/1.jpg" alt="64x64" style="width: 48px; height: 48px;">
+                <img class="media-object img-circle" src="/static/avatars/1.jpg" alt="32x32" style="width: 32px; height: 32px;">
                 </a>
                 </div>
                 <div class="media-body clearfix singletweet" data-id="${t[i].id}">
                 ${href_for_personalpage(t[i].user_name)} · ${formatted_time(t[i].created_time)}
                 <br>
                 ${t[i].content}
+                <hr/>
+
                 <button class="btn btn-default btn-xs pull-right button-comments">
                   <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                   </span>
-                  评论${comments_length}
+                  <span class="comments-toggle">评论${comments_length}</span>
+                  <span class="comments-toggle" style="display: none">收起</span>
                   </button>
                   <button class="btn btn-default btn-xs pull-right id-button-retweets">
                   <span class="glyphicon glyphicon-share" aria-hidden="true">
@@ -245,8 +265,8 @@ var followedtweets_template = function(followed_tweets, host, visitor){
                 </button>
                 <div class="clearfix div-commentarea">
                 </div>
-                <hr />
                 </div>
+                <hr />
                 </div>
                 `
                 $('#id-div-followedtweets').append(template)
