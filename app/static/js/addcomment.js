@@ -1,10 +1,10 @@
 var add_newcomment = function(){
-  var content = $('#id-text-addcomment').val();
+  parent_tweet = $(this).closest(".singletweet")
+  var content = parent_tweet.find(".text-addcomment").val();
   var form = {
     'content': content,
   };
   log('content', content)
-  parent_tweet = $(this).closest(".singletweet")
   log('pt', parent_tweet)
   var tweet_id = parent_tweet.data('id')
   log('tid', tweet_id)
@@ -15,7 +15,7 @@ var add_newcomment = function(){
 
 var new_comment = function(data){
   if(data.success) {
-    $('#id-text-addcomment').val('')
+    parent_tweet.find(".text-addcomment").val('')
     var t = data.comment;
     var u = data.user
     var template = `

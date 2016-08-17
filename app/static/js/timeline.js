@@ -104,6 +104,7 @@ var bindActions = function() {
         comments_url = '/tweet/comments/' + tweet_id + '?page=' + comments_page
         if (single_tweet.find(".div-commentarea").children().length == 0){
           get(comments_url, comments_response);
+          // 评论区展开后，评论按钮显示“收起评论”；评论区收起后，评论按钮显示“评论（评论数量）”
           single_tweet.find(".comments-toggle").toggle();
         }else {
           single_tweet.find(".div-commentarea").toggle("fast");
@@ -111,7 +112,16 @@ var bindActions = function() {
         }
       });
 
+      $('#id-div-twitter').on('click', '.button-reposts', function(){
+            // 转发区展开后，评论按钮显示“收起转发”
+            single_tweet = $(this).parent()
+            single_tweet.find(".div-repostarea").toggle("fast");
+            single_tweet.find(".reposts-toggle").toggle();
+        });
+
       $('#id-div-twitter').on('click', '.button-addcomment', add_newcomment);
+
+      $('#id-div-twitter').on('click', '.button-addrepost', add_newrepost);
 
       $('#id-button-avatars').on('click', function() {
         $('.file-wrapper').toggle("slow");
@@ -192,84 +202,25 @@ var notifications_response = function(data){
 
 var mytweets_template = function(tweets, host, visitor){
     var t = tweets
-    var avatar_path = host.avatar
     for(var i = 0; i < t.length; i++){
-      var comments = t[i].comments;
-      log('comments1', comments);
-      var comments_length = comments.length;
-      log('comments_length1', comments_length);
-      template = `
-                    <div class="media">
-                      <div class="media-left">
-                        <a href="#">
-                          <img class="media-object" src="${avatar_path}" alt="64x64" style="width: 48px; height: 48px;">
-                        </a>
-                      </div>
-                      <div class="media-body clearfix singletweet" data-id="${t[i].id}">
-                        ${href_for_personalpage(t[i].user_name)} · ${formatted_time(t[i].created_time)}
-                        <br>
-                        ${t[i].content}
-                        <hr />
-                      <button class="btn btn-default btn-xs pull-right button-comments">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">
-                        </span>
-                        <span class="comments-toggle">评论${comments_length}</span>
-                        <span class="comments-toggle" style="display: none">收起</span>
-                      </button>
-                      <button class="btn btn-default btn-xs pull-right id-button-retweets">
-                        <span class="glyphicon glyphicon-share" aria-hidden="true">
-                        </span>
-                        转发
-                      </button>
-                      <div class="clearfix div-commentarea">
-                      </div>
-                      <hr />
-                    </div>
-                    </div>
-                    `
-                      ;
-                $('#id-div-mytweets').append(template)
+      tweet = t[i]
+        var comments = tweet.comments;
+        var avatar_path = tweet.avatar;
+        var comments_length = comments.length;
+      template = tweet_template(avatar_path, tweet, comments_length)
+      $('#id-div-mytweets').append(template)
                 }
-}
-
+              }
 
 var followedtweets_template = function(followed_tweets, host, visitor){
     var t = followed_tweets
-            for(var i = 0; i < t.length; i++){
-              var comments = t[i].comments;
-              var comments_length = comments.length;
-              log('comments_length', comments_length);
-                var template = `
-                <div class="media">
-                <div class="media-left">
-                <a href="#">
-                <img class="media-object img-circle" src="/static/avatars/1.jpg" alt="32x32" style="width: 32px; height: 32px;">
-                </a>
-                </div>
-                <div class="media-body clearfix singletweet" data-id="${t[i].id}">
-                ${href_for_personalpage(t[i].user_name)} · ${formatted_time(t[i].created_time)}
-                <br>
-                ${t[i].content}
-                <hr/>
-
-                <button class="btn btn-default btn-xs pull-right button-comments">
-                  <span class="glyphicon glyphicon-pencil" aria-hidden="true">
-                  </span>
-                  <span class="comments-toggle">评论${comments_length}</span>
-                  <span class="comments-toggle" style="display: none">收起</span>
-                  </button>
-                  <button class="btn btn-default btn-xs pull-right id-button-retweets">
-                  <span class="glyphicon glyphicon-share" aria-hidden="true">
-                  </span>
-                  转发
-                </button>
-                <div class="clearfix div-commentarea">
-                </div>
-                </div>
-                <hr />
-                </div>
-                `
-                $('#id-div-followedtweets').append(template)
+      for(var i = 0; i < t.length; i++){
+        tweet = t[i]
+          var comments = tweet.comments;
+          var avatar_path = tweet.avatar;
+          var comments_length = comments.length;
+          template = tweet_template(avatar_path, tweet, comments_length)
+          $('#id-div-followedtweets').append(template)
                 }
               }
 
@@ -277,19 +228,18 @@ var notifications_template = function(notifications, host, visitor){
   var t = notifications
   var words = '在微博@了你'
     for(var i = 0; i < t.length; i++){
+      tweet = t[i].t
+      var comments_length = tweet.comments.length
+      var avatar_path = tweet.avatar
         var template = `
             <div class="well clearfix">
               <span>
               ${t[i].sender_name} ${words}
               </span>
-                <div class="list-group-item clearfix singletweet"  data-id="${t[i].tweet_id}">
-                  ${t[i].sender_name} · ${formatted_time(t[i].created_time)}
-                  <br>
-                  ${t[i].tweet_content}
-                  ${tweet_template}
-                  </div>
+              <div class="list-group-item">
+                ${tweet_template(avatar_path, tweet, comments_length)}
+                </div>
               </div>
-              <hr/>
               `;
         $('#id-div-notification').append(template)
         }

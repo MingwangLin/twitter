@@ -39,6 +39,7 @@ class Tweet(db.Model, ReprMixin):
             'user_id': self.user_id,
             'user_name': User.query.filter_by(id=self.user_id).first().username,
             'comments': [i.json() for i in self.comments],
+            'avatar': User.query.filter_by(id=self.user_id).first().avatar,
         }
         d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
         d.update(extra)

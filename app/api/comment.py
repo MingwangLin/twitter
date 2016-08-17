@@ -58,7 +58,7 @@ def comments(tweet_id):
     tweet = Tweet.query.filter_by(id=tweet_id).first()
     args = request.args
     page = args.get('page', 1, type=int)
-    log('p', type(page))
+    log('page', page)
     pagination = Comment.query.filter_by(tweet_id=tweet.id).order_by(
         Comment.created_time.desc()).paginate(
         page, error_out=False)

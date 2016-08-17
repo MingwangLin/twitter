@@ -16,6 +16,10 @@ class Follow(db.Model, ReprMixin):
         self.followed_id = followed.id
         self.created_time = int(time.time())
 
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        return u'<{} {}:{}>'.format(class_name, self.follower_id, self.followed_id)
+
     def json(self):
         d = {
         'follower_id': self.follower_id,

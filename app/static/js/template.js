@@ -1,17 +1,39 @@
-var tweet_template = `
-                      <button class="btn btn-default btn-xs pull-right button-comments">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">
-                        </span>
-                        评论
-                        </button>
-                        <button class="btn btn-default btn-xs pull-right id-button-retweets">
-                        <span class="glyphicon glyphicon-share" aria-hidden="true">
-                        </span>
-                        转发
-                      </button>
-                      <div class="clearfix div-commentarea">
-                      </div>
-                      `
+var tweet_template = function(avatar_path, tweet, comments_length){
+  return template =
+                `
+                  <div class="media">
+                  <div class="media-left">
+                    <a href="#">
+                      <img class="media-object img-circle" src="${avatar_path}" alt="32x32" style="width: 32px; height: 32px;">
+                    </a>
+                  </div>
+                  <div class="media-body clearfix singletweet" data-id="${tweet.id}">
+                    ${href_for_personalpage(tweet.user_name)} · ${formatted_time(tweet.created_time)}
+                    <br>
+                    ${tweet.content}
+                    <hr />
+                  <button class="btn btn-default btn-xs pull-right button-comments">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true">
+                    </span>
+                    <span class="comments-toggle">评论${comments_length}</span>
+                    <span class="comments-toggle" style="display: none">收起</span>
+                  </button>
+                  <button class="btn btn-default btn-xs pull-right button-reposts">
+                    <span class="glyphicon glyphicon-share" aria-hidden="true">
+                    </span>
+                    <span class="reposts-toggle">转发</span>
+                    <span class="reposts-toggle" style="display: none">收起</span>
+                  </button>
+                  <div class="clearfix div-repostarea" style="display: none">
+                  ${addrepost_textarea_template}
+                  </div>
+                  <div class="clearfix div-commentarea">
+                  </div>
+                  </div>
+                  <hr />
+                  </div>
+                `
+              };
 
 var none_template = `<p class="none text-center">
                       <span class="glyphicon glyphicon-info-sign">
@@ -28,12 +50,25 @@ var nomore_template = `<p class="nomore text-center">
 var addcomment_textarea_template = `
                       <hr />
                       <div class="input-group">
-                      <input class="form-control" name="content" id="id-text-addcomment" placeholder="评论点什么">
+                      <input class="form-control text-addcomment" name="content" placeholder="评论点什么">
                       <span class="input-group-btn">
                       <button class="btn btn-default pull-right button-addcomment" type="button">
                       <span class="glyphicon glyphicon-send" aria-hidden="true">
                       </span>
                       发表评论
+                      </button>
+                      </span>
+                      </div>
+                      `
+var addrepost_textarea_template = `
+                      <hr />
+                      <div class="input-group">
+                      <input class="form-control text-addrepost" name="content" placeholder="说点什么">
+                      <span class="input-group-btn">
+                      <button class="btn btn-default pull-right button-addrepost" type="button">
+                      <span class="glyphicon glyphicon-share" aria-hidden="true">
+                      </span>
+                      转发
                       </button>
                       </span>
                       </div>

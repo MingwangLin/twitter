@@ -10,6 +10,33 @@ from . import api
 from .decorator import requires_login, current_user
 
 
+# 用ajax查看别人微博发来的@  GET
+@api.route('/notifications/<username>')
+@requires_login
+def at_view(username):
+    # 查找 username 对应的用户
+    visitor = current_user()
+    host = User.query.filter_by(username=username).first()
+    args = request.args
+    page = args.get('page', 1, type=int)
+    if host is None:
+        abort(404)
+    else:
+        pagination = At.query.filter_by(reciever_id=visitor.id).order_by(
+            At.created_time.desc()).paginate(
+            page, error_out=False)
+        filtered_ats = pagination.items
+        ats = [t.json() for t in filtered_ats]
+        filtered_ats = {
+            'success': True,
+            'host': host.json(),
+            'visitor': visitor.json(),
+            'notifications': ats
+        }
+        log('filtered_ats', filtered_ats)
+        return jsonify(filtered_ats)
+
+
 # 解析微博/评论内容,得到所有@的用户名/
 def get_name(s):
     # 用'//@'切片, 得到微博中用户原创内容
@@ -37,7 +64,7 @@ def At_lst(lst, tweet):
             a.tweet = tweet
             a.tweet_id = tweet.id
             a.user = u
-            #a.reciever_id = u.id
+            # a.reciever_id = u.id
             a.save()
     return
 
@@ -82,33 +109,6 @@ def notification_discard(comment_id):
     comment.reply_viewed = 1
     comment.save()
     return redirect(url_for('timeline_view', username=user.username))
-
-# 用ajax查看别人微博发来的@  GET
-@api.route('/notifications/<username>')
-@requires_login
-def at_view(username):
-    # 查找 username 对应的用户
-    visitor = current_user()
-    host = User.query.filter_by(username=username).first()
-    args = request.args
-    page = args.get('page', 1, type=int)
-    if host is None:
-        abort(404)
-    else:
-        pagination = At.query.filter_by(reciever_id=visitor.id).order_by(
-            At.created_time.desc()).paginate(
-            page, error_out=False)
-        filtered_ats = pagination.items
-        ats = [t.json() for t in filtered_ats]
-        filtered_ats = {
-            'success':True,
-            'host': host.json(),
-            'visitor': visitor.json(),
-            'notifications': ats
-        }
-        log('filtered_ats', filtered_ats)
-        return jsonify(filtered_ats)
-
 
 
 # 查看微博中的@
