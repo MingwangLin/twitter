@@ -1,7 +1,7 @@
 var tweet_template = function(avatar_path, tweet, comments_length){
   return template =
                 `
-                  <div class="media">
+                  <div class="media list-group-item">
                   <div class="media-left">
                     <a href="#">
                       <img class="media-object img-circle" src="${avatar_path}" alt="32x32" style="width: 32px; height: 32px;">
@@ -11,26 +11,27 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                     ${href_for_personalpage(tweet.user_name)} · ${formatted_time(tweet.created_time)}
                     <br>
                     ${tweet.content}
-                    <hr />
-                  <button class="btn btn-default btn-xs pull-right button-comments">
+                  <div class="btn-group bottom-right " role="group" aria-label="...">
+                  <button type="button" class="btn btn-default btn-xs button-comments">
                     <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                     </span>
                     <span class="comments-toggle">评论${comments_length}</span>
                     <span class="comments-toggle" style="display: none">收起</span>
                   </button>
-                  <button class="btn btn-default btn-xs pull-right button-reposts">
+                  <button type="button" class="btn btn-default btn-xs button-reposts">
                     <span class="glyphicon glyphicon-share" aria-hidden="true">
                     </span>
                     <span class="reposts-toggle">转发</span>
                     <span class="reposts-toggle" style="display: none">收起</span>
                   </button>
+                  </div>
                   <div class="clearfix div-repostarea" style="display: none">
                   ${addrepost_textarea_template}
                   </div>
                   <div class="clearfix div-commentarea">
                   </div>
-                  </div>
                   <hr />
+                  </div>
                   </div>
                 `
               };
@@ -38,7 +39,7 @@ var tweet_template = function(avatar_path, tweet, comments_length){
 var none_template = `<p class="none text-center">
                       <span class="glyphicon glyphicon-info-sign">
                       </span>
-                      空空如也，说点什么吧。
+                      <微博为空>
                     </p>
                     `
 var nomore_template = `<p class="nomore text-center">

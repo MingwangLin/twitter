@@ -18,7 +18,7 @@ var new_tweet = function(data){
       var comments = t.comments;
       var comments_length = comments.length;
       template = tweet_template(avatar_path, tweet=t, comments_length)
-      $('#id-div-mytweets').prepend(template);
+      $(template).hide().prependTo('#id-div-mytweets').show("slow");
 }else {
   log('请求失败');
 }

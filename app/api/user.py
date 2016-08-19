@@ -16,6 +16,8 @@ from .decorator import requires_login, requires_admin, current_user
 import random
 import string
 from .notification import At_lst, get_name
+from werkzeug.utils import secure_filename
+import os
 
 
 # 显示某个用户的主页  GET
@@ -115,13 +117,25 @@ def upload_avatars():
     log('upload, ', request.files)
     if file:
         filename = file.filename
+        filename = secure_filename(file.filename)
         log('filename, ', filename)
         path = '/static/avatars/' + filename
-        file.save(path)
+        abs_path = '/Users/linmingwang/twitter/app' + path
+        # abs_path = os.path.join(path, filename)
+        # log('abs', abs_path)
+        file.save(abs_path)
+        # file.save(path)
         user.avatar = path
         user.save()
-    return redirect(url_for('api.timeline_view', username=user.username))
-
+        log('user', user.username)
+        url = '/timeline/'+ user.username
+        data = {
+            'success': True,
+            'url': url,
+        }
+    else:
+        data['success'] = False
+    return jsonify(data)
 
 
 # 删除用户

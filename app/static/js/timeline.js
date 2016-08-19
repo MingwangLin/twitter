@@ -19,9 +19,9 @@ $(document).ready(function(){
         // 如果返回的微博没超过20的话，就不需要显示翻页按钮。
         // 下面的函数会做一个判断 ，决定隐藏还是显示翻页按钮。
         // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 1000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 1000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 1000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 2000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 2000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 2000)
 });
 
 var __main = function() {
@@ -97,7 +97,7 @@ var bindActions = function() {
     $('#id-button-addtweet').on('click', add_newtweet);
 
     $('#id-div-twitter').on('click', '.button-comments', function(){
-        single_tweet = $(this).parent()
+        single_tweet = $(this).closest(".singletweet")
         log('single_tweet', single_tweet)
         var tweet_id = single_tweet.data('id')
         log('tweet_id', tweet_id);
@@ -114,7 +114,7 @@ var bindActions = function() {
 
       $('#id-div-twitter').on('click', '.button-reposts', function(){
             // 转发区展开后，评论按钮显示“收起转发”
-            single_tweet = $(this).parent()
+            single_tweet = $(this).closest(".singletweet")
             single_tweet.find(".div-repostarea").toggle("fast");
             single_tweet.find(".reposts-toggle").toggle();
         });
@@ -236,9 +236,7 @@ var notifications_template = function(notifications, host, visitor){
               <span>
               ${t[i].sender_name} ${words}
               </span>
-              <div class="list-group-item">
                 ${tweet_template(avatar_path, tweet, comments_length)}
-                </div>
               </div>
               `;
         $('#id-div-notification').append(template)

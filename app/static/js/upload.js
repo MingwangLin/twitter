@@ -9,10 +9,10 @@ var upload = function(file) {
         data: fd,
         success: function(r) {
           if (r.success) {
-            var url = r.data;
+            var url = r.url;
             window.location.href = url;
           } else {
-            log('服务器提了一个问题');
+            log('internal server');
           }
         },
         error: function() {

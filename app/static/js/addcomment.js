@@ -19,14 +19,15 @@ var new_comment = function(data){
     var t = data.comment;
     var u = data.user
     var template = `
-                    <hr />
+                    <hr/>
                     <div class="well well-sm clearfix" data-id="${t.id}">
                         ${u.username} · ${formatted_time(t.created_time)}
                         <br>
                         ${t.content}
                     </div>
                     `;
-        parent_tweet.find(".div-commentarea").prepend(template);
+        var input_area = parent_tweet.find(".div-commentarea .input-group");
+        $(template).hide().insertAfter(input_area).show("slow")
         }else {
         log('请求失败');
       }
