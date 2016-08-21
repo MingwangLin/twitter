@@ -19,9 +19,9 @@ $(document).ready(function(){
         // 如果返回的微博没超过20的话，就不需要显示翻页按钮。
         // 下面的函数会做一个判断 ，决定隐藏还是显示翻页按钮。
         // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 2000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 2000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 2000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 3000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 3000)
+        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 3000)
 });
 
 var __main = function() {
@@ -127,8 +127,12 @@ var bindActions = function() {
         $('.file-wrapper').toggle("slow");
       });
 
-      $('#id-button-upload').on('click', function() {
-        var fileTag =$('#id-input-file')[0];
+      $('#id-button-addpicture').on('click', function() {
+        $('.upload-wrapper').toggle("slow");
+      });
+
+      $('#id-button-upload-avatar').on('click', function() {
+        var fileTag = $('#id-input-file')[0];
         log('fileTag', fileTag);
         var files = fileTag.files;
         log('files', files);
@@ -139,10 +143,27 @@ var bindActions = function() {
             for (var i = 0; i < numberOfFiles; i++) {
                 var file = files[i];
                 console.log('上传的文件: ', file.name);
-                upload(file);
+                upload_avatar(file);
             }
         }
     });
+
+    $('#id-button-upload-picture').on('click', function() {
+      var fileTag = $('#id-input-file')[0];
+      log('fileTag', fileTag);
+      var files = fileTag.files;
+      log('files', files);
+      var numberOfFiles = files.length;
+      if(numberOfFiles == 0) {
+          alert('还没有选中文件');
+      } else {
+          for (var i = 0; i < numberOfFiles; i++) {
+              var file = files[i];
+              console.log('上传的文件: ', file.name);
+              upload_picture(file);
+          }
+      }
+  });
 };
 
 var mytweets_response = function(data){
@@ -153,8 +174,8 @@ var mytweets_response = function(data){
     var tweets = data.tweets;
     if (tweets.length == 0 && $('#id-div-mytweets').children().length == 0){
       $('#id-div-mytweets').append(none_template)
-      var timeout = 2000
-      setTimeout(function(){$('p.none').remove()}, timeout)
+      var timeout = 3000
+      setTimeout(function(){$('.none').remove()}, timeout)
     }else if (tweets.length == 0 && $('#id-div-mytweets').children().length > 0) {
       $('#id-div-mypage').append(nomore_template)
       var timeout = 1000
@@ -203,11 +224,11 @@ var notifications_response = function(data){
 var mytweets_template = function(tweets, host, visitor){
     var t = tweets
     for(var i = 0; i < t.length; i++){
-      tweet = t[i]
+      tweet = t[i];
         var comments = tweet.comments;
         var avatar_path = tweet.avatar;
         var comments_length = comments.length;
-      template = tweet_template(avatar_path, tweet, comments_length)
+          template = tweet_template(avatar_path, tweet, comments_length);
       $('#id-div-mytweets').append(template)
                 }
               }
@@ -215,11 +236,11 @@ var mytweets_template = function(tweets, host, visitor){
 var followedtweets_template = function(followed_tweets, host, visitor){
     var t = followed_tweets
       for(var i = 0; i < t.length; i++){
-        tweet = t[i]
+        tweet = t[i];
           var comments = tweet.comments;
           var avatar_path = tweet.avatar;
           var comments_length = comments.length;
-          template = tweet_template(avatar_path, tweet, comments_length)
+          template = tweet_template(avatar_path, tweet, comments_length);
           $('#id-div-followedtweets').append(template)
                 }
               }
@@ -232,7 +253,7 @@ var notifications_template = function(notifications, host, visitor){
       var comments_length = tweet.comments.length
       var avatar_path = tweet.avatar
         var template = `
-            <div class="well clearfix">
+            <div class="well tweetbox clearfix">
               <span>
               ${t[i].sender_name} ${words}
               </span>

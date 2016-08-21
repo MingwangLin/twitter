@@ -76,7 +76,7 @@ var formatted_time = function(timestamp){
 
 var href_for_personalpage = function(name){
     // multiplied by 1000 so that the argument is in milliseconds, not seconds
-    template = `<a href="/timeline/${name}">${name}</a>`;
+    template = `<a class=“font-small" href="/timeline/${name}">${name}</a>`;
     return template;
     }
 
@@ -96,3 +96,14 @@ var articles = function(response) {
     var path = '/api/articles';
     get(path, response);
 };
+
+var href_for_username = function(content){
+  while (i < 10) {
+    text += "The number is " + i;
+    i++;
+}
+  var i = content.indexof("@")
+  var j = content.indexof(":")
+  template = `<a href="/timeline/${username}">${username}</a>`
+  return template
+}

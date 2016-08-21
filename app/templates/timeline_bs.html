@@ -15,6 +15,8 @@
     <link href="/static/css/sticky-footer-navbar.css" rel="stylesheet">
     <link href="/static/css/blog.css" rel="stylesheet">
     <link href="/static/css/position.css" rel="stylesheet">
+    <link href="/static/css/fonts.css" rel="stylesheet">
+    <link href="/static/css/background.css" rel="stylesheet">
 
     {% block script %}
     <script src="/static/js/ie-emulation-modes-warning.js"></script>
@@ -42,7 +44,6 @@
           <a class="blog-nav-item" id="id-a-mytweets" href="#">个人主页</a>
           <a class="blog-nav-item" id="id-a-followedtweets" href="#">关注人微博</a>
           <a class="blog-nav-item" id="id-a-notifications" href="#">通知</a>
-          <a class="blog-nav-item" href="#">私信</a>
           <a class="blog-nav-item" href="/signout">退出</a>
         </nav>
       </div>
@@ -53,7 +54,7 @@
         <div id="id-div-twitter" class="col-sm-8 blog-main">
           <div id="id-div-tweetspage" data-name="{{visitor.username}}">
             <div id="id-div-mypage">
-              <div class="clearfix">
+              <div class="transbox clearfix">
                 {% if host is not none and host.username == visitor.username  %}
                   <textarea name="content" id="id-text-content" class="form-control" placeholder="说点什么"></textarea>
                   <button class="btn btn-default pull-right" id="id-button-addtweet">
@@ -61,10 +62,21 @@
                     </span>
                     发送
                   </button>
+                  <button class="btn btn-default pull-left" id="id-button-addpicture">
+                    <span class="glyphicon glyphicon-picture" aria-hidden="true">
+                    </span>
+                    上传图片
+                  </button>
                   {% endif %}
               </div>
-              <p>
-              </p>
+
+              {% if host.username == visitor.username %}
+              <div class="upload-wrapper transbox" style="display: none;">
+                <input  id="id-input-picture" multiple type="file">
+                <button class="btn btn-default btn-xs" id="id-button-upload-picture">提交</button>
+              </div>
+              {% endif %}
+
               <div class="list-group" id="id-div-mytweets">
               </div>
                 <nav>
@@ -91,31 +103,32 @@
         </div><!-- /.blog-main -->
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-          <div class="media well">
+          <div class="media transbox">
             <div class="media-left">
               <a href="#">
-                <img class="media-object img-rounded" src="{{host.avatar}}" alt="64x64" style="width: 48px; height: 48px;">
+                <img class="media-object img-rounded" src="{{host.avatar}}" alt="64x64" style="width: 64px; height: 64px;">
                 </a>
               </div>
-              <div class="media-body clearfix">
-                <h4 class="media-heading"> {{host.username}}
-                  <button class="btn btn-default btn-xs" id="id-button-avatars">更换头像</button>
-                </h4>
-                <p>
-                  关注{{host.followed.count()}} 粉丝{{host.followers.count()}}
+              <div class="media-body">
+                <h4 class="media-heading">{{host.username}}</h4> 
+                关注{{host.followed.count()}} 粉丝{{host.followers.count()}}
                   {% if host.username != visitor.username and not visitor.is_following(host) %}
                   <a href="/follow/{{host.id}}">点击关注</a>
                   {% elif host.username != visitor.username and visitor.is_following(host) %}
-                  <a href="/unfollow/{{host.id}}">取消关注</a>
+                  <p>
+                    <a href="/unfollow/{{host.id}}">取消关注</a>
+                  </p>
                   {% endif %} 
-                </p>
+                {% if host.username == visitor.username %}
+                  <button class="btn btn-default btn-xs" id="id-button-avatars">更换头像</button>
+                {% endif %}
               </div>
             </div>
 
           {% if host.username == visitor.username %}
-              <div class="file-wrapper well" style="display: none;">
+              <div class="file-wrapper transbox" style="display: none;">
                 <input  id="id-input-file" type="file">
-                <button class="btn btn-default btn-xs" id="id-button-upload">提交</button>
+                <button class="btn btn-default btn-xs" id="id-button-upload-avatar">提交</button>
               </div>
           {% endif %}
 
@@ -133,11 +146,11 @@
       </p>
     </footer> -->
 
-    <footer class="footer">
+    <!-- <footer class="footer transbox">
           <div class="container">
             <p class="text-muted"><a href="#">Back to top</a></p>
           </div>
-        </footer>
+        </footer> -->
 
   </body>
 </html>

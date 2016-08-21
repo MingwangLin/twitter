@@ -14,7 +14,9 @@ a {
 }
 .gua-header h1 {
     font-size: 50px;
-    color: dodgerblue;
+    color: white;
+    opacity: 0.8;
+
 }
 .gua-header h2 {
     font-size: 18px;

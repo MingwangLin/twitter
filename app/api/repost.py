@@ -18,27 +18,34 @@ def add_repost(tweet_id):
     form = request.get_json()
     log('form', form)
     t = Tweet(form)
-    # 设置是谁发的
-    t.user = visitor
-    tweet_reposted = Tweet.query.filter_by(id=tweet_id).first()
-    c = tweet_reposted.content
-    t.content = t.content + '//@' + tweet_reposted.user.username + ':' + c
-    # 保存到数据库
-    t.save()
-    log('t1', t)
-    log('t2', tweet_reposted)
-    r = Repost(t.id, tweet_id)
-    r.save()
-    log('r', r)
-    r = {
-        'success': True,
-        'tweet': t.json(),
-        'user': visitor.json(),
-    }
-    # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in t.content:
         name_lst = get_name(t.content)
         At_lst(lst=name_lst, tweet=t)
+    # 设置是谁发的
+    t.user = visitor
+    tweet_reposted = Tweet.query.filter_by(id=tweet_id).first()
+    #被转发微博的转发实例
+    r = tweet_reposted.reposted.all()
+    # 被转发微博为原创微博时，reposted属性为空列表。
+    if len(r) != 0:
+        t.content = t.content + '//@' + tweet_reposted.user.username + ':' + tweet_reposted.content
+        original_tweet_id = r[0].reposted_id
+    else:
+        original_tweet_id = tweet_reposted.id
+    r = Repost(t.id, original_tweet_id)
+    r.save()
+    t.save()
+    tweet = t.json()
+    # 转发的原创微博写入tweet json
+    tweet['original_tweet'] = [t.reposted.first().reposted.json()]
+    log('tweet', tweet)
+    r = {
+        'success': True,
+        'tweet': tweet,
+        'user': visitor.json(),
+    }
+    log('r', r)
+    # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     return jsonify(r)
 
 

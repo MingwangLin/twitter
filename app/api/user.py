@@ -62,10 +62,13 @@ def timeline_ajax(username):
         pagination = Tweet.query.filter_by(user_id=host.id).order_by(
             Tweet.created_time.desc()).paginate(
             page, error_out=False)
-        tweets = pagination.items
-        log('items', tweets)
-        tweets = [i.json() for i in tweets]
-        filtered_tweets = {
+        my_tweets = pagination.items
+        tweets = [i.json() for i in my_tweets]
+        # 每条tweet json都加上转发的原创微博
+        for i in range(len(tweets)):
+            tweets[i]['original_tweet'] = [j.reposted.json() for j in my_tweets[i].reposted.all()]
+        log('tweets', tweets)
+        tweets_perpage = {
             'success': True,
             'host': host.json(),
             'visitor': visitor.json(),
@@ -73,7 +76,7 @@ def timeline_ajax(username):
 
         }
         # log('filtered_tweets', filtered_tweets)
-        return jsonify(filtered_tweets)
+        return jsonify(tweets_perpage)
 
 
 # 用ajax显示关注人微博时间线  GET
@@ -88,24 +91,27 @@ def timeline_followed(username):
     else:
         args = request.args
         page = args.get('page', 1, type=int)
-        log('p', request.args)
+        # log('p', request.args)
         pagination = Tweet.query. \
             join(Follow, Follow.followed_id == Tweet.user_id) \
             .filter(Follow.follower_id == visitor.id).order_by(
             Tweet.created_time.desc()).paginate(
             page, error_out=False)
         followed_tweets = pagination.items
-        log('f', followed_tweets)
+        # log('f', followed_tweets)
         tweets = [i.json() for i in followed_tweets]
-        filtered_tweets = {
+        # 每条tweet json都加上转发的原创微博
+        for i in range(len(tweets)):
+            tweets[i]['original_tweet'] = [j.reposted.json() for j in followed_tweets[i].reposted.all()]
+        # log('tweets', tweets)
+        tweets_perpage = {
             'success': True,
             'host': host.json(),
             'visitor': visitor.json(),
             'tweets': tweets
 
         }
-        log('filtered_tweets', filtered_tweets)
-        return jsonify(filtered_tweets)
+        return jsonify(tweets_perpage)
 
 # 用ajax上传用户头像
 @api.route('/upload/avatars', methods=['POST'])

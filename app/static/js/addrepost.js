@@ -15,12 +15,13 @@ var new_repost = function(data){
   if(data.success) {
     parent_tweet.find('.text-addrepost').val('')
     var u = data.user
-    var t = data.tweet;
+    var tweet = data.tweet;
     var avatar_path = u.avatar
-    var comments_length = t.comments.length;
-    template = tweet_template(avatar_path, tweet=t, comments_length)
-    $('#id-div-mytweets').prepend(template);
+    var comments_length = tweet.comments.length;
+      template = tweet_template(avatar_path, tweet, comments_length)
+    // $('#id-div-mytweets').prepend(template);
     $('#id-a-mytweets').click();
+    $(template).hide().prependTo('#id-div-mytweets').show("slow");
     }else{
         log('请求失败');
       }

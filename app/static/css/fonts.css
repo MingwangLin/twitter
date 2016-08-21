@@ -1,0 +1,11 @@
+body {
+    font-size: 100%;
+}
+
+.font-normal {
+    font: 1em Verdana, Geneva, sans-serif;
+}
+
+.font-small a{
+    font: 0.875em Verdana, Geneva, sans-serif;
+}
