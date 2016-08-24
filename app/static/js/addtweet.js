@@ -1,5 +1,6 @@
 var add_newtweet = function(){
   var content = $('#id-text-content').val();
+  // var picture_url =
   var form = {
     'content': content,
   };
@@ -15,10 +16,9 @@ var new_tweet = function(data){
       var t = data.tweet;
       var u = data.user
       var avatar_path = u.avatar
-      var comments = t.comments;
-      var comments_length = comments.length;
+      var comments_length = '';
       template = tweet_template(avatar_path, tweet=t, comments_length)
-      $(template).hide().prependTo('#id-div-mytweets').show("slow");
+      $(template).hide().prependTo('#id-div-mytweets').fadeIn("slow");
 }else {
   log('请求失败');
 }

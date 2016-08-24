@@ -26,7 +26,6 @@ class Comment(db.Model, ReprMixin):
 
     def json(self):
         extra = dict(
-            sender_id = self.sender_id,
             tweet_id = self.tweet_id,
             user_name=User.query.filter_by(id=self.sender_id).first().username
         )
@@ -37,7 +36,12 @@ class Comment(db.Model, ReprMixin):
     def blacklist(self):
         b = [
             '_sa_instance_state',
+            'id',
             'ats',
+            'comment_replied',
+            'user_replied',
+            'reply_viewed',
+            'sender_id',
         ]
         return b
 

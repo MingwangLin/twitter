@@ -1,21 +1,23 @@
 var add_newcomment = function(){
-  parent_tweet = $(this).closest(".singletweet")
-  var content = parent_tweet.find(".text-addcomment").val();
+  var $tweet= $(this).closest(".singletweet")
+  var $interect_area = $tweet.children('.div-interact-area')
+  var $comments_input = $interect_area.find('.text-addcomment')
+  log('comments_input', $comments_input)
+  var content = $comments_input.val();
   var form = {
     'content': content,
   };
-  log('content', content)
-  log('pt', parent_tweet)
-  var tweet_id = parent_tweet.data('id')
+  var tweet_id = $tweet.data('id')
   log('tid', tweet_id)
   // JSON.stringify 可以把一个 object 转换为字符串
   var url = '/comment/add' + '/' + tweet_id;
-  post(url, form, new_comment);
+  post(url, form, new_comment, $interect_area);
 };
 
-var new_comment = function(data){
+var new_comment = function(data, $object){
   if(data.success) {
-    parent_tweet.find(".text-addcomment").val('')
+    var $comments_input = $object.find('.text-addcomment')
+    $comments_input.val('')
     var t = data.comment;
     var u = data.user
     var template = `
@@ -26,8 +28,9 @@ var new_comment = function(data){
                         ${t.content}
                     </div>
                     `;
-        var input_area = parent_tweet.find(".div-commentarea .input-group");
-        $(template).hide().insertAfter(input_area).show("slow")
+        var $input_area = $object.find(".div-commentarea .input-group");
+
+        $(template).hide().insertAfter($input_area).fadeIn("slow")
         }else {
         log('请求失败');
       }

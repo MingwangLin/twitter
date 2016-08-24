@@ -20,8 +20,8 @@ body {
   background-color: #ffffff;
   /*border: 1px solid white;*/
   border: 1px solid #e3e3e3;
-  opacity: 0.8;
-  filter: alpha(opacity=80);
+  opacity: 0.9;
+  filter: alpha(opacity=90);
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;

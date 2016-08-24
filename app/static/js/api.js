@@ -6,14 +6,14 @@ var log = function () {
 // form
 
 
-var ajax = function(url, method, form, response) {
+var ajax = function(url, method, form, response, $object) {
     var request = {
         url: url,
         type: method,
         contentType: 'application/json',
         success: function (r) {
             log('success', url, r);
-            response(r);
+            response(r, $object);
         },
         error: function (err) {
             r = {
@@ -23,7 +23,7 @@ var ajax = function(url, method, form, response) {
             }
             log('err', err)
             log('err', url, err);
-            response(r);
+            response(r, $object);
         }
     };
     if(method === 'post') {
@@ -33,15 +33,15 @@ var ajax = function(url, method, form, response) {
     $.ajax(request);
 };
 
-var get = function(url, response) {
+var get = function(url, response, $object) {
     var method = 'get';
     var form = {}
-    ajax(url, method, form, response);
+    ajax(url, method, form, response, $object);
 };
 
-var post = function(url, form, response) {
+var post = function(url, form, response, $object) {
     var method = 'post';
-    ajax(url, method, form, response);
+    ajax(url, method, form, response, $object);
 };
 
 var formatted_time = function(timestamp){
@@ -76,7 +76,7 @@ var formatted_time = function(timestamp){
 
 var href_for_personalpage = function(name){
     // multiplied by 1000 so that the argument is in milliseconds, not seconds
-    template = `<a class=“font-small" href="/timeline/${name}">${name}</a>`;
+    template = `<a href="/timeline/${name}">${name}</a>`;
     return template;
     }
 

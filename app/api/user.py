@@ -103,7 +103,7 @@ def timeline_followed(username):
         # 每条tweet json都加上转发的原创微博
         for i in range(len(tweets)):
             tweets[i]['original_tweet'] = [j.reposted.json() for j in followed_tweets[i].reposted.all()]
-        # log('tweets', tweets)
+        log('tweets', tweets)
         tweets_perpage = {
             'success': True,
             'host': host.json(),
@@ -135,6 +135,31 @@ def upload_avatars():
         user.save()
         log('user', user.username)
         url = '/timeline/'+ user.username
+        data = {
+            'success': True,
+            'url': url,
+        }
+    else:
+        data['success'] = False
+    return jsonify(data)
+
+# 用ajax上传微博图片
+@api.route('/upload/picture', methods=['POST'])
+@requires_login
+def upload_picture():
+    user = current_user()
+    file = request.files.get('uploaded')
+    log('upload, ', request.files)
+    if file:
+        filename = string_generator(size=8)
+        log('filename, ', filename)
+        path = '/static/tweets_picture/' + filename
+        abs_path = '/Users/linmingwang/twitter/app' + path
+        # abs_path = os.path.join(path, filename)
+        # log('abs', abs_path)
+        file.save(abs_path)
+        # file.save(path)
+        url = path
         data = {
             'success': True,
             'url': url,
@@ -176,11 +201,9 @@ def user_update(user_id):
     return redirect(url_for('users_view'))
 
 
-def string_generator():
-    size = 4
+def string_generator(size):
     # chars = string.ascii_uppercase + string.digits
     chars = string.digits
-
     return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
 
 
@@ -188,8 +211,8 @@ def string_generator():
 @api.route('/testuser', methods=['GET'])
 def user_create():
     form = {
-        'username': '游客' + string_generator(),
-        'password': string_generator(),
+        'username': '游客' + string_generator(size=4),
+        'password': string_generator(size=6),
     }
     user = User(form)
     # 写入关注人信息

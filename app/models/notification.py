@@ -27,15 +27,8 @@ class At(db.Model, ReprMixin):
         sender_id = Tweet.query.filter_by(id=self.tweet_id).first().user_id
         t= Tweet.query.filter_by(id=self.tweet_id).first()
         sender_name = User.query.filter_by(id=sender_id).first().username
-        avatar_path = User.query.filter_by(id=sender_id).first().avatar
-        tweet_content = Tweet.query.filter_by(id=self.tweet_id).first().content
         extra = dict(
-            reciever_id = self.reciever_id,
-            tweet_id = self.tweet_id,
             sender_name = sender_name,
-            tweet_content = tweet_content,
-            comments=[i.json() for i in t.comments],
-            avatar_path = avatar_path,
             t = t.json(),
         )
         d = {k: v for k, v in self.__dict__.items() if k not in self.blacklist()}
@@ -44,7 +37,9 @@ class At(db.Model, ReprMixin):
 
     def blacklist(self):
         b = [
+            'id',
             '_sa_instance_state',
+            'at_viewed',
         ]
         return b
     def save(self):

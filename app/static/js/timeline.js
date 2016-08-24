@@ -23,7 +23,6 @@ $(document).ready(function(){
         setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 3000)
         setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 3000)
 });
-
 var __main = function() {
     setup();
     bindActions();
@@ -97,26 +96,49 @@ var bindActions = function() {
     $('#id-button-addtweet').on('click', add_newtweet);
 
     $('#id-div-twitter').on('click', '.button-comments', function(){
-        single_tweet = $(this).closest(".singletweet")
-        log('single_tweet', single_tweet)
-        var tweet_id = single_tweet.data('id')
-        log('tweet_id', tweet_id);
+        var $single_tweet = $(this).closest(".singletweet")
+        var tweet_id = $single_tweet.data('id')
         comments_url = '/tweet/comments/' + tweet_id + '?page=' + comments_page
-        if (single_tweet.find(".div-commentarea").children().length == 0){
-          get(comments_url, comments_response);
-          // 评论区展开后，评论按钮显示“收起评论”；评论区收起后，评论按钮显示“评论（评论数量）”
-          single_tweet.find(".comments-toggle").toggle();
-        }else {
-          single_tweet.find(".div-commentarea").toggle("fast");
-          single_tweet.find(".comments-toggle").toggle();
+        var $interect_area = $(this).closest(".div-interact-area")
+        var $repost_area = $interect_area.find(".div-repostarea");
+        var $comments_area = $interect_area.find(".div-commentarea")
+        var $comments = $interect_area.find(".well-sm")
+        log('len', $comments)
+        var $comment_button = $interect_area.find(".comment-button-text")
+        var $repost_button = $interect_area.find(".repost-button-text")
+        if ($comments_area.is(':hidden')) {
+          if ($comments.length == 0){
+            get(comments_url, comments_response, $comments_area);
+            $interect_area.find(".div-commentarea").slideToggle("slow");
+          }else {
+            $interect_area.find(".div-commentarea").slideToggle("slow");
+          }
+          $repost_area.hide();
+          $comment_button.text('收起');
+          $repost_button.text('转发');
+        } else {
+          $interect_area.find(".div-commentarea").slideToggle("slow");
+          $comment_button.text('评论' + $comments.length);
         }
       });
 
       $('#id-div-twitter').on('click', '.button-reposts', function(){
-            // 转发区展开后，评论按钮显示“收起转发”
-            single_tweet = $(this).closest(".singletweet")
-            single_tweet.find(".div-repostarea").toggle("fast");
-            single_tweet.find(".reposts-toggle").toggle();
+            var $interect_area = $(this).closest(".div-interact-area")
+            var $repost_area = $interect_area.find(".div-repostarea");
+            var $comment_area = $interect_area.find(".div-commentarea");
+            var $comment_button = $interect_area.find(".comment-button-text")
+            var $repost_button = $interect_area.find(".repost-button-text")
+            var $comments = $interect_area.find(".well-sm")
+            log('gh', $repost_area.is(':visible'));
+            if ($repost_area.is(':hidden')) {
+              $repost_area.slideToggle("slow");
+              $comment_area.hide();
+              $repost_button.text('收起');
+              $comment_button.text('评论' + $comments.length);
+            } else {
+              $repost_area.slideToggle("slow");
+              $repost_button.text('转发');
+            }
         });
 
       $('#id-div-twitter').on('click', '.button-addcomment', add_newcomment);
@@ -149,7 +171,7 @@ var bindActions = function() {
     });
 
     $('#id-button-upload-picture').on('click', function() {
-      var fileTag = $('#id-input-file')[0];
+      var fileTag = $('#id-input-picture')[0];
       log('fileTag', fileTag);
       var files = fileTag.files;
       log('files', files);
@@ -184,7 +206,7 @@ var mytweets_response = function(data){
 
       var host = data.host
       var visitor = data.visitor
-      mytweets_template(tweets, host, visitor);
+      show_tweets_onpage(tweets, host, visitor, $page=$('#id-div-mytweets'));
     }
 
 }else {
@@ -197,11 +219,10 @@ var followedtweets_response = function(data){
     var increment = 1
     followedtweets_page += increment
     log('success', data);
-    var followed_tweets = data.tweets;
-    log('followed_tweets', followed_tweets)
+    var tweets = data.tweets;
     var host = data.host
     var visitor = data.visitor
-    followedtweets_template(followed_tweets, host, visitor);
+    show_tweets_onpage(tweets, host, visitor, $page=$('#id-div-followedtweets'));
   }else {
     log('请求失败');
   }
@@ -221,27 +242,17 @@ var notifications_response = function(data){
 }
 };
 
-var mytweets_template = function(tweets, host, visitor){
+var show_tweets_onpage = function(tweets, host, visitor, $page){
     var t = tweets
     for(var i = 0; i < t.length; i++){
       tweet = t[i];
-        var comments = tweet.comments;
         var avatar_path = tweet.avatar;
-        var comments_length = comments.length;
+        var comments_length = tweet.comments_length;
+        if (comments_length == 0) {
+          comments_length = '';
+        };
           template = tweet_template(avatar_path, tweet, comments_length);
-      $('#id-div-mytweets').append(template)
-                }
-              }
-
-var followedtweets_template = function(followed_tweets, host, visitor){
-    var t = followed_tweets
-      for(var i = 0; i < t.length; i++){
-        tweet = t[i];
-          var comments = tweet.comments;
-          var avatar_path = tweet.avatar;
-          var comments_length = comments.length;
-          template = tweet_template(avatar_path, tweet, comments_length);
-          $('#id-div-followedtweets').append(template)
+      $page.append(template)
                 }
               }
 
@@ -250,7 +261,10 @@ var notifications_template = function(notifications, host, visitor){
   var words = '在微博@了你'
     for(var i = 0; i < t.length; i++){
       tweet = t[i].t
-      var comments_length = tweet.comments.length
+      var comments_length = tweet.comments_length
+      if (comments_length == 0) {
+        comments_length = '';
+      };
       var avatar_path = tweet.avatar
         var template = `
             <div class="well tweetbox clearfix">

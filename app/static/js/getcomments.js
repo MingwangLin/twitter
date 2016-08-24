@@ -1,21 +1,18 @@
-var comments_response = function(data){
+var comments_response = function(data, $object){
   if(data.success) {
     // var increment = 1
     // comments_page += increment
     log('success', data);
     var comments = data.comments;
     log('comments', comments)
-    comments_template(comments);
+    comments_template(comments, $object);
   }else {
     log('server error');
   }
 };
 
-var comments_template = function(comments){
+var comments_template = function(comments, $object){
     var t = comments
-    var comment_area = single_tweet.find(".div-commentarea")
-    $(addcomment_textarea_template).hide().appendTo(comment_area).fadeIn("fast")
-      log('this',single_tweet)
         for(var i = 0; i < t.length; i++){
           var template = `
                 <hr />
@@ -25,6 +22,6 @@ var comments_template = function(comments){
                   ${t[i].content}
                 </div>
               `;
-          comment_area.append(template)
+          $(template).hide().appendTo($object).slideDown("slow")
           }
         }

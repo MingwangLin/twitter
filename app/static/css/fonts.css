@@ -6,6 +6,10 @@ body {
     font: 1em Verdana, Geneva, sans-serif;
 }
 
-.font-small a{
+.font-small {
     font: 0.875em Verdana, Geneva, sans-serif;
+}
+
+.font-smaller{
+    font: 0.766em Verdana, Geneva, sans-serif;
 }
