@@ -7,7 +7,7 @@ from . import api
 from .treelog import log
 from ..models import Repost, Tweet
 from .decorator import requires_login, current_user
-from .notification import At_lst, get_name
+from .notification import save_notification, user_notified
 
 
 # 用ajax处理转发的函数
@@ -19,8 +19,8 @@ def add_repost(tweet_id):
     log('form', form)
     t = Tweet(form)
     if '@' in t.content:
-        name_lst = get_name(t.content)
-        At_lst(lst=name_lst, tweet=t)
+        name_lst = user_notified(t.content)
+        save_notification(lst=name_lst, tweet=t)
     # 设置是谁发的
     t.user = visitor
     tweet_reposted = Tweet.query.filter_by(id=tweet_id).first()
@@ -84,8 +84,8 @@ def retweet_add(tweet_id):
     t.user = user
     t.content = content
     t.save()
-    name_lst = get_name(t.content)
-    At_lst(lst=name_lst, tweet=t)
+    name_lst = user_notified(t.content)
+    save_notification(lst=name_lst, tweet=t)
     r = Repost(request.form)
     r.user = user
     r.user_id = user.id

@@ -6,14 +6,14 @@ var log = function () {
 // form
 
 
-var ajax = function(url, method, form, response, $object) {
+var ajax = function(url, method, form, response, $target) {
     var request = {
         url: url,
         type: method,
         contentType: 'application/json',
         success: function (r) {
             log('success', url, r);
-            response(r, $object);
+            response(r, $target);
         },
         error: function (err) {
             r = {
@@ -23,7 +23,7 @@ var ajax = function(url, method, form, response, $object) {
             }
             log('err', err)
             log('err', url, err);
-            response(r, $object);
+            response(r, $target);
         }
     };
     if(method === 'post') {
@@ -33,15 +33,25 @@ var ajax = function(url, method, form, response, $object) {
     $.ajax(request);
 };
 
-var get = function(url, response, $object) {
+var get = function(url, response, $target) {
     var method = 'get';
     var form = {}
-    ajax(url, method, form, response, $object);
+    ajax(url, method, form, response, $target);
 };
 
-var post = function(url, form, response, $object) {
-    var method = 'post';
-    ajax(url, method, form, response, $object);
+var post = function($input_box, url, form, response, $target) {
+    if (form.content == '') {
+      $input_box.css({
+                      "background-color":"#F88E8B",
+                      "transition":"0.5s",
+                        });
+      setTimeout(function(){$input_box.css({"background-color":"white"});
+                            }, timeout=1000)
+    }else {
+      var method = 'post';
+      log('url', url)
+      ajax(url, method, form, response, $target);
+    }
 };
 
 var formatted_time = function(timestamp){

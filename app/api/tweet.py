@@ -6,10 +6,11 @@ from flask import request
 from flask import url_for
 
 from .treelog import log
-from ..models import Tweet
+from ..models import Tweet, TweetImg
 from . import api
 from .decorator import requires_login, current_user
-from .notification import At_lst, get_name
+from .notification import save_notification, user_notified
+import json
 
 
 # 显示单条微博的界面
@@ -21,7 +22,7 @@ def tweet_view(tweet_id):
     return render_template('single_tweet_view.html', t=t, u=u)
 
 
-# 处理 发送 微博的函数  POST
+# 处理添加微博的函数  POST
 @api.route('/tweet/add', methods=['POST'])
 def tweet_add():
     user = current_user()
@@ -32,17 +33,22 @@ def tweet_add():
     t.user = user
     # 保存到数据库
     t.save()
+    imgs_url = form.get('imgs_url')
+    for i in imgs_url:
+        s = TweetImg(img_url=i)
+        s.tweet = t
+        s.save()
     tweet = Tweet.query.filter_by(id=t.id).first()
     r = {
         'success': True,
-        'tweet':tweet.json(),
-        'user':user.json(),
+        'tweet': tweet.json(),
+        'user': user.json(),
     }
     log('r', r)
     # 获取微博中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in t.content:
-        name_lst = get_name(t.content)
-        At_lst(lst=name_lst, tweet=t)
+        name_lst = user_notified(t.content)
+        save_notification(lst=name_lst, tweet=t)
     return jsonify(r)
 
 

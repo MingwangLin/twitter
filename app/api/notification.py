@@ -38,7 +38,7 @@ def at_view(username):
 
 
 # 解析微博/评论内容,得到所有@的用户名/
-def get_name(s):
+def user_notified(s):
     # 用'//@'切片, 得到微博中用户原创内容
     if '//@' in s:
         s = s.partition('//@')[0]
@@ -55,8 +55,8 @@ def get_name(s):
     return name_lst
 
 
-# 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
-def At_lst(lst, tweet):
+# 根据解析微博得到的@的用户名数组, 生成相应的@实例, 存入数据库
+def save_notification(lst, tweet):
     for i in lst:
         u = User.query.filter_by(username=i).first()
         if u is not None:
@@ -68,9 +68,8 @@ def At_lst(lst, tweet):
             a.save()
     return
 
-
 # 根据解析评论得到的@的用户名数组, 生成相应的At实例, 存入数据库
-def comment_At_lst(lst, comment):
+def save_notification_in_comment(lst, comment):
     for i in lst:
         u = User.query.filter_by(username=i).first()
         if u is not None:

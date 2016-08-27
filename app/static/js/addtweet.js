@@ -1,23 +1,34 @@
 var add_newtweet = function(){
   var content = $('#id-text-content').val();
+  var $imgs = $('#id-div-picturearea').find("img");
+  log('i', $imgs)
+  var imgs_length = $imgs.length;
+  var imgs_url = [];
+  if (imgs_length != 0 ) {
+    for (var i = 0; i < imgs_length; i++) {
+      var img_url = $($imgs[i]).attr("src");
+      imgs_url.push(img_url);
+    };
+  };
   // var picture_url =
   var form = {
     'content': content,
+    'imgs_url': imgs_url,
   };
-  // JSON.stringify 可以把一个 object 转换为字符串
   var url = '/tweet/add';
-  log('content', content)
-  post(url, form, new_tweet);
+  post($input_box=$('#id-text-content'), url, form, new_tweet);
 }
 
 var new_tweet = function(data){
   if(data.success) {
-      $('#id-text-content').val('')
-      var t = data.tweet;
-      var u = data.user
-      var avatar_path = u.avatar
+      $('#id-text-content').val('');
+      $('#id-div-picturearea').empty();
+      $('.upload-wrapper').hide();
+      var tweet = data.tweet;
+      var user = data.user;
+      var avatar_path = user.avatar;
       var comments_length = '';
-      template = tweet_template(avatar_path, tweet=t, comments_length)
+      template = tweet_template(avatar_path, tweet, comments_length);
       $(template).hide().prependTo('#id-div-mytweets').fadeIn("slow");
 }else {
   log('请求失败');

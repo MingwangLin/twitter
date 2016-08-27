@@ -1,4 +1,6 @@
 import hashlib
+import random
+import string
 
 from flask import jsonify
 from flask import redirect
@@ -6,10 +8,10 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-
 from .treelog import log
-from ..models import User
+from ..models import User, Follow, Tweet, TweetImg
 from . import api
+from .notification import save_notification, user_notified
 
 
 def hash_password(pwd):
@@ -87,14 +89,82 @@ def register():
         # 保存到数据库
         u.save()
         user = User.query.filter_by(username=u.username).first()
-        session['user_id'] = user.id
+        user_id = user.id
+        session['user_id'] = user_id
         r['data'] = '/timeline/{}'.format(u.username)
+        admin_id = 1
+        admin = User.query.filter_by(id=admin_id).first()
+        f = Follow(user, admin)
+        f.save()
+        # 向该用户发送@通知供测试
+        content = '@' + user.username + ' ' + 'test'
+        fake_tweet(content, user_id=admin_id)
+        content = 'test'
+        fake_tweet(content, user_id=user_id)
     else:
         r['message'] = '注册失败'
     return jsonify(r)
+
 
 @api.route('/signout')
 def signout():
     session['user_id'] = None
     log('session', session)
     return redirect(url_for('api.login_view'))
+
+
+# 自动创建用户
+@api.route('/testuser', methods=['GET'])
+def fake_user():
+    form = {
+        'username': '游客' + string_generator(size=4),
+        'password': string_generator(size=6),
+    }
+    user = User(form)
+    # 写入关注人信息
+    user.password = hash_password(user.password)
+    # 保存到数据库
+    user.save()
+    admin_id = 1
+    user = User.query.filter_by(username=user.username).first()
+    admin = User.query.filter_by(id=admin_id).first()
+    f = Follow(user, admin)
+    f.save()
+    session['user_id'] = user.id
+    content = '@' + user.username + ' ' + 'test'
+    fake_tweet(content, user_id=admin_id)
+    content = '测试'
+    user_id = user.id
+    fake_tweet(content, user_id=user_id)
+    created_user = {
+        'success': True,
+        'user': user.json(),
+        'message': '登录成功',
+    }
+    return jsonify(created_user)
+
+
+# 自动创建微博
+def fake_tweet(content, user_id):
+    # 向该用户发送@通知供测试
+    form = {
+        'content': content
+    }
+    t = Tweet(form)
+    t.user_id = user_id
+    t.save()
+    for i in range(1, 10):
+        img_url = '/static/tweets_picture/' +  str(i) + '.jpg'
+        s = TweetImg(img_url)
+        s.tweet = t
+        s.save()
+    # 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
+    name_lst = user_notified(t.content)
+    save_notification(lst=name_lst, tweet=t)
+    return
+
+
+def string_generator(size):
+    # chars = string.ascii_uppercase + string.digits
+    chars = string.digits
+    return ''.join(random.SystemRandom().choice(chars) for _ in range(size))

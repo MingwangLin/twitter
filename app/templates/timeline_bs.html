@@ -21,7 +21,7 @@
 
     {% block script %}
     <script src="/static/js/ie-emulation-modes-warning.js"></script>
-    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
@@ -37,8 +37,8 @@
   </head>
 
   <body>
-
-    <div class="blog-masthead navbar-fixed-top">
+    <!--navbar-fixed-top-->
+    <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
           <a class="blog-nav-item glyphicon glyphicon-home" id="id-a-mypage" href="/timeline/{{visitor.username}}"></a>
@@ -66,7 +66,7 @@
                   <button class="btn btn-default pull-left" id="id-button-addpicture">
                     <span class="glyphicon glyphicon-picture" aria-hidden="true">
                     </span>
-                    上传图片
+                    图片
                   </button>
                   {% endif %}
                   <div id="id-div-picturearea"></div>
@@ -93,13 +93,21 @@
                 {{ macros.turn_page('id-button-next-followedtweets') }}
               </nav>
             </div>
+
           </div><!-- tweet-page  -->
+
           <div id="id-div-notificationpage">
             <div class="list-group" id="id-div-notification">
             </div>
             <nav>
               {{ macros.turn_page('id-button-next-notifications') }}
             </nav>
+          </div>
+
+          <!-- The Modal -->
+          <div id="id-div-imgmodal" class="modal">
+            <span class="close">×</span>
+            <img class="modal-content" id="id-img-imgModel" src="#">
           </div>
 
         </div><!-- /.blog-main -->
@@ -142,17 +150,10 @@
       {% endblock %}
     </div><!-- /.container -->
 
-    <!-- <footer class="blog-footer">
-      <p>
-        <a href="#">Back to top</a>
-      </p>
-    </footer> -->
+    <div id="footer">
+            <p class="text-center "><a href="#">Back to top</a></p>
+    </div>
 
-    <!-- <footer class="footer transbox">
-          <div class="container">
-            <p class="text-muted"><a href="#">Back to top</a></p>
-          </div>
-        </footer> -->
 
   </body>
 </html>

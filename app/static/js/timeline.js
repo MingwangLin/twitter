@@ -5,29 +5,13 @@ var notifications_page = 1;
 var comments_page = 1;
 
 $(document).ready(function(){
-        path = window.location.pathname
-        username_index = 2
-        username = path.split('/')[username_index]
-        mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
-        followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
-        notifications_url = '/notifications/' + username + '?page=' + notifications_page
-        get(mytweets_url, mytweets_response);
-        get(followedtweets_url, followedtweets_response);
-        get(notifications_url, notifications_response);
         __main();
-        // 页面加载完毕后js会向服务器发送一个ajax请求一页的微博数，服务器会从数据库拿一页的微博数返回，默认是20条。
-        // 如果返回的微博没超过20的话，就不需要显示翻页按钮。
-        // 下面的函数会做一个判断 ，决定隐藏还是显示翻页按钮。
-        // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 3000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 3000)
-        setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 3000)
 });
+
 var __main = function() {
     setup();
     bindActions();
     $('#id-a-mytweets').click();
-
   }
 
 var pageturning_button_show_hide = function (jquery_page_object, jquery_button_object){
@@ -40,11 +24,21 @@ var pageturning_button_show_hide = function (jquery_page_object, jquery_button_o
 };
 
 var setup = function() {
+    path = window.location.pathname
+    username_index = 2
+    username = path.split('/')[username_index]
+    mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
+    followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
+    notifications_url = '/notifications/' + username + '?page=' + notifications_page
+    get(mytweets_url, mytweets_response);
+    get(followedtweets_url, followedtweets_response);
+    get(notifications_url, notifications_response);
     $('.blog-nav> a').on('click', function () {
               var self = $(this);
               $('.active').removeClass('active');
               self.addClass('active');
           });
+
     var tabAction = function (show_mytweets, show_followedtweets, show_notifications) {
         $('#id-div-mypage').toggle(show_mytweets);
         $('#id-div-followedpage').toggle(show_followedtweets);
@@ -57,19 +51,28 @@ var setup = function() {
         var show_mytweets = true;
         tabAction(show_mytweets, show_followedtweets, show_notifications);
     });
+
     $('#id-a-followedtweets').on('click', function() {
         var show_notifications = false;
         var show_followedtweets = true;
         var show_mytweets= false;
         tabAction(show_mytweets, show_followedtweets, show_notifications);
-
     });
+
     $('#id-a-notifications').on('click', function() {
         var show_notifications = true;
         var show_followedtweets = false;
         var show_mytweets= false;
         tabAction(show_mytweets, show_followedtweets, show_notifications);
     });
+
+    // 页面加载完毕后js会向服务器发送一个ajax请求一页的微博数，服务器会从数据库拿一页的微博数返回，默认是20条。
+    // 如果返回的微博没超过20的话，就不需要显示翻页按钮。
+    // 下面的函数会做一个判断 ，决定隐藏还是显示翻页按钮。
+    // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
+    setTimeout(function(){pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))}, 3000)
+    setTimeout(function(){pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))}, 3000)
+    setTimeout(function(){pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))}, 3000)
 };
 
 var bindActions = function() {
@@ -185,6 +188,20 @@ var bindActions = function() {
               upload_picture(file);
           }
       }
+  });
+
+  $('#id-div-twitter').on('click', 'img', function(){
+    var $modal = $('.modal');
+    $modal.show();
+    img_src = $(this).attr("src");
+    log('img_src', img_src);
+    $modal.find('img').attr("src", img_src);
+    log('m', $modal.attr("src"));
+  });
+  // Get the <span> element that closes the modal
+  // When the user clicks on <span> (x), close the modal
+  $('.close').on('click', function(){
+    $('.modal').hide();
   });
 };
 

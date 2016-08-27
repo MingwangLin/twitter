@@ -6,7 +6,7 @@ from flask import jsonify
 from ..models import Comment, Tweet
 from . import api
 from .decorator import requires_login, current_user
-from .notification import comment_At_lst, get_name
+from .notification import save_notification_in_comment, user_notified
 from .treelog import log
 
 
@@ -45,8 +45,8 @@ def comment_add(tweet_id):
     log('r', r)
     # 获取评论中@的用户名, 生成相应的At实例, 存入数据库
     if '@' in c.content:
-        name_lst = get_name(c.content)
-        comment_At_lst(lst=name_lst, comment=c)
+        name_lst = user_notified(c.content)
+        save_notification_in_comment(lst=name_lst, comment=c)
     return jsonify(r)
 
 
@@ -106,6 +106,6 @@ def reply_add(comment_id):
     c.user_replied = comment.user.username
     c.save()
     if '@' in c.content:
-        name_lst = get_name(c.content)
-        comment_At_lst(lst=name_lst, comment=c)
+        name_lst = user_notified(c.content)
+        save_notification_in_comment(lst=name_lst, comment=c)
     return redirect(url_for('api.tweet_view', tweet_id=tweet.id))

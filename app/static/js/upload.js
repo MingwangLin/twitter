@@ -33,7 +33,7 @@ var upload_picture = function(file) {
         success: function(r) {
           if (r.success) {
             var url = r.url;
-            template = picture_gallery(url)
+            template = img_thumnail(url)
             $('#id-div-picturearea').append(template)
           } else {
             log('internal server');

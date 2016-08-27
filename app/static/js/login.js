@@ -59,7 +59,7 @@ var bindActions = function() {
 
 };
 
-var login= function(){
+var login = function(){
   var username = $('#id-input-login-username').val();
   var password = $('#id-input-login-password').val();
   log('user', username, password);
@@ -68,7 +68,7 @@ var login= function(){
     'password': password
   };
     var url = '/login'
-    post(url, form, auth_response)
+    post($input_box=``, url, form, response=auth_response, $target=``)
   }
 
 var register = function(){
@@ -81,7 +81,7 @@ var register = function(){
   };
   // JSON.stringify 可以把一个 object 转换为字符串
   var url = '/register'
-  post(url, form, auth_response)
+  post($input_box=``, url, form, response=auth_response, $target=``)
 }
 
 var testuser = function(url, response){
@@ -99,7 +99,7 @@ var auth_response = function(r){
     log('失败');
   }
   $('#id-p-info').text(r.message);
-}
+};
 
 var testuser_response = function(r){
   log('response', r);

@@ -1,5 +1,4 @@
 var tweet_template = function(avatar_path, tweet, comments_length){
-  log('4', tweet)
   return template =
                 `
                 <div class="media list-group-item tweetbox">
@@ -17,6 +16,9 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                       </span>
                       <br>
                       ${tweet.content}
+                      <div class="tweet-imgs clearfix">
+                      ${imgs_thumnail_template(tweet)}
+                      </div>
                       ${reposted_tweet_template(tweet.original_tweet)}
                     <div class="div-interact-area">
                       <div class="btn-group bottom-right " role="group" aria-label="...">
@@ -38,16 +40,16 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                         ${addcomment_textarea_template}
                       </div>
                     </div>
-                    <hr />
+                    <hr/>
                   </div>
                 </div>
                 `
               };
 
 var reposted_tweet_template = function(tweet){
-  log('tweet3', tweet[0])
   if (tweet.length != 0) {
-    comments_length = tweet[0].comments_length
+    tweet = tweet[0];
+    comments_length = tweet.comments_length
     if (comments_length == 0) {
       comments_length = '';
     }
@@ -56,19 +58,20 @@ var reposted_tweet_template = function(tweet){
               <div class="media list-group-item well  clearfix">
                   <div class="media-left">
                     <a href="#">
-                      <img class="media-object img-circle" src="${tweet[0].avatar}" alt="32x32" style="width: 28px; height: 28px;">
+                      <img class="media-object img-circle" src="${tweet.avatar}" alt="32x32" style="width: 28px; height: 28px;">
                     </a>
                   </div>
-                  <div class="media-body singletweet clearfix" data-id="${tweet[0].id}">
+                  <div class="media-body singletweet clearfix" data-id="${tweet.id}">
                     <span class="font-smaller">
-                      ${href_for_personalpage(tweet[0].user_name)} ·
+                      ${href_for_personalpage(tweet.user_name)} ·
                         <span class="font-smaller">
-                          ${formatted_time(tweet[0].created_time)}
+                          ${formatted_time(tweet.created_time)}
                         </span>
                     </span>
-                    <p class="font-small">
-                      ${tweet[0].content}
-                    </p>
+                    <p class="font-small">${tweet.content}</p>
+                    <div class="tweet-imgs clearfix">
+                    ${imgs_thumnail_template(tweet)}
+                    </div>
                     <div class="div-interact-area">
                       <div class="btn-group bottom-right" role="group" aria-label="...">
                         <button type="button" class="btn btn-default btn-xs button-comments">
@@ -99,17 +102,31 @@ var reposted_tweet_template = function(tweet){
 
               };
 
-var picture_gallery = function(url, index){
+var img_thumnail = function(url, id){
   return template =
                     `
                     <div class="img">
                       <a href="#">
-                      <img src="${url}" data-url="${url}" alt="Trolltunga Norway" width="300" height="200">
+                      <img id="${id}" src="${url}" alt="uploaded-picture" width="300" height="200">
                       </a>
                     </div>
                     `
-                  }
+                  };
 
+var imgs_thumnail_template = function(tweet){
+  var imgs_template = ``;
+  var tweet_imgs = tweet.imgs;
+  var img_number = tweet_imgs.length;
+  if (img_number != 0) {
+    for (var i = 0; i < img_number; i++) {
+      var img_url = tweet_imgs[i].content;
+      var img_id = 'id-img-' + tweet_imgs[i].id;
+      var img_template = img_thumnail(img_url, img_id);
+      imgs_template = imgs_template.concat(img_template);
+    };
+  };
+  return imgs_template;
+};
 
 var none_template = `<div class="none transbox">
                       <p class="text-center ">
@@ -137,6 +154,7 @@ var addcomment_textarea_template = `
                       </span>
                       </div>
                       `
+
 var addrepost_textarea_template = `
                       <hr />
                       <div class="input-group">

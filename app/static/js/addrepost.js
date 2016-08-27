@@ -2,6 +2,9 @@ var add_newrepost = function(){
   var $tweet = $(this).closest(".singletweet")
   var $repost_input = $tweet.children('.div-interact-area').find('.text-addrepost')
   var content = $repost_input.val();
+  if (content == '') {
+    content = '转发微博';
+  };
   var form = {
     'content': content,
   };
@@ -9,12 +12,12 @@ var add_newrepost = function(){
   var tweet_id = $tweet.data('id')
   // JSON.stringify 可以把一个 object 转换为字符串
   var url = '/repost/add' + '/' + tweet_id;
-  post(url, form, new_repost, $repost_input);
+  post($input_box=``, url, form, response=new_repost, $target=$repost_input);
 };
 
-var new_repost = function(data, $object){
+var new_repost = function(data, $target){
   if(data.success) {
-    $object.val('')
+    $target.val('')
     var u = data.user
     var tweet = data.tweet;
     var avatar_path = u.avatar

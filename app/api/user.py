@@ -8,14 +8,13 @@ from flask import request
 from flask import url_for
 
 from .treelog import log
-from .login import hash_password
+from .login import hash_password, fake_tweet, string_generator
 
 from ..models import At, Comment, User, Tweet, Follow
 from . import api
 from .decorator import requires_login, requires_admin, current_user
-import random
-import string
-from .notification import At_lst, get_name
+
+from .notification import save_notification, user_notified
 from werkzeug.utils import secure_filename
 import os
 
@@ -150,8 +149,10 @@ def upload_picture():
     user = current_user()
     file = request.files.get('uploaded')
     log('upload, ', request.files)
+    log('file', file.filename)
     if file:
-        filename = string_generator(size=8)
+        img_format = file.filename.split('.')[1]
+        filename = string_generator(size=8) + '.' + img_format
         log('filename, ', filename)
         path = '/static/tweets_picture/' + filename
         abs_path = '/Users/linmingwang/twitter/app' + path
@@ -164,6 +165,7 @@ def upload_picture():
             'success': True,
             'url': url,
         }
+
     else:
         data['success'] = False
     return jsonify(data)
@@ -199,50 +201,3 @@ def user_update(user_id):
     u.password = request.form.get('password', '')
     u.save()
     return redirect(url_for('users_view'))
-
-
-def string_generator(size):
-    # chars = string.ascii_uppercase + string.digits
-    chars = string.digits
-    return ''.join(random.SystemRandom().choice(chars) for _ in range(size))
-
-
-# 自动创建用户
-@api.route('/testuser', methods=['GET'])
-def user_create():
-    form = {
-        'username': '游客' + string_generator(size=4),
-        'password': string_generator(size=6),
-    }
-    user = User(form)
-    # 写入关注人信息
-    user.password = hash_password(user.password)
-    # 保存到数据库
-    user.save()
-    user = User.query.filter_by(username=user.username).first()
-    admin = User.query.filter_by(id=1).first()
-    f = Follow(user, admin)
-    f.save()
-    session['user_id'] = user.id
-    # 向该用户发送@通知供测试
-    words = 'welcome!'
-    content = '@' + user.username + ' ' + words
-    form = {
-        'content': content
-    }
-    t = Tweet(form)
-    sender_id = '1'
-    sender_user = User.query.filter_by(id=sender_id).first()
-    # t.user = sender_user
-    t.user_id = sender_id
-    t.save()
-    # 根据解析微博得到的@的用户名数组, 生成相应的At实例, 存入数据库
-    name_lst = get_name(t.content)
-    At_lst(lst=name_lst, tweet=t)
-    log('t.ats', t.ats)
-    created_user = {
-        'success': True,
-        'user': user.json(),
-        'message': '登录成功',
-    }
-    return jsonify(created_user)
