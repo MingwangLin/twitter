@@ -29,7 +29,7 @@ var new_tweet = function(data){
       var avatar_path = user.avatar;
       var comments_length = '';
       template = tweet_template(avatar_path, tweet, comments_length);
-      $(template).hide().prependTo('#id-div-mytweets').fadeIn("slow");
+      $(template).hide().prependTo('#id-div-mytweets').show("slow");
 }else {
   log('请求失败');
 }

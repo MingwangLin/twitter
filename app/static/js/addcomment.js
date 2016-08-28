@@ -29,7 +29,7 @@ var new_comment = function(data, $target){
                     </div>
                     `
       var $input_area = $target.find(".div-commentarea .input-group")
-      $(template).hide().insertAfter($input_area).fadeIn("slow")
+      $(template).hide().insertAfter($input_area).show("slow")
       }else {
         log('请求失败');
       }
