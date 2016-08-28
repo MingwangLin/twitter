@@ -125,7 +125,7 @@ def upload_avatars():
         filename = secure_filename(file.filename)
         log('filename, ', filename)
         path = '/static/avatars/' + filename
-        abs_path = '/Users/linmingwang/twitter/app' + path
+        abs_path = '/var/www/twitter/app' + path
         # abs_path = os.path.join(path, filename)
         # log('abs', abs_path)
         file.save(abs_path)
@@ -155,7 +155,7 @@ def upload_picture():
         filename = string_generator(size=8) + '.' + img_format
         log('filename, ', filename)
         path = '/static/tweets_picture/' + filename
-        abs_path = '/Users/linmingwang/twitter/app' + path
+        abs_path = '/var/www/twitter/app' + path
         # abs_path = os.path.join(path, filename)
         # log('abs', abs_path)
         file.save(abs_path)
