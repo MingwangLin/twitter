@@ -121,7 +121,7 @@
               </div>
               <div class="media-body">
                 <h4 class="media-heading">{{host.username}}</h4> 
-                <h4>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</h4>
+                <h5>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</h5>
                   {% if host.username != visitor.username and not visitor.is_following(host) %}
                   <a href="/follow/{{host.id}}">点击关注</a>
                   {% elif host.username != visitor.username and visitor.is_following(host) %}
