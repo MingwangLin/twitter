@@ -1,7 +1,9 @@
 body {
-   background: url("/static/avatars/sky.jpg");
+   -webkit-font-smoothing: antialiased;
    background-repeat: no-repeat;
    background-size: cover;
+   background-color: #fafafa;
+
    }
 
 .transbox {
