@@ -1,7 +1,7 @@
 var tweet_template = function(avatar_path, tweet, comments_length){
   return template =
                 `
-                <div class="media list-group-item tweetbox">
+                <div class="media tweetbox">
                   <div class="media-left">
                       <a href="#">
                         <img class="media-object img-circle" src="${avatar_path}" alt="32x32" style="width: 32px; height: 32px;">
@@ -55,7 +55,7 @@ var reposted_tweet_template = function(tweet){
     }
     return template =
                 `
-              <div class="media list-group-item well  clearfix">
+              <div class="media repostbox clearfix">
                   <div class="media-left">
                     <a href="#">
                       <img class="media-object img-circle" src="${tweet.avatar}" alt="32x32" style="width: 28px; height: 28px;">
@@ -128,7 +128,7 @@ var imgs_thumnail_template = function(tweet){
   return imgs_template;
 };
 
-var none_template = `<div class="none transbox">
+var none_template = `<div class="none tweetbox">
                       <p class="text-center ">
                         你还未发表任何微博
                       </p>
