@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- <link rel="icon" href="../../favicon.ico">-->
@@ -16,7 +16,7 @@
     <link href="/static/css/blog.css" rel="stylesheet">
     <link href="/static/css/position.css" rel="stylesheet">
     <link href="/static/css/fonts.css" rel="stylesheet">
-    <link href="/static/css/background.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
     <link href="/static/css/picture-gallery.css" rel="stylesheet">
 
     {% block script %}
@@ -73,7 +73,7 @@
               </div>
 
               {% if host.username == visitor.username %}
-              <div class="upload-wrapper transbox" style="display: none;">
+              <div class="upload-wrapper tweetbox" style="display: none;">
                 <input  id="id-input-picture" multiple type="file">
                 <button class="btn btn-default btn-xs" id="id-button-upload-picture">添加图片</button>
               </div>
@@ -136,7 +136,7 @@
             </div>
 
           {% if host.username == visitor.username %}
-              <div class="file-wrapper transbox" style="display: none;">
+              <div class="file-wrapper tweetbox" style="display: none;">
                 <input  id="id-input-file" type="file">
                 <button class="btn btn-default btn-xs" id="id-button-upload-avatar">提交</button>
               </div>
