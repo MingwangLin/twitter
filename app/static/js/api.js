@@ -60,7 +60,7 @@ var formatted_time = function(timestamp){
   var now = new Date().getTime()
   var now = Math.floor(now/1000);
   var interval = now - timestamp;
-  if (interval == 0) {
+  if (interval <= 0) {
     var time = `现在`
   }else if (interval < 60) {
     var time = `${interval}秒前`

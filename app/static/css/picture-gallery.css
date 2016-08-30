@@ -6,9 +6,8 @@ div.img {
     cursor: pointer;
     transition: 0.3s;
     margin: 1px;
-    border: 1px solid #ccc;
     float: left;
-    width: 8em;
+    width: 25%;
     height: 8em;
 
 }
