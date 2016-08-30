@@ -284,7 +284,7 @@ var notifications_template = function(notifications, host, visitor){
       };
       var avatar_path = tweet.avatar
         var template = `
-            <div class="well repostbox clearfix">
+            <div class="repostbox clearfix">
               <span>
               ${t[i].sender_name} ${words}
               </span>

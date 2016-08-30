@@ -113,15 +113,15 @@
         </div><!-- /.blog-main -->
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-          <div class="media tweetbox">
+          <div class="media sidebox">
             <div class="media-left">
               <a href="#">
                 <img class="media-object img-rounded" src="{{host.avatar}}" alt="64x64" style="width: 64px; height: 64px;">
                 </a>
               </div>
               <div class="media-body">
-                <h4 class="media-heading">{{host.username}}</h4> 
-                <p>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</p>
+                <p> class="media-heading">{{host.username}}</p> 
+                </p>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</p>
                   {% if host.username != visitor.username and not visitor.is_following(host) %}
                   <a href="/follow/{{host.id}}">点击关注</a>
                   {% elif host.username != visitor.username and visitor.is_following(host) %}

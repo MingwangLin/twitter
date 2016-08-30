@@ -8,9 +8,9 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                       </a>
                   </div>
                   <div class="media-body clearfix singletweet" data-id="${tweet.id}">
-                      <span class="font-small">
+                      <span class="font-tweet-name">
                         ${href_for_personalpage(tweet.user_name)} ·
-                        <span class="font-small">
+                        <span class="font-tweet-time">
                         ${formatted_time(tweet.created_time)}
                         </span>
                       </span>
@@ -62,13 +62,13 @@ var reposted_tweet_template = function(tweet){
                     </a>
                   </div>
                   <div class="media-body singletweet clearfix" data-id="${tweet.id}">
-                    <span class="font-smaller">
+                    <span class="font-tweet-fullname">
                       ${href_for_personalpage(tweet.user_name)} ·
-                        <span class="font-smaller">
+                        <span class="font-tweet-time">
                           ${formatted_time(tweet.created_time)}
                         </span>
                     </span>
-                    <p class="font-small">${tweet.content}</p>
+                    <p>${tweet.content}</p>
                     <div class="tweet-imgs clearfix">
                     ${imgs_thumnail_template(tweet)}
                     </div>
