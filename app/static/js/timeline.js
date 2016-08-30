@@ -253,7 +253,7 @@ var notifications_response = function(data){
     var notifications = data.notifications;
     var host = data.host
     var visitor = data.visitor
-    notifications_template(notifications, host, visitor);
+    show_notifications_onpage(notifications, host, visitor);
 }else {
   log('请求失败');
 }
@@ -273,10 +273,11 @@ var show_tweets_onpage = function(tweets, host, visitor, $page){
                 }
               }
 
-var notifications_template = function(notifications, host, visitor){
+var show_notifications_onpage = function(notifications, host, visitor){
   var t = notifications
   var words = '在微博@了你'
     for(var i = 0; i < t.length; i++){
+      notification = t[i]
       tweet = t[i].t
       var comments_length = tweet.comments_length
       if (comments_length == 0) {

@@ -128,6 +128,18 @@ var imgs_thumnail_template = function(tweet){
   return imgs_template;
 };
 
+var notification_template = function(notification, tweet){
+  var template = `
+    <div class="repostbox clearfix">
+     <span>
+      ${notification.sender_name} ${words}
+     </span>
+      ${tweet_template(avatar_path, tweet, comments_length)}
+    </div>
+       `;
+  return template;
+};
+
 var none_template = `<div class="none tweetbox">
                       <p class="text-center ">
                         你还未发表任何微博
