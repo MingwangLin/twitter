@@ -268,7 +268,7 @@ var show_tweets_onpage = function(tweets, host, visitor, $page){
         if (comments_length == 0) {
           comments_length = '';
         };
-          template = tweet_template(avatar_path, tweet, comments_length);
+         var template = tweet_template(avatar_path, tweet, comments_length);
       $page.append(template)
                 }
               }
@@ -284,14 +284,7 @@ var show_notifications_onpage = function(notifications, host, visitor){
         comments_length = '';
       };
       var avatar_path = tweet.avatar
-        var template = `
-            <div class="repostbox clearfix">
-              <span>
-              ${t[i].sender_name} ${words}
-              </span>
-                ${tweet_template(avatar_path, tweet, comments_length)}
-              </div>
-              `;
+        var template = notification_template(notification, avatar_path, tweet, comments_length)
         $('#id-div-notification').append(template)
         }
       }
