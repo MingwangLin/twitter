@@ -86,7 +86,7 @@ var formatted_time = function(timestamp){
 
 var href_for_personalpage = function(name){
     // multiplied by 1000 so that the argument is in milliseconds, not seconds
-    template = `<a href="/timeline/${name}">${name}</a>`;
+    template = `<a class="font-tweet-name" href="/timeline/${name}">${name}</a>`;
     return template;
     }
 
