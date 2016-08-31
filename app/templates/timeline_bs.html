@@ -130,9 +130,11 @@
                     <a href="/unfollow/{{host.id}}">取消关注</a>
                   </p>
                   {% endif %} 
-                <!-- {% if host.username == visitor.username %}
-                  <button class="btn btn-default btn-xs" id="id-button-avatars">更换头像</button>
-                {% endif %} -->
+                {% if host.username == visitor.username %}
+                  <button class="btn btn-default btn-xs pull-right" id="id-button-avatars">
+                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                  </button>
+                {% endif %}
               </div>
             </div>
             </div>
