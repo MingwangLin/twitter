@@ -9,7 +9,7 @@
     color: #8899a6;
     }
 
-.font-big {
-    font-size: 1.2em;
+.font-bold {
     color: #292f33;
+    font-weight: bold;
     }

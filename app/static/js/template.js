@@ -136,7 +136,7 @@ var notification_template = function(notification, avatar_path, tweet, comments_
   var words = '在微博@了你'
   var template = `
     <div class="tweetbox clearfix">
-     <span class="font-big">
+     <span class="font-bold">
       ${notification.sender_name} ${words}
       <hr/>
      </span>
