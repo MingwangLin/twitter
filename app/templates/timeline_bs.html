@@ -132,7 +132,7 @@
                   {% endif %} 
                 {% if host.username == visitor.username %}
                   <button class="btn btn-default btn-xs pull-right" id="id-button-avatars">
-                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                   </button>
                 {% endif %}
               </div>
@@ -141,6 +141,8 @@
 
           {% if host.username == visitor.username %}
               <div class="file-wrapper tweetbox" style="display: none;">
+                <span>更换头像</span>
+                <hr/>
                 <input  id="id-input-file" type="file">
                 <button class="btn btn-default btn-xs" id="id-button-upload-avatar">提交</button>
               </div>
