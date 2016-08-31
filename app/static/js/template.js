@@ -1,7 +1,8 @@
 var tweet_template = function(avatar_path, tweet, comments_length){
-  return template =
+  var template =
                 `
-                <div class="media tweetbox">
+                <div class="media">
+                <div class="tweetbox">
                   <div class="media-left">
                       <a href="#">
                         <img class="media-object img-circle" src="${avatar_path}" alt="32x32" style="width: 32px; height: 32px;">
@@ -43,7 +44,9 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                     <hr/>
                   </div>
                 </div>
+                </div>
                 `
+    return template;
               };
 
 var reposted_tweet_template = function(tweet){
@@ -53,7 +56,7 @@ var reposted_tweet_template = function(tweet){
     if (comments_length == 0) {
       comments_length = '';
     }
-    return template =
+    var template =
                 `
               <div class="media repostbox clearfix">
                   <div class="media-left">
@@ -62,7 +65,7 @@ var reposted_tweet_template = function(tweet){
                     </a>
                   </div>
                   <div class="media-body singletweet clearfix" data-id="${tweet.id}">
-                    <span class="font-tweet-fullname">
+                    <span class="font-tweet-name">
                       ${href_for_personalpage(tweet.user_name)} ·
                         <span class="font-tweet-time">
                           ${formatted_time(tweet.created_time)}
@@ -96,14 +99,14 @@ var reposted_tweet_template = function(tweet){
                   </div>
               </div>
                 `
-              }else {
-                return template = ``
-              }
-
-              };
+      return template;
+    }else {
+      return template = ``
+    }
+  };
 
 var img_thumnail = function(url, id){
-  return template =
+  var template =
                     `
                     <div class="img">
                       <a href="#">
@@ -111,7 +114,8 @@ var img_thumnail = function(url, id){
                       </a>
                     </div>
                     `
-                  };
+  return template;
+}
 
 var imgs_thumnail_template = function(tweet){
   var imgs_template = ``;
@@ -128,11 +132,13 @@ var imgs_thumnail_template = function(tweet){
   return imgs_template;
 };
 
-var notification_template = function(notification, tweet){
+var notification_template = function(notification, avatar_path, tweet, comments_length){
+  var words = '在微博@了你'
   var template = `
-    <div class="repostbox clearfix">
-     <span>
+    <div class="tweetbox clearfix">
+     <span class="font-big">
       ${notification.sender_name} ${words}
+      <hr/>
      </span>
       ${tweet_template(avatar_path, tweet, comments_length)}
     </div>
@@ -156,7 +162,7 @@ var nomore_template = `<p class="nomore text-center">
 var addcomment_textarea_template = `
                       <hr />
                       <div class="input-group">
-                      <input class="form-control text-addcomment" name="content" placeholder="评论点什么">
+                      <input type="text" class="form-control text-addcomment" name="content" placeholder="评论点什么">
                       <span class="input-group-btn">
                       <button class="btn btn-default pull-right button-addcomment" type="button">
                       <span class="glyphicon glyphicon-send" aria-hidden="true">
@@ -170,7 +176,7 @@ var addcomment_textarea_template = `
 var addrepost_textarea_template = `
                       <hr />
                       <div class="input-group">
-                      <input class="form-control text-addrepost" name="content" placeholder="说点什么">
+                      <input type="text" class="form-control text-addrepost" name="content" placeholder="说点什么">
                       <span class="input-group-btn">
                       <button class="btn btn-default pull-right button-addrepost" type="button">
                       <span class="glyphicon glyphicon-share" aria-hidden="true">

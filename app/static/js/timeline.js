@@ -269,22 +269,21 @@ var show_tweets_onpage = function(tweets, host, visitor, $page){
           comments_length = '';
         };
          var template = tweet_template(avatar_path, tweet, comments_length);
-      $page.append(template)
-                }
-              }
+      $page.append(template);
+    };
+  };
 
 var show_notifications_onpage = function(notifications, host, visitor){
-  var t = notifications
-  var words = '在微博@了你'
+  var t = notifications;
     for(var i = 0; i < t.length; i++){
-      notification = t[i]
-      tweet = t[i].t
-      var comments_length = tweet.comments_length
+      notification = t[i];
+      tweet = t[i].t;
+      var comments_length = tweet.comments_length;
       if (comments_length == 0) {
         comments_length = '';
       };
-      var avatar_path = tweet.avatar
-        var template = notification_template(notification, avatar_path, tweet, comments_length)
-        $('#id-div-notification').append(template)
-        }
-      }
+      var avatar_path = tweet.avatar;
+        var template = notification_template(notification, avatar_path, tweet, comments_length);
+        $('#id-div-notification').append(template);
+      };
+    };

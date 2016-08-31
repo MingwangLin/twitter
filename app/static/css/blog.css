@@ -36,7 +36,7 @@ h6, .h6 {
  */
 
 .blog-masthead {
-  background-color: #428bca;
+  background: rgba(12,13,14,0.86);
   -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
           box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
 }
@@ -98,13 +98,9 @@ h6, .h6 {
  * Main column and sidebar layout
  */
 
-.blog-main {
-  font-size: 18px;
-  line-height: 1.5;
-}
 
 /* Sidebar modules for boxing content */
-.sidebar-module {
+/*.sidebar-module {
   padding: 15px;
   margin: 0 -15px 15px;
 }
@@ -117,7 +113,7 @@ h6, .h6 {
 .sidebar-module-inset ul:last-child,
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
-}
+}*/
 
 
 /* Pagination */
