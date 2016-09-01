@@ -23,12 +23,12 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                       ${reposted_tweet_template(tweet.original_tweet)}
                     <div class="div-interact-area">
                       <div class="btn-group bottom-right " role="group" aria-label="...">
-                      <button type="button" class="btn btn-default btn-xs button-comments">
+                      <button type="button" class="btn btn-default btn-sm button-comments">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                         </span>
                         <span class="comment-button-text">评论${comments_length}</span>
                       </button>
-                      <button type="button" class="btn btn-default btn-xs button-reposts">
+                      <button type="button" class="btn btn-default btn-sm button-reposts">
                         <span class="glyphicon glyphicon-share" aria-hidden="true">
                         </span>
                         <span class="repost-button-text">转发</span>
@@ -77,12 +77,12 @@ var reposted_tweet_template = function(tweet){
                     </div>
                     <div class="div-interact-area">
                       <div class="btn-group bottom-right" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default btn-xs button-comments">
+                        <button type="button" class="btn btn-default btn-sm button-comments">
                           <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                           </span>
                           <span class="comment-button-text">评论${comments_length}</span>
                         </button>
-                        <button type="button" class="btn btn-default btn-xs button-reposts">
+                        <button type="button" class="btn btn-default btn-sm button-reposts">
                           <span class="glyphicon glyphicon-share" aria-hidden="true">
                           </span>
                           <span class="repost-button-text">转发</span>
