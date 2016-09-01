@@ -186,6 +186,7 @@ var bindActions = function() {
               var file = files[i];
               console.log('上传的文件: ', file.name);
               upload_picture(file);
+              $(".upload-wrapper").append(`<p>上传中……</p>`);
           }
       }
   });

@@ -33,8 +33,9 @@ var upload_picture = function(file) {
         success: function(r) {
           if (r.success) {
             var url = r.url;
-            template = img_thumnail(url)
-            $('#id-div-picturearea').append(template)
+            template = img_thumnail(url);
+            $('#id-div-picturearea').append(template);
+            $(".upload-wrapper").append(`<p>上传成功</p>`)
           } else {
             log('internal server');
           }
