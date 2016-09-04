@@ -22,7 +22,7 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                       </div>
                       ${reposted_tweet_template(tweet.original_tweet)}
                     <div class="div-interact-area">
-                      <div class="btn-group bottom-right clearfix" role="group" aria-label="...">
+                      <div class="btn-group bottom-right " role="group" aria-label="...">
                       <button type="button" class="btn btn-default btn-sm button-comments">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                         </span>
@@ -76,7 +76,7 @@ var reposted_tweet_template = function(tweet){
                     ${imgs_thumnail_template(tweet)}
                     </div>
                     <div class="div-interact-area">
-                      <div class="btn-group bottom-right clearfix" role="group" aria-label="...">
+                      <div class="btn-group bottom-right" role="group" aria-label="...">
                         <button type="button" class="btn btn-default btn-sm button-comments">
                           <span class="glyphicon glyphicon-pencil" aria-hidden="true">
                           </span>
