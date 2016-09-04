@@ -193,11 +193,11 @@ var bindActions = function() {
 
   $('#id-div-twitter').on('click', 'img', function(){
     var $modal = $('.modal');
-    $modal.show();
     img_src = $(this).attr("src");
     log('img_src', img_src);
     $modal.find('img').attr("src", img_src);
     log('m', $modal.attr("src"));
+    $modal.show();
   });
   // Get the <span> element that closes the modal
   // When the user clicks on <span> (x), close the modal

@@ -10,7 +10,6 @@ from .notification import save_notification_in_comment, user_notified
 from .treelog import log
 
 
-
 # # 显示发送评论的界面
 # @api.route('/tweet/comment/<tweet_id>')
 # def comment_add_view(tweet_id):

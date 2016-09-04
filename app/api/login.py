@@ -158,7 +158,7 @@ def fake_tweet(content, user_id):
     t.user_id = user_id
     t.save()
     for i in range(1, 10):
-        img_url = '/static/tweets_picture/' +  str(i) + '.jpg'
+        img_url = '/static/tweets_picture/' + str(i) + '.jpg'
         s = TweetImg(img_url)
         s.tweet = t
         s.save()
