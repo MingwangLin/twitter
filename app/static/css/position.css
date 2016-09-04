@@ -1,7 +1,7 @@
 .bottom-right {
   position: absolute;
-  bottom: 8px;
-  right: 16px;
+  bottom: 0.3em;
+  right: 1em;
 }
 
 #footer {
@@ -13,8 +13,4 @@
 
 #id-text-content {
   margin-bottom: 0.5em;
-}
-
-.btn-group {
-  padding-top: 0.5em;
 }
