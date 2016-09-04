@@ -1,7 +1,7 @@
 var tweet_template = function(avatar_path, tweet, comments_length){
   var template =
                 `
-                <div class="media">
+                <div class="media clearfix">
                 <div class="tweetbox">
                   <div class="media-left">
                       <a href="#">
