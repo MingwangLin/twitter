@@ -92,10 +92,12 @@ def register():
         user_id = user.id
         session['user_id'] = user_id
         r['data'] = '/timeline/{}'.format(u.username)
+        # 自动关注之前所有人
+        for i in range(1, user_id):
+            f = Follow(user_id, i)
+            f.save()
         admin_id = 1
         admin = User.query.filter_by(id=admin_id).first()
-        f = Follow(user, admin)
-        f.save()
         # 向该用户发送@通知供测试
         content = '@' + user.username + ' ' + 'test'
         fake_tweet(content, user_id=admin_id)
@@ -125,11 +127,13 @@ def fake_user():
     user.password = hash_password(user.password)
     # 保存到数据库
     user.save()
-    admin_id = 1
     user = User.query.filter_by(username=user.username).first()
+    # 自动关注之前所有人
+    for i in range(1, user.id):
+        f = Follow(user.id, i)
+        f.save()
+    admin_id = 1
     admin = User.query.filter_by(id=admin_id).first()
-    f = Follow(user, admin)
-    f.save()
     session['user_id'] = user.id
     content = '@' + user.username + ' ' + 'test'
     fake_tweet(content, user_id=admin_id)

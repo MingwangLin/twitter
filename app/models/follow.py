@@ -10,10 +10,10 @@ class Follow(db.Model, ReprMixin):
                             primary_key=True)
     created_time = db.Column(db.Integer(), default=0)
 
-    def __init__(self, follower, followed):
+    def __init__(self, follower_id, followed_id):
         super(Follow, self).__init__()
-        self.follower_id = follower.id
-        self.followed_id = followed.id
+        self.follower_id = follower_id
+        self.followed_id = followed_id
         self.created_time = int(time.time())
 
     def __repr__(self):
