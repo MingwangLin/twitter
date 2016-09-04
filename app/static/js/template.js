@@ -82,7 +82,7 @@ var reposted_tweet_template = function(tweet){
                           </span>
                           <span class="comment-button-text">评论${comments_length}</span>
                         </button>
-                        <button type="button" class="btn btn-default btn-sm button-reposts">
+                        <button type="button" class="btn btn-default btn-xs button-reposts">
                           <span class="glyphicon glyphicon-share" aria-hidden="true">
                           </span>
                           <span class="repost-button-text">转发</span>
