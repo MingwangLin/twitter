@@ -41,7 +41,9 @@ var get = function(url, response, $target) {
 
 # 发送请求前判断用户输入是否为空或是否只有空格
 var post = function($input_box, url, form, response, $target) {
-    if (form.content.replace(/ /g, '') == '') {
+  content_space_free = form.content.replace(/ /g, '')
+    log('content_space_free', content_space_free)
+    if (content_space_free == '') {
       $input_box.css({
                       "background-color":"#F88E8B",
                       "transition":"0.5s",
