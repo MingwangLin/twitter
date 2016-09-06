@@ -4,6 +4,7 @@ from .follow import Follow
 
 import time
 
+
 class User(db.Model, ReprMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
