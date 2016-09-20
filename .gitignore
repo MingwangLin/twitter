@@ -10,3 +10,5 @@ tmp/*
 
 *~
 
+
+app/templates/.DS_Store

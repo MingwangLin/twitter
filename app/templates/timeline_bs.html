@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
@@ -34,123 +34,126 @@
     <script src="/static/js/timeline.js"></script>
     <script src="/static/js/template.js"></script>
     {% endblock %}
-  </head>
+</head>
 
-  <body>
-    <!--navbar-fixed-top-->
-    <div class="blog-masthead">
-      <div class="container">
+<body>
+<!--navbar-fixed-top-->
+<div class="blog-masthead">
+    <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item glyphicon glyphicon-home" id="id-a-mypage" href="/timeline/{{visitor.username}}"></a>
-          <a class="blog-nav-item" id="id-a-mytweets" href="#">个人主页</a>
-          <a class="blog-nav-item" id="id-a-followedtweets" href="#">关注人微博</a>
-          <a class="blog-nav-item" id="id-a-notifications" href="#">通知</a>
-          <a class="blog-nav-item" href="/signout">退出</a>
+            <a class="blog-nav-item glyphicon glyphicon-home" id="id-a-mypage"
+               href="/timeline/{{visitor.username}}"></a>
+            <a class="blog-nav-item" id="id-a-mytweets" href="#">个人主页</a>
+            <a class="blog-nav-item" id="id-a-followedtweets" href="#">关注人微博</a>
+            <a class="blog-nav-item" id="id-a-notifications" href="#">通知</a>
+            <a class="blog-nav-item" href="/signout">退出</a>
         </nav>
-      </div>
     </div>
-    <div class="container-fluid">
-      {% block container %}
-      <div class="row">
+</div>
+<div class="container-fluid">
+    {% block container %}
+    <div class="row">
         <div id="id-div-twitter" class="col-sm-8 blog-main">
-          <!-- The Modal -->
-          <div id="id-div-imgmodal" class="modal">
-            <span class="close">×</span>
-            <img class="modal-content" id="id-img-imgModel">
-          </div>
+            <!-- The Modal -->
+            <div id="id-div-imgmodal" class="modal">
+                <span class="close">×</span>
+                <img class="modal-content" id="id-img-imgModel">
+            </div>
 
-          <div id="id-div-tweetspage" data-name="{{visitor.username}}">
-            <div id="id-div-mypage">
-              <div id="id-div-inputarea" class="tweetbox clearfix">
-                {% if host is not none and host.username == visitor.username  %}
-                  <textarea name="content" id="id-text-content" class="form-control" placeholder="说点什么"></textarea>
-                  <button class="btn btn-default pull-right" id="id-button-addtweet">
+            <div id="id-div-tweetspage" data-name="{{visitor.username}}">
+                <div id="id-div-mypage">
+                    <div id="id-div-inputarea" class="tweetbox clearfix">
+                        {% if host is not none and host.username == visitor.username %}
+                        <textarea name="content" id="id-text-content" class="form-control"
+                                  placeholder="说点什么"></textarea>
+                        <button class="btn btn-default pull-right" id="id-button-addtweet">
                     <span class="glyphicon glyphicon-send" aria-hidden="true">
                     </span>
-                    发送
-                  </button>
-                  <button class="btn btn-default pull-left" id="id-button-addpicture">
+                            发送
+                        </button>
+                        <button class="btn btn-default pull-left" id="id-button-addpicture">
                     <span class="glyphicon glyphicon-picture" aria-hidden="true">
                     </span>
-                    图片
-                  </button>
-                  {% endif %}
-                  <div id="id-div-picturearea"></div>
-              </div>
+                            图片
+                        </button>
+                        {% endif %}
+                        <div id="id-div-picturearea"></div>
+                    </div>
 
-              {% if host.username == visitor.username %}
-              <div class="upload-wrapper tweetbox" style="display: none;">
-                <input  id="id-input-picture" multiple type="file">
-                <button class="btn btn-default btn-xs" id="id-button-upload-picture">添加图片</button>
-              </div>
-              {% endif %}
+                    {% if host.username == visitor.username %}
+                    <div class="upload-wrapper tweetbox" style="display: none;">
+                        <input id="id-input-picture" multiple type="file">
+                        <button class="btn btn-default btn-xs" id="id-button-upload-picture">添加图片</button>
+                    </div>
+                    {% endif %}
 
-              <div id="id-div-mytweets">
-              </div>
+                    <div id="id-div-mytweets">
+                    </div>
+                    <nav>
+                        {{ macros.turn_page('id-button-next-mytweets') }}
+                    </nav>
+                </div>
+
+                <div id="id-div-followedpage">
+                    <div id="id-div-followedtweets">
+                    </div>
+                    <nav>
+                        {{ macros.turn_page('id-button-next-followedtweets') }}
+                    </nav>
+                </div>
+            </div><!-- tweet-page  -->
+
+            <div id="id-div-notificationpage">
+                <div id="id-div-notification">
+                </div>
                 <nav>
-                {{ macros.turn_page('id-button-next-mytweets') }}
+                    {{ macros.turn_page('id-button-next-notifications') }}
                 </nav>
             </div>
-
-            <div id="id-div-followedpage">
-              <div id="id-div-followedtweets">
-              </div>
-              <nav>
-                {{ macros.turn_page('id-button-next-followedtweets') }}
-              </nav>
-            </div>
-          </div><!-- tweet-page  -->
-
-          <div id="id-div-notificationpage">
-            <div id="id-div-notification">
-            </div>
-            <nav>
-              {{ macros.turn_page('id-button-next-notifications') }}
-            </nav>
-          </div>
         </div><!-- /.blog-main -->
 
         <div class="col-sm-3 blog-sidebar">
-          <div class="media">
-            <div class="sidebox">
-            <div class="media-left">
-              <a href="#">
-                <img class="media-object img-rounded" src="{{host.avatar}}" alt="64x64" style="width: 64px; height: 64px;">
-                </a>
-              </div>
-              <div class="media-body">
-                <span class="font-tweet-name">{{host.username}}</span> 
-                </p>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</p>
-                  {% if host.username != visitor.username and not visitor.is_following(host) %}
-                  <a href="/follow/{{host.id}}">点击关注</a>
-                  {% elif host.username != visitor.username and visitor.is_following(host) %}
-                  <p>
-                    <a href="/unfollow/{{host.id}}">取消关注</a>
-                  </p>
-                  {% endif %} 
-                {% if host.username == visitor.username %}
-                  <button class="btn btn-default btn-xs pull-right" id="id-button-avatars">
-                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                  </button>
-                {% endif %}
-              </div>
-            </div>
+            <div class="media">
+                <div class="sidebox">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" src="{{host.avatar}}" alt="64x64"
+                                 style="width: 64px; height: 64px;">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <span class="font-tweet-name">{{host.username}}</span> 
+                        </p>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</p>
+                        {% if host.username != visitor.username and not visitor.is_following(host) %}
+                        <a href="/follow/{{host.id}}">点击关注</a>
+                        {% elif host.username != visitor.username and visitor.is_following(host) %}
+                        <p>
+                            <a href="/unfollow/{{host.id}}">取消关注</a>
+                        </p>
+                        {% endif %} 
+                        {% if host.username == visitor.username %}
+                        <button class="btn btn-default btn-xs pull-right" id="id-button-avatars">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
 
-          {% if host.username == visitor.username %}
-              <div class="file-wrapper tweetbox" style="display: none;">
+            {% if host.username == visitor.username %}
+            <div class="file-wrapper tweetbox" style="display: none;">
                 <p class="text-center font-bold">更换头像</p>
                 <hr/>
-                <input  id="id-input-file" type="file">
+                <input id="id-input-file" type="file">
                 <button class="btn btn-default btn-xs" id="id-button-upload-avatar">提交</button>
-              </div>
-          {% endif %}
+            </div>
+            {% endif %}
         </div><!-- /.blog-sidebar -->
-      </div><!-- /.row -->
-      {% endblock %}
-    </div><!-- /.container -->
-    <!--<div id="footer">-->
-            <!--<p class="text-center "><a href="#">Back to top</a></p>-->
-    <!--</div>-->
-  </body>
+    </div><!-- /.row -->
+    {% endblock %}
+</div><!-- /.container -->
+<!--<div id="footer">-->
+<!--<p class="text-center "><a href="#">Back to top</a></p>-->
+<!--</div>-->
+</body>
 </html>

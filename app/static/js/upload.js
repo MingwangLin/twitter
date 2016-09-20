@@ -1,4 +1,4 @@
-var upload_avatar = function(file) {
+var upload_avatar = function (file) {
     var fd = new FormData();
     fd.append('uploaded', file);
     $.ajax({
@@ -7,21 +7,21 @@ var upload_avatar = function(file) {
         contentType: false,
         processData: false,
         data: fd,
-        success: function(r) {
-          if (r.success) {
-            var url = r.url;
-            window.location.href = url;
-          } else {
-            log('internal server');
-          }
+        success: function (r) {
+            if (r.success) {
+                var url = r.url;
+                window.location.href = url;
+            } else {
+                log('internal server');
+            }
         },
-        error: function() {
+        error: function () {
             console.log('上传失败', file.name);
         }
     });
 };
 
-var upload_picture = function(file) {
+var upload_picture = function (file) {
     var fd = new FormData();
     fd.append('uploaded', file);
     $.ajax({
@@ -30,18 +30,20 @@ var upload_picture = function(file) {
         contentType: false,
         processData: false,
         data: fd,
-        success: function(r) {
-          if (r.success) {
-            var url = r.url;
-            template = img_thumnail(url);
-            $('#id-div-picturearea').append(template);
-            $(".upload-wrapper").append(`<p class="upload-info">上传成功</p>`)
-            setTimeout(function(){$('p.upload-info').remove()}, 3000)
-          } else {
-            log('internal server');
-          }
+        success: function (r) {
+            if (r.success) {
+                var url = r.url;
+                template = img_thumnail(url);
+                $('#id-div-picturearea').append(template);
+                $(".upload-wrapper").append(`<p class="upload-info">上传成功</p>`)
+                setTimeout(function () {
+                    $('p.upload-info').remove()
+                }, 3000)
+            } else {
+                log('internal server');
+            }
         },
-        error: function() {
+        error: function () {
             console.log('上传失败', file.name);
         }
     });

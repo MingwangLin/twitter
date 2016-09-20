@@ -1,16 +1,16 @@
 .bottom-right {
-  position: absolute;
-  bottom: 0.3em;
-  right: 1em;
+    position: absolute;
+    bottom: 0.3em;
+    right: 1em;
 }
 
 #footer {
-  position: absolute;
-  bottom: 1px
-  margin-top: 0em;
-  border-top: 1px solid #dedede;
+    position: absolute;
+    bottom: 1px;
+    margin-top: 0em;
+    border-top: 1px solid #dedede;
 }
 
 #id-text-content {
-  margin-bottom: 0.5em;
+    margin-bottom: 0.5em;
 }

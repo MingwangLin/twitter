@@ -1,6 +1,6 @@
-var tweet_template = function(avatar_path, tweet, comments_length){
-  var template =
-                `
+var tweet_template = function (avatar_path, tweet, comments_length) {
+    var template =
+        `
                 <div class="media clearfix">
                 <div class="tweetbox">
                   <div class="media-left">
@@ -47,17 +47,17 @@ var tweet_template = function(avatar_path, tweet, comments_length){
                 </div>
                 `
     return template;
-              };
+};
 
-var reposted_tweet_template = function(tweet){
-  if (tweet.length != 0) {
-    tweet = tweet[0];
-    comments_length = tweet.comments_length
-    if (comments_length == 0) {
-      comments_length = '';
-    }
-    var template =
-                `
+var reposted_tweet_template = function (tweet) {
+    if (tweet.length != 0) {
+        tweet = tweet[0];
+        comments_length = tweet.comments_length
+        if (comments_length == 0) {
+            comments_length = '';
+        }
+        var template =
+            `
               <div class="media repostbox clearfix">
                   <div class="media-left">
                     <a href="#">
@@ -99,42 +99,44 @@ var reposted_tweet_template = function(tweet){
                   </div>
               </div>
                 `
-      return template;
-    }else {
-      return template = ``
+        return template;
+    } else {
+        return template = ``
     }
-  };
+};
 
-var img_thumnail = function(url, id){
-  var template =
-                    `
+var img_thumnail = function (url, id) {
+    var template =
+        `
                     <div class="img">
                       <a href="#">
                       <img id="${id}" src="${url}" alt="uploaded-picture" width="300" height="200">
                       </a>
                     </div>
                     `
-  return template;
+    return template;
 }
 
-var imgs_thumnail_template = function(tweet){
-  var imgs_template = ``;
-  var tweet_imgs = tweet.imgs;
-  var img_number = tweet_imgs.length;
-  if (img_number != 0) {
-    for (var i = 0; i < img_number; i++) {
-      var img_url = tweet_imgs[i].content;
-      var img_id = 'id-img-' + tweet_imgs[i].id;
-      var img_template = img_thumnail(img_url, img_id);
-      imgs_template = imgs_template.concat(img_template);
-    };
-  };
-  return imgs_template;
+var imgs_thumnail_template = function (tweet) {
+    var imgs_template = ``;
+    var tweet_imgs = tweet.imgs;
+    var img_number = tweet_imgs.length;
+    if (img_number != 0) {
+        for (var i = 0; i < img_number; i++) {
+            var img_url = tweet_imgs[i].content;
+            var img_id = 'id-img-' + tweet_imgs[i].id;
+            var img_template = img_thumnail(img_url, img_id);
+            imgs_template = imgs_template.concat(img_template);
+        }
+        ;
+    }
+    ;
+    return imgs_template;
 };
 
-var notification_template = function(notification, avatar_path, tweet, comments_length){
-  var words = '在微博@了你'
-  var template = `
+var notification_template = function (notification, avatar_path, tweet, comments_length) {
+    var words = '在微博@了你'
+    var template = `
     <div class="tweetbox clearfix">
      <span class="font-bold">
       ${notification.sender_name} ${words}
@@ -143,7 +145,7 @@ var notification_template = function(notification, avatar_path, tweet, comments_
       ${tweet_template(avatar_path, tweet, comments_length)}
     </div>
        `;
-  return template;
+    return template;
 };
 
 var none_template = `<div class="none tweetbox">

@@ -6,7 +6,7 @@ var log = function () {
 // form
 
 
-var ajax = function(url, method, form, response, $target) {
+var ajax = function (url, method, form, response, $target) {
     var request = {
         url: url,
         type: method,
@@ -26,97 +26,98 @@ var ajax = function(url, method, form, response, $target) {
             response(r, $target);
         }
     };
-    if(method === 'post') {
+    if (method === 'post') {
         var data = JSON.stringify(form);
         request.data = data;
     }
     $.ajax(request);
 };
 
-var get = function(url, response, $target) {
+var get = function (url, response, $target) {
     var method = 'get';
     var form = {}
     ajax(url, method, form, response, $target);
 };
 
 // 发送请求前判断用户输入是否为空或是否只有空格
-var post = function($input_box, url, form, response, $target) {
-  content_space_free = form.content.replace(/ /g, '')
+var post = function ($input_box, url, form, response, $target) {
+    content_space_free = form.content.replace(/ /g, '')
     log('content_space_free', content_space_free)
     if (content_space_free == '') {
-      $input_box.css({
-                      "background-color":"#F88E8B",
-                      "transition":"0.5s",
-                        });
-      setTimeout(function(){$input_box.css({"background-color":"white"});
-                            }, timeout=1000)
-    }else {
-      var method = 'post';
-      log('url', url)
-      ajax(url, method, form, response, $target);
+        $input_box.css({
+            "background-color": "#F88E8B",
+            "transition": "0.5s",
+        });
+        setTimeout(function () {
+            $input_box.css({"background-color": "white"});
+        }, timeout = 1000)
+    } else {
+        var method = 'post';
+        log('url', url)
+        ajax(url, method, form, response, $target);
     }
 };
 
-var formatted_time = function(timestamp){
-  // multiplied by 1000 so that the argument is in milliseconds, not seconds
-  var a = new Date(timestamp*1000);
-  var now = new Date().getTime()
-  var now = Math.floor(now/1000);
-  var interval = now - timestamp;
-  if (interval <= 0) {
-    var time = `现在`
-  }else if (interval < 60) {
-    var time = `${interval}秒前`
-  }else if (interval >= 60 && interval < 3600) {
-    var time = `${Math.floor(interval/60)}分钟前`
-  }else if (interval >= 3600 && interval < 3600*24) {
-    var time = `${Math.floor(interval/3600)}小时前`
-  }else if (interval >= 3600*24 && interval < 3600*24*7) {
-    var time = `${Math.floor(interval/(3600*24))}天前`
-  }else{
-    var year = a.getFullYear();
-    var month = a.getMonth();
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    if (min < 10) {
-      min = '0' + min
+var formatted_time = function (timestamp) {
+    // multiplied by 1000 so that the argument is in milliseconds, not seconds
+    var a = new Date(timestamp * 1000);
+    var now = new Date().getTime()
+    var now = Math.floor(now / 1000);
+    var interval = now - timestamp;
+    if (interval <= 0) {
+        var time = `现在`
+    } else if (interval < 60) {
+        var time = `${interval}秒前`
+    } else if (interval >= 60 && interval < 3600) {
+        var time = `${Math.floor(interval / 60)}分钟前`
+    } else if (interval >= 3600 && interval < 3600 * 24) {
+        var time = `${Math.floor(interval / 3600)}小时前`
+    } else if (interval >= 3600 * 24 && interval < 3600 * 24 * 7) {
+        var time = `${Math.floor(interval / (3600 * 24))}天前`
+    } else {
+        var year = a.getFullYear();
+        var month = a.getMonth();
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        if (min < 10) {
+            min = '0' + min
+        }
+        var time = year + '/' + month + '/' + date + ' ' + hour + ':' + min;
     }
-    var time = year + '/' + month + '/' + date + ' ' + hour + ':' + min;
-  }
-  return time;
-  }
+    return time;
+}
 
-var href_for_personalpage = function(name){
+var href_for_personalpage = function (name) {
     // multiplied by 1000 so that the argument is in milliseconds, not seconds
     template = `<a class="font-tweet-name" href="/timeline/${name}">${name}</a>`;
     return template;
-    }
+}
 
 // API products
-var products = function(response) {
+var products = function (response) {
     var api = this;
     var path = '/api/products';
     get(path, response);
 };
 
-var product_delete = function(product_id, response) {
+var product_delete = function (product_id, response) {
     var path = '/api/products/delete/' + product_id;
     get(path, response);
 };
 // API articles
-var articles = function(response) {
+var articles = function (response) {
     var path = '/api/articles';
     get(path, response);
 };
 
-var href_for_username = function(content){
-  while (i < 10) {
-    text += "The number is " + i;
-    i++;
-}
-  var i = content.indexof("@")
-  var j = content.indexof(":")
-  template = `<a href="/timeline/${username}">${username}</a>`
-  return template
+var href_for_username = function (content) {
+    while (i < 10) {
+        text += "The number is " + i;
+        i++;
+    }
+    var i = content.indexof("@")
+    var j = content.indexof(":")
+    template = `<a href="/timeline/${username}">${username}</a>`
+    return template
 }
