@@ -14,3 +14,12 @@
 #id-text-content {
     margin-bottom: 0.5em;
 }
+
+.text-center {
+    text-align: center;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0.3em;
+}
