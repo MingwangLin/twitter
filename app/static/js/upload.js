@@ -38,7 +38,6 @@ var upload_picture = function (file) {
                 setTimeout(function () {
                     $('p.upload-info').remove()
                 }, 3000)
-                $(".upload-wrapper").append(`<p class="upload-info">上传成功</p>`)
             } else {
                 log('internal server');
             }
