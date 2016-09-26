@@ -35,10 +35,10 @@ var upload_picture = function (file) {
                 var url = r.url;
                 template = img_thumnail(url);
                 $('#id-div-picturearea').append(template);
-                $(".upload-wrapper").append(`<p class="upload-info">上传成功</p>`)
                 setTimeout(function () {
                     $('p.upload-info').remove()
                 }, 3000)
+                $(".upload-wrapper").append(`<p class="upload-info">上传成功</p>`)
             } else {
                 log('internal server');
             }

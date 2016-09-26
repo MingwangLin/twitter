@@ -215,26 +215,26 @@ var bindActions = function () {
 
 var mytweets_response = function (data) {
     if (data.success) {
-        var increment = 1
-        mytweets_page += increment
+        var increment = 1;
+        mytweets_page += increment;
         log('success', data);
         var tweets = data.tweets;
         if (tweets.length == 0 && $('#id-div-mytweets').children().length == 0) {
-            $('#id-div-mytweets').append(none_template)
-            var timeout = 3000
+            $('#id-div-mytweets').append(none_template);
+            var timeout = 3000;
             setTimeout(function () {
                 $('.none').remove()
             }, timeout)
         } else if (tweets.length == 0 && $('#id-div-mytweets').children().length > 0) {
-            $('#id-div-mypage').append(nomore_template)
-            var timeout = 1000
+            $('#id-div-mypage').append(nomore_template);
+            var timeout = 1000;
             setTimeout(function () {
                 $('p.nomore').remove()
             }, timeout)
         } else {
 
-            var host = data.host
-            var visitor = data.visitor
+            var host = data.host;
+            var visitor = data.visitor;
             show_tweets_onpage(tweets, host, visitor, $page = $('#id-div-mytweets'));
         }
 
@@ -245,12 +245,12 @@ var mytweets_response = function (data) {
 
 var followedtweets_response = function (data) {
     if (data.success) {
-        var increment = 1
-        followedtweets_page += increment
+        var increment = 1;
+        followedtweets_page += increment;
         log('success', data);
         var tweets = data.tweets;
-        var host = data.host
-        var visitor = data.visitor
+        var host = data.host;
+        var visitor = data.visitor;
         show_tweets_onpage(tweets, host, visitor, $page = $('#id-div-followedtweets'));
     } else {
         log('请求失败');
@@ -259,12 +259,12 @@ var followedtweets_response = function (data) {
 
 var notifications_response = function (data) {
     if (data.success) {
-        var increment = 1
-        notifications_page += increment
+        var increment = 1;
+        notifications_page += increment;
         log('at success', data);
         var notifications = data.notifications;
-        var host = data.host
-        var visitor = data.visitor
+        var host = data.host;
+        var visitor = data.visitor;
         show_notifications_onpage(notifications, host, visitor);
     } else {
         log('请求失败');
@@ -272,7 +272,7 @@ var notifications_response = function (data) {
 };
 
 var show_tweets_onpage = function (tweets, host, visitor, $page) {
-    var t = tweets
+    var t = tweets;
     for (var i = 0; i < t.length; i++) {
         tweet = t[i];
         var avatar_path = tweet.avatar;
@@ -280,11 +280,9 @@ var show_tweets_onpage = function (tweets, host, visitor, $page) {
         if (comments_length == 0) {
             comments_length = '';
         }
-        ;
         var template = tweet_template(avatar_path, tweet, comments_length);
         $page.append(template);
     }
-    ;
 };
 
 var show_notifications_onpage = function (notifications, host, visitor) {
@@ -296,10 +294,8 @@ var show_notifications_onpage = function (notifications, host, visitor) {
         if (comments_length == 0) {
             comments_length = '';
         }
-        ;
         var avatar_path = tweet.avatar;
         var template = notification_template(notification, avatar_path, tweet, comments_length);
         $('#id-div-notification').append(template);
     }
-    ;
 };
