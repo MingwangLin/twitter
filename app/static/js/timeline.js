@@ -12,7 +12,7 @@ var __main = function () {
     setup();
     bindActions();
     $('#id-a-mytweets').click();
-}
+};
 
 var pageturning_button_show_hide = function (jquery_page_object, jquery_button_object) {
     var entries_perpage = 20;
@@ -21,7 +21,6 @@ var pageturning_button_show_hide = function (jquery_page_object, jquery_button_o
     } else if (jquery_page_object.children().length == 20) {
         jquery_button_object.show();
     }
-    ;
 };
 
 var setup = function () {
@@ -74,10 +73,10 @@ var setup = function () {
     // 需要等页面的第一页微博加载完毕后再执行函数，所以做了一个延时。
     setTimeout(function () {
         pageturning_button_show_hide($('#id-div-mytweets'), $('#id-button-next-mytweets'))
-    }, 3000)
+    }, 3000);
     setTimeout(function () {
         pageturning_button_show_hide($('#id-div-followedtweets'), $('#id-button-next-followedtweets'))
-    }, 3000)
+    }, 3000);
     setTimeout(function () {
         pageturning_button_show_hide($('#id-div-notification'), $('#id-button-next-notifications'))
     }, 3000)
@@ -85,38 +84,38 @@ var setup = function () {
 
 var bindActions = function () {
     $('#id-button-next-mytweets').on('click', function () {
-        var increment = 1
-        mytweets_page += increment
-        mytweets_url = '/tweets/' + username + '?page=' + mytweets_page
-        log('m_url', mytweets_url)
+        var increment = 1;
+        mytweets_page += increment;
+        mytweets_url = '/tweets/' + username + '?page=' + mytweets_page;
+        log('m_url', mytweets_url);
         get(mytweets_url, mytweets_response)
     });
 
     $('#id-button-next-followedtweets').on('click', function () {
-        followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page
+        followedtweets_url = '/followedtweets/' + username + '?page=' + followedtweets_page;
         get(followedtweets_url, followedtweets_response);
     });
 
     $('#id-button-next-notifications').on('click', function () {
-        var increment = 1
-        followedtweets_page += increment
-        notifications_url = '/notifications/' + username + '?page=' + notifications_page
+        var increment = 1;
+        followedtweets_page += increment;
+        notifications_url = '/notifications/' + username + '?page=' + notifications_page;
         get(notifications_url, notifications_response);
     });
 
     $('#id-button-addtweet').on('click', add_newtweet);
 
     $('#id-div-twitter').on('click', '.button-comments', function () {
-        var $single_tweet = $(this).closest(".singletweet")
-        var tweet_id = $single_tweet.data('id')
-        comments_url = '/tweet/comments/' + tweet_id + '?page=' + comments_page
-        var $interect_area = $(this).closest(".div-interact-area")
+        var $single_tweet = $(this).closest(".singletweet");
+        var tweet_id = $single_tweet.data('id');
+        comments_url = '/tweet/comments/' + tweet_id + '?page=' + comments_page;
+        var $interect_area = $(this).closest(".div-interact-area");
         var $repost_area = $interect_area.find(".div-repostarea");
-        var $comments_area = $interect_area.find(".div-commentarea")
-        var $comments = $interect_area.find(".well-sm")
-        log('len', $comments)
-        var $comment_button = $interect_area.find(".comment-button-text")
-        var $repost_button = $interect_area.find(".repost-button-text")
+        var $comments_area = $interect_area.find(".div-commentarea");
+        var $comments = $interect_area.find(".well-sm");
+        log('len', $comments);
+        var $comment_button = $interect_area.find(".comment-button-text");
+        var $repost_button = $interect_area.find(".repost-button-text");
         if ($comments_area.is(':hidden')) {
             if ($comments.length == 0) {
                 get(comments_url, comments_response, $comments_area);
@@ -134,12 +133,12 @@ var bindActions = function () {
     });
 
     $('#id-div-twitter').on('click', '.button-reposts', function () {
-        var $interect_area = $(this).closest(".div-interact-area")
+        var $interect_area = $(this).closest(".div-interact-area");
         var $repost_area = $interect_area.find(".div-repostarea");
         var $comment_area = $interect_area.find(".div-commentarea");
-        var $comment_button = $interect_area.find(".comment-button-text")
-        var $repost_button = $interect_area.find(".repost-button-text")
-        var $comments = $interect_area.find(".well-sm")
+        var $comment_button = $interect_area.find(".comment-button-text");
+        var $repost_button = $interect_area.find(".repost-button-text");
+        var $comments = $interect_area.find(".well-sm");
         log('gh', $repost_area.is(':visible'));
         if ($repost_area.is(':hidden')) {
             $repost_area.slideToggle("slow");
@@ -194,8 +193,8 @@ var bindActions = function () {
                 var file = files[i];
                 console.log('上传的文件: ', file.name);
                 upload_picture(file);
-                $(".upload-wrapper").append(`<p class="upload-info">上传中……</p>`);
             }
+            $(".upload-wrapper").append(`<p class="upload-info">上传中……</p>`);
         }
     });
 
