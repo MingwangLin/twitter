@@ -26,6 +26,9 @@ var new_repost = function (data, $target) {
         template = tweet_template(avatar_path, tweet, comments_length)
         // $('#id-div-mytweets').prepend(template);
         $('#id-a-mytweets').click();
+        $('body,html').animate({
+            scrollTop: 0
+        });
         $(template).hide().prependTo('#id-div-mytweets').fadeIn("slow");
     } else {
         log('请求失败');
