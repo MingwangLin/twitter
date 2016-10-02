@@ -95,7 +95,7 @@ def timeline_followed(username):
             join(Follow, Follow.followed_id == Tweet.user_id) \
             .filter(Follow.follower_id == visitor.id).order_by(
             Tweet.created_time.desc()).paginate(
-            page, error_out=False)
+            page, per_page=10, error_out=False)
         followed_tweets = pagination.items
         # log('f', followed_tweets)
         tweets = [i.json() for i in followed_tweets]
