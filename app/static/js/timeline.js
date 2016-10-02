@@ -15,10 +15,10 @@ var __main = function () {
 };
 
 var pageturning_button_show_hide = function (jquery_page_object, jquery_button_object) {
-    var entries_perpage = 20;
-    if (jquery_page_object.children().length < 20) {
+    var entries_perpage = 10;
+    if (jquery_page_object.children().length < 10) {
         jquery_button_object.hide();
-    } else if (jquery_page_object.children().length == 20) {
+    } else if (jquery_page_object.children().length == 10) {
         jquery_button_object.show();
     }
 };
