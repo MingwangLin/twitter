@@ -73,7 +73,6 @@ var login = function () {
 
 var register = function () {
     var username = $('#id-input-username').val();
-    log('usernamelog', username)
     var password = $('#id-input-password').val();
     log('user', username, password);
     var form = {
@@ -83,7 +82,7 @@ var register = function () {
     // JSON.stringify 可以把一个 object 转换为字符串
     var url = '/register'
     log('form.content', form)
-    post($input_box = ``, url, form, response = auth_response, $target = ``)
+    post($input_box = $('#id-input-username'), url, form, response = auth_response, $target = ``)
 }
 
 var testuser = function (url, response) {
