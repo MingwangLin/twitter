@@ -15,7 +15,7 @@ db = SQLAlchemy()
 def init_app():
     # db_path = '/Users/linmingwang/twitter/db.sqlite'
     db_path = '/var/www/twitter/db.sqlite'
-    db_path = '/home/lin/twitter.db.sqlite'
+    # db_path = '/home/lin/twitter.db.sqlite'
 
     # 初始化并配置 flask
     app = Flask(__name__)
