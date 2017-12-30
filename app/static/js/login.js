@@ -82,7 +82,7 @@ var register = function () {
     };
     // JSON.stringify 可以把一个 object 转换为字符串
     var url = '/register'
-    log('form.content', form.content)
+    log('form.content', form)
     post($input_box = ``, url, form, response = auth_response, $target = ``)
 }
 
