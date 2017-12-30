@@ -73,6 +73,7 @@ var login = function () {
 
 var register = function () {
     var username = $('#id-input-username').val();
+    log('usernamelog', username)
     var password = $('#id-input-password').val();
     log('user', username, password);
     var form = {
