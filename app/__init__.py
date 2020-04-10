@@ -13,16 +13,10 @@ db = SQLAlchemy()
 # 由外部启动函数来调用
 
 def init_app():
-    # db_path = '/Users/linmingwang/twitter/db.sqlite'
-    # db_path = '/var/www/twitter/db.sqlite'
-    db_path = '/home/lin/twitter.db.sqlite'
-
     # 初始化并配置 flask
     app = Flask(__name__)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
-    app.secret_key = 'TODO fixme'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(db_path)
+    config = os.environ['FLASK_SETTINGS_MODULE']
+    app.config.from_object(config)
     # 初始化 db
     db.init_app(app)
     db.app = app

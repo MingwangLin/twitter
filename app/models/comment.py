@@ -6,12 +6,12 @@ import time
 class Comment(db.Model, ReprMixin):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String())
+    content = db.Column(db.String(512))
     created_time = db.Column(db.Integer(), default=0)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
     comment_replied = db.Column(db.Integer())
-    user_replied = db.Column(db.String())
+    user_replied = db.Column(db.String(256))
     reply_viewed = db.Column(db.Integer(), default=0)
     ats = db.relationship('At', backref='comment')
 

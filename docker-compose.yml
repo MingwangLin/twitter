@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  web:
+    environment:
+      PYTHONUNBUFFERED: '1'
+      TZ: 'Asia/Shanghai'
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+
+
+
+

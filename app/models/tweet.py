@@ -9,7 +9,7 @@ import time
 class Tweet(db.Model, ReprMixin):
     __tablename__ = 'tweets'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String())
+    content = db.Column(db.String(512))
     created_time = db.Column(db.Integer(), default=0)
     reposted = db.relationship('Repost',
                                foreign_keys=[Repost.repost_id],
@@ -69,7 +69,7 @@ class Tweet(db.Model, ReprMixin):
 class TweetImg(db.Model, ReprMixin):
     __tablename__ = 'tweetsImg'
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(), default='')
+    content = db.Column(db.String(512), default='')
     created_time = db.Column(db.Integer(), default=0)
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweets.id'))
 

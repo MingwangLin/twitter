@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: linmingwang/twitter:latest
+    volumes:
+      - .:/app
+    command: gunicorn --bind 0.0.0.0:3340 --log-level debug wsgi:app
+    restart: unless-stopped
+    ports:
+      - "3340:3340"
+    environment:
+      FLASK_SETTINGS_MODULE: 'twitter.settings-prod'
+
+
+
+
