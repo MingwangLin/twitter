@@ -1,19 +1,5 @@
-/*
- Navicat MySQL Data Transfer
 
- Source Server         : ubuntu-ata
- Source Server Type    : MySQL
- Source Server Version : 50722
- Source Host           : 172.16.18.166:3306
- Source Schema         : twitter
-
- Target Server Type    : MySQL
- Target Server Version : 50722
- File Encoding         : 65001
-
- Date: 10/04/2020 14:38:27
-*/
-
+CREATE DATABASE twitter;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
