@@ -120,6 +120,7 @@ def upload_avatars():
     # uploaded 是上传时候的文件名
     file = request.files.get('uploaded')
     log('upload, ', request.files)
+    data={}
     if file:
         filename = file.filename
         filename = secure_filename(file.filename)
@@ -151,6 +152,7 @@ def upload_picture():
     file = request.files.get('uploaded')
     log('upload, ', request.files)
     log('file', file.filename)
+    data={}
     if file:
         img_format = file.filename.split('.')[1]
         filename = string_generator(size=8) + '.' + img_format

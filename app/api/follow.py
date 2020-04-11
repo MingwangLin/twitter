@@ -12,6 +12,7 @@ from .treelog import log
 @requires_login
 def user_follow(user_id):
     u = current_user()
+    user = User.query.filter_by(id=user_id).first()
     if current_user() is None:
         return redirect(url_for('login_view'))
     f = Follow(follower_id=u.id, followed_id=user_id)
