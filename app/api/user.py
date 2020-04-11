@@ -158,7 +158,7 @@ def upload_picture():
         filename = string_generator(size=8) + '.' + img_format
         log('filename, ', filename)
         path = '/static/tweets_picture/' + filename
-        abs_path = '/var/www/html/twitter/app' + path
+        abs_path = '/app/app' + path
         # abs_path = '/Users/linmingwang/twitter/app' + path
         # abs_path = os.path.join(path, filename)
         # log('abs', abs_path)
