@@ -112,7 +112,7 @@ def register():
 def signout():
     session['user_id'] = None
     log('session', session)
-    return redirect(url_for('blog/api.login_view'))
+    return redirect(url_for('api.login_view'))
 
 
 # 自动创建用户
