@@ -52,7 +52,7 @@ var bindActions = function () {
         }
     });
     $('#id-button-testuser').on('click', function () {
-        var url = '/testuser'
+        var url = 'testuser'
         log('testurl', url)
         get(url, testuser_response)
     });
