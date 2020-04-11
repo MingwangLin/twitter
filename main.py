@@ -20,5 +20,5 @@ def run():
 
 if __name__ == '__main__':
     os.environ['FLASK_SETTINGS_MODULE'] = 'twitter.settings-prod'
-    # rebuild_db()
+    rebuild_db()
     run()
