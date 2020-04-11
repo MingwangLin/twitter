@@ -6,7 +6,7 @@ from app import models
 def rebuild_db():
     application = init_app()
     db = models.db
-    # db.drop_all()
+    db.drop_all()
     db.create_all()
     print('auth rebuild database')
 
@@ -19,6 +19,6 @@ def run():
 
 
 if __name__ == '__main__':
-    os.environ['FLASK_SETTINGS_MODULE'] = 'twitter.settings'
-    rebuild_db()
+    os.environ['FLASK_SETTINGS_MODULE'] = 'twitter.settings-prod'
+    # rebuild_db()
     run()
