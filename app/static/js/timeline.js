@@ -28,9 +28,9 @@ var setup = function () {
     path = window.location.pathname;
     username_index = 2;
     username = path.split('/')[username_index];
-    mytweets_url = 'tweets/' + username + '?page=' + mytweets_page;
-    followedtweets_url = 'followedtweets/' + username + '?page=' + followedtweets_page;
-    notifications_url = 'notifications/' + username + '?page=' + notifications_page;
+    mytweets_url = '../tweets/' + username + '?page=' + mytweets_page;
+    followedtweets_url = '../followedtweets/' + username + '?page=' + followedtweets_page;
+    notifications_url = '../notifications/' + username + '?page=' + notifications_page;
     get(mytweets_url, mytweets_response);
     get(followedtweets_url, followedtweets_response);
     get(notifications_url, notifications_response);
@@ -86,20 +86,20 @@ var bindActions = function () {
     $('#id-button-next-mytweets').on('click', function () {
         var increment = 1;
         mytweets_page += increment;
-        mytweets_url = 'tweets/' + username + '?page=' + mytweets_page;
+        mytweets_url = '../tweets/' + username + '?page=' + mytweets_page;
         log('m_url', mytweets_url);
         get(mytweets_url, mytweets_response)
     });
 
     $('#id-button-next-followedtweets').on('click', function () {
-        followedtweets_url = 'followedtweets/' + username + '?page=' + followedtweets_page;
+        followedtweets_url = '../followedtweets/' + username + '?page=' + followedtweets_page;
         get(followedtweets_url, followedtweets_response);
     });
 
     $('#id-button-next-notifications').on('click', function () {
         var increment = 1;
         followedtweets_page += increment;
-        notifications_url = 'notifications/' + username + '?page=' + notifications_page;
+        notifications_url = '../notifications/' + username + '?page=' + notifications_page;
         get(notifications_url, notifications_response);
     });
 
@@ -108,7 +108,7 @@ var bindActions = function () {
     $('#id-div-twitter').on('click', '.button-comments', function () {
         var $single_tweet = $(this).closest(".singletweet");
         var tweet_id = $single_tweet.data('id');
-        comments_url = 'tweet/comments/' + tweet_id + '?page=' + comments_page;
+        comments_url = '../tweet/comments/' + tweet_id + '?page=' + comments_page;
         var $interect_area = $(this).closest(".div-interact-area");
         var $repost_area = $interect_area.find(".div-repostarea");
         var $comments_area = $interect_area.find(".div-commentarea");
