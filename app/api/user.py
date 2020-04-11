@@ -125,8 +125,8 @@ def upload_avatars():
         filename = file.filename
         filename = secure_filename(file.filename)
         log('filename, ', filename)
-        path = '/static/avatars/' + filename
-        abs_path = '/app/app' + path
+        path = '../static/avatars/' + filename
+        abs_path = '/app/app' + '/static/avatars/' + filename
         # abs_path = '/Users/linmingwang/twitter/app' + path
         # abs_path = os.path.join(path, filename)
         # log('abs', abs_path)
