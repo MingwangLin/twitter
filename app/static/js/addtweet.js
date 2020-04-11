@@ -17,7 +17,7 @@ var add_newtweet = function () {
         'content': content,
         'imgs_url': imgs_url,
     };
-    var url = '/tweet/add';
+    var url = '../tweet/add';
     post($input_box = $('#id-text-content'), url, form, new_tweet);
 }
 
