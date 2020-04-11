@@ -26,7 +26,7 @@ var pageturning_button_show_hide = function (jquery_page_object, jquery_button_o
 var setup = function () {
     // web当前路径
     path = window.location.pathname;
-    username_index = 2;
+    username_index = 3;
     username = path.split('/')[username_index];
     mytweets_url = '../tweets/' + username + '?page=' + mytweets_page;
     followedtweets_url = '../followedtweets/' + username + '?page=' + followedtweets_page;
