@@ -2,7 +2,7 @@ var upload_avatar = function (file) {
     var fd = new FormData();
     fd.append('uploaded', file);
     $.ajax({
-        url: '/upload/avatars',
+        url: 'upload/avatars',
         method: 'post',
         contentType: false,
         processData: false,
@@ -25,7 +25,7 @@ var upload_picture = function (file) {
     var fd = new FormData();
     fd.append('uploaded', file);
     $.ajax({
-        url: '/upload/picture',
+        url: 'upload/picture',
         method: 'post',
         contentType: false,
         processData: false,

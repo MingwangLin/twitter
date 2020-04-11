@@ -134,7 +134,7 @@ def upload_avatars():
         user.avatar = path
         user.save()
         log('user', user.username)
-        url = '/timeline/'+ user.username
+        url = 'timeline/'+ user.username
         data = {
             'success': True,
             'url': url,
