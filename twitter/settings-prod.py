@@ -3,4 +3,4 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 MAX_CONTENT_LENGTH = 2 * 1024 * 1024
 
 # mysql
-SQLALCHEMY_DATABASE_URI = 'mysql://admin:Ata1121399@localhost/twitter'
+SQLALCHEMY_DATABASE_URI = 'mysql://admin:Ata1121399@47.98.46.70/twitter'
