@@ -10,7 +10,8 @@ var upload_avatar = function (file) {
         success: function (r) {
             if (r.success) {
                 var url = r.url;
-                window.location.href = url;
+
+                window.location.href = url.split('/')[1];
             } else {
                 log('internal server');
             }
