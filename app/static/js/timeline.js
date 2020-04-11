@@ -31,6 +31,7 @@ var setup = function () {
     mytweets_url = '../tweets/' + username + '?page=' + mytweets_page;
     followedtweets_url = '../followedtweets/' + username + '?page=' + followedtweets_page;
     notifications_url = '../notifications/' + username + '?page=' + notifications_page;
+    log('mytweets_url', mytweets_url)
     get(mytweets_url, mytweets_response);
     get(followedtweets_url, followedtweets_response);
     get(notifications_url, notifications_response);

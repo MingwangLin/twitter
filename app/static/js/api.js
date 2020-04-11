@@ -18,7 +18,7 @@ var ajax = function (url, method, form, response, $target) {
         error: function (err) {
             r = {
                 success: false,
-                message: '服务器提了一个问题',
+                message: '服务器异常',
                 data: err
             }
             log('err', err)
