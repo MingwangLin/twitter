@@ -91,7 +91,7 @@ def register():
         user = User.query.filter_by(username=u.username).first()
         user_id = user.id
         session['user_id'] = user_id
-        r['data'] = '/timeline/{}'.format(u.username)
+        r['data'] = 'timeline/{}'.format(u.username)
         # 自动关注之前所有人
         for i in range(1, user_id):
             f = Follow(user_id, i)
