@@ -10,7 +10,7 @@ var add_newcomment = function () {
     var tweet_id = $tweet.data('id')
     log('tid', tweet_id)
     // JSON.stringify 可以把一个 object 转换为字符串
-    var url = '/comment/add' + '/' + tweet_id;
+    var url = '../comment/add' + '/' + tweet_id;
     post($input_box = $comments_input, url, form, response = new_comment, $target = $interect_area);
 };
 

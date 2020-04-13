@@ -12,7 +12,7 @@ var add_newrepost = function () {
     log('form', form)
     var tweet_id = $tweet.data('id')
     // JSON.stringify 可以把一个 object 转换为字符串
-    var url = '/repost/add' + '/' + tweet_id;
+    var url = '../repost/add' + '/' + tweet_id;
     post($input_box = ``, url, form, response = new_repost, $target = $repost_input);
 };
 
