@@ -125,10 +125,10 @@
                         <span class="font-tweet-name">{{host.username}}</span> 
                         </p>关注{{host.followed.count()}} 粉丝{{host.followers.count()}}</p>
                         {% if host.username != visitor.username and not visitor.is_following(host) %}
-                        <a href="/follow/{{host.id}}">点击关注</a>
+                        <a href="../follow/{{host.id}}">点击关注</a>
                         {% elif host.username != visitor.username and visitor.is_following(host) %}
                         <p>
-                            <a href="/unfollow/{{host.id}}">取消关注</a>
+                            <a href="../unfollow/{{host.id}}">取消关注</a>
                         </p>
                         {% endif %} 
                         {% if host.username == visitor.username %}
